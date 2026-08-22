@@ -16,7 +16,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Glassmorphism Dark UI CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -30,7 +29,6 @@ st.markdown("""
         color: #f8fafc;
     }
     
-    /* Metriche KPI in alto */
     div[data-testid="stMetric"] {
         background: rgba(30, 41, 59, 0.45);
         border: 1px solid rgba(148, 163, 184, 0.15);
@@ -50,7 +48,6 @@ st.markdown("""
         color: #f8fafc !important;
     }
     
-    /* Header Tabs Style */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         background-color: rgba(15, 23, 42, 0.65);
@@ -71,7 +68,6 @@ st.markdown("""
         box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
     }
 
-    /* Alert Boxes */
     div[data-testid="stAlert"] {
         border-radius: 12px;
         backdrop-filter: blur(8px);
@@ -519,6 +515,7 @@ def save_state_to_disk():
     state_data = {
         "my_roster": st.session_state.my_roster,
         "selected_keeper_club": st.session_state.selected_keeper_club,
+        "custom_user_targets": st.session_state.custom_user_targets,
         "opponents": st.session_state.opponents,
         "purchased_registry": st.session_state.purchased_registry,
         "history": st.session_state.history,
@@ -546,6 +543,9 @@ if 'my_roster' not in st.session_state:
 
 if 'selected_keeper_club' not in st.session_state:
     st.session_state.selected_keeper_club = saved_data["selected_keeper_club"] if saved_data else 'Inter'
+
+if 'custom_user_targets' not in st.session_state:
+    st.session_state.custom_user_targets = saved_data.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}) if saved_data else {'P': [], 'D': [], 'C': [], 'A': []}
 
 if 'opponents' not in st.session_state:
     if saved_data and "opponents" in saved_data:
@@ -756,10 +756,39 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
     targets[0] = max(1, targets[0] - diff)
     return targets
 
-# MOTORE CHIAVE DI RE-TIERING DINAMICO DEI CANDIDATI
-def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap):
+# MOTORE CHIAVE DI RE-TIERING DINAMICO (INTEGRA I TOP SCELTI DALL'UTENTE)
+def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
+    # 1. Se l'utente ha selezionato dei suoi top personalizzati liberi, assegnali per primi!
+    if custom_user_targets_list:
+        for cust_name in custom_user_targets_list:
+            if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
+                row = listone_df[listone_df['Nome'] == cust_name]
+                if not row.empty:
+                    r_row = row.iloc[0]
+                    base_t, base_m = get_player_base_target(r_row)
+                    allocated_in_roadmap.add(cust_name)
+                    
+                    # Target adattato al budget di questo slot
+                    dyn_t = max(1, slot_target_budget)
+                    margin = 1.16 if dyn_t > 20 else (1.20 if dyn_t > 5 else 1.0)
+                    dyn_m = int(round(dyn_t * margin)) if dyn_t > 2 else dyn_t
+                    
+                    # Raccogli alternative dal listone
+                    alts_df = listone_df[(listone_df['R'] == role_code) & (~listone_df['Nome'].isin(allocated_in_roadmap)) & (~listone_df['Nome'].isin(purchased_registry.keys()))]
+                    alts_str = ", ".join([f"{r['Nome']} ({get_player_base_target(r)[0]} cr)" for _, r in alts_df.head(3).iterrows()])
+                    
+                    return {
+                        "chosen_name": cust_name,
+                        "chosen_team": str(r_row['Squadra']),
+                        "chosen_role": "🎯 Mio Top Selezionato",
+                        "base_target": base_t,
+                        "dyn_target": dyn_t,
+                        "dyn_max_bid": dyn_m,
+                        "alts_str": alts_str if alts_str else "Nessuna alternativa disponibile"
+                    }
+
+    # 2. Algoritmo di default a fasce (Re-Tiering automatico)
     pool = ROLE_TIERED_POOLS[role_code]
-    
     best_tier = None
     min_dist = 999
     for tier in pool:
@@ -803,7 +832,7 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
         "alts_str": ", ".join(alts) if alts else "Nessuna alternativa disponibile"
     }
 
-# RENDERER SCHEDE GRAFICHE A CARD CON RE-TIERING REAL-TIME
+# RENDERER SCHEDE GRAFICHE A CARD CON RE-TIERING E TOP PERSONALIZZATI
 def render_role_card_grid(role_code, dept_title, num_cols=4):
     slots_total = SLOTS[role_code]
     bought_list = [p for p in st.session_state.my_roster if p['role'] == role_code]
@@ -814,6 +843,9 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     allocated_in_roadmap = set(p['name'] for p in st.session_state.my_roster)
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.my_roster)
     
+    # Recupera i top personalizzati scelti dall'utente per questo ruolo
+    user_custom_picks = st.session_state.custom_user_targets.get(role_code, [])
+
     for row_start in range(0, slots_total, num_cols):
         row_slots_count = min(num_cols, slots_total - row_start)
         cols = st.columns(num_cols)
@@ -831,7 +863,8 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                 else:
                     rem_idx = global_slot_idx - len(bought_list)
                     t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
-                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.purchased_registry, allocated_in_roadmap)
+                    
+                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.purchased_registry, allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
                     card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
                     st.info(card_text)
 
@@ -1050,11 +1083,33 @@ with tab_call:
                 st.rerun()
 
 # ------------------------------------------------------------------------------
-# TAB 2: ROADMAP DINAMICA CON INCROCI PORTIERI E RE-TIERING
+# TAB 2: ROADMAP DINAMICA CON SELETTORE TOP PERSONALIZZATI
 # ------------------------------------------------------------------------------
 with tab_roadmap:
     st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
     
+    # BOX PERSONALIZZAZIONE TOP DI REPARTO (CUSTOM TARGETS)
+    with st.expander("⭐ Personalizza i Miei Top di Reparto (Costruisci la Roadmap sui tuoi Pupilli)", expanded=False):
+        st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
+        
+        c_tp, c_td, c_tc, c_ta = st.columns(4)
+        with c_tp:
+            p_names = listone_df[listone_df['R'] == 'P']['Nome'].dropna().tolist()
+            sel_p_top = st.multiselect("Top Portieri:", options=p_names, default=st.session_state.custom_user_targets.get('P', []))
+            st.session_state.custom_user_targets['P'] = sel_p_top
+        with c_td:
+            d_names = listone_df[listone_df['R'] == 'D']['Nome'].dropna().tolist()
+            sel_d_top = st.multiselect("Top Difensori:", options=d_names, default=st.session_state.custom_user_targets.get('D', []))
+            st.session_state.custom_user_targets['D'] = sel_d_top
+        with c_tc:
+            c_names = listone_df[listone_df['R'] == 'C']['Nome'].dropna().tolist()
+            sel_c_top = st.multiselect("Top Centrocampisti:", options=c_names, default=st.session_state.custom_user_targets.get('C', []))
+            st.session_state.custom_user_targets['C'] = sel_c_top
+        with c_ta:
+            a_names = listone_df[listone_df['R'] == 'A']['Nome'].dropna().tolist()
+            sel_a_top = st.multiselect("Top Attaccanti:", options=a_names, default=st.session_state.custom_user_targets.get('A', []))
+            st.session_state.custom_user_targets['A'] = sel_a_top
+
     selected_cat = st.selectbox(
         "Seleziona Categoria da Visualizzare:",
         ["Panoramica Completa", "🧤 Portieri (P)", "🛡️ Difensori (D)", "⚙️ Centrocampisti (C)", "⚽ Attaccanti (A)"]
