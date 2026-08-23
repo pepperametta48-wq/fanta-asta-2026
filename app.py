@@ -110,7 +110,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. COSTANTI DI GIOCO, BENCHMARK FANTALAB & MATRICI
+# 2. COSTANTI DI GIOCO & BENCHMARK FANTALAB (10 SQUADRE / 500 CR)
 # ==============================================================================
 SAVE_FILE = "fanta_auction_save.json"
 TOTAL_BUDGET = 500
@@ -395,214 +395,9 @@ ROLE_TIERED_POOLS = {
     ]
 }
 
-TEAMS_TACTICAL_DB = {
-    "Atalanta": {
-        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
-        "gk": "Carnesecchi (Sportiello vice)",
-        "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
-        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
-        "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
-        "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
-        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista; Ahanor scommessa difensiva a 1 credito."
-    },
-    "Bologna": {
-        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
-        "gk": "Skorupski (Pessina vice)",
-        "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
-        "midfield": "Ferguson, Moro, Bernardeschi",
-        "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
-        "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
-        "advice": "Orsolini 1° slot centrocampo; Rowe 2°-3° slot da bonus; Heggem certezza difensiva a costi contenuti."
-    },
-    "Cagliari": {
-        "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
-        "gk": "Caprile (Sherri/Radunovic)",
-        "defense": "Yerry Mina, Obert, Rodríguez, Zé Pedro",
-        "midfield": "Adopo, Fazzini, Winks",
-        "attack": "Daniel Maldini, Sebastiano Esposito, Kevin Carlos (Mendy vice)",
-        "penalties": ["Mina (1°)", "Kevin Carlos (2°)", "Daniel Maldini (3°)"],
-        "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
-    },
-    "Como": {
-        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
-        "gk": "Jean Butez (Tornqvist/Vigorito)",
-        "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
-        "midfield": "Da Cunha, Perrone",
-        "attack": "Nico Paz, Baturina, Douvikas (Morata vice)",
-        "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
-        "advice": "Butez primato clean sheet (19); Nico Paz e Da Cunha top centrocampo; Douvikas bomber altissima resa; Kempf e Yan Couto pilastri difesa."
-    },
-    "Fiorentina": {
-        "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
-        "gk": "David De Gea (Christensen/Lezzerini)",
-        "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
-        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
-        "attack": "Gudmundsson, Moise Kean, Pellegrino",
-        "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
-        "advice": "Atta e Mastantuono centrocampisti da bonus low cost; Gudmundsson e Kean riferimenti offensivi primari."
-    },
-    "Frosinone": {
-        "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
-        "gk": "Palmisani / Desplanches",
-        "defense": "Monterisi, Bracaglia, Akpoguma, Oyono",
-        "midfield": "Calò, Schmid, Grillitsch, El Azzouzi",
-        "attack": "Raimondo, Ghedjemis, Zerbin",
-        "penalties": ["Calò (1°)", "Schmid (2°)"],
-        "advice": "Calò rigorista economico a centrocampo; El Azzouzi slot a 1 credito per copertura; Bracaglia difensore low cost."
-    },
-    "Genoa": {
-        "coach": "Daniele De Rossi", "formation": "3-5-2 / 4-3-3 (Flessibile)",
-        "gk": "Justin Bijlow (Stolz vice)",
-        "defense": "Ostigard, Vásquez, Marcandalli / Mitaj",
-        "midfield": "Frendrup, Ellertsson, Ethan-Meichtry, Baldanzi/Traoré",
-        "attack": "Lorenzo Colombo, Vitinha",
-        "penalties": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
-        "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
-    },
-    "Inter": {
-        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
-        "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
-        "defense": "Dimarco, Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
-        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
-        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
-        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
-        "advice": "Dimarco top 1 assoluto di difesa; Calhanoglu top bonus centrocampo; coppia portieri Martinez-Provedel obbligatoria; Pio Esposito scommessa a 1-2 cr."
-    },
-    "Juventus": {
-        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
-        "gk": "Guglielmo Vicario (Perin vice)",
-        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
-        "midfield": "Locatelli, Thuram / McKennie",
-        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
-        "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
-        "advice": "Bremer top difensore per modificatore; Yildiz e Kolo Muani bonus pesanti d'attacco; Alajbegović talento a 1-5 cr."
-    },
-    "Lazio": {
-        "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
-        "gk": "Christos Mandas (Motta vice)",
-        "defense": "Marusic, Doekhi, Romagnoli, Provstgaard / Pedraza",
-        "midfield": "Rovella, Kenneth Taylor, Davide Frattesi",
-        "attack": "Zaccagni, Isaksen, Noslin (Ratkov / Dia)",
-        "penalties": ["Zaccagni (1°)", "Taylor K. (2°)", "Cataldi (3°)"],
-        "advice": "Frattesi centrocampista incursore alla Milinkovic; Doekhi difensore goleador da piazzato; Noslin scommessa attacco."
-    },
-    "Lecce": {
-        "coach": "Staff Tecnico", "formation": "4-3-3 (Contenimento & Ripartenza)",
-        "gk": "Wladimiro Falcone (Bleve/Penev)",
-        "defense": "Tiago Gabriel, Gallo, Baschirotto",
-        "midfield": "Berisha, Gandelman, Helgason",
-        "attack": "Banda, Stulić / Geubbels, Pierotti",
-        "penalties": ["Stulić (1°)", "Geubbels (2°)", "Berisha (3°)"],
-        "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
-    },
-    "Milan": {
-        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
-        "gk": "Mike Maignan (Terracciano/Torriani)",
-        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
-        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
-        "attack": "Christian Pulisic, Rafael Leão, Gonçalo Ramos (Nkunku)",
-        "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
-        "advice": "Gonçalo Ramos centravanti ideale per Amorim (~90-100 cr); Pavlovic certezza modificatore e bonus; Diego Moreira bug listato C."
-    },
-    "Monza": {
-        "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
-        "gk": "Demba Thiam (Pizzignacco)",
-        "defense": "Andrea Carboni, Delli Carri, Birindelli, Mangas",
-        "midfield": "Matteo Pessina, Colpani, Akinsanmiro",
-        "attack": "Patrick Cutrone, Dany Mota, Petagna",
-        "penalties": ["Pessina (1°)", "Cutrone (2°)", "Petagna (3°)"],
-        "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
-    },
-    "Napoli": {
-        "coach": "Massimiliano Allegri", "formation": "4-3-3 / 4-2-4 (Flessibile & Diretto)",
-        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
-        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
-        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
-        "attack": "Rasmus Højlund, Politano, Santos, Neres",
-        "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
-        "advice": "McTominay 1° slot assoluto di centrocampo; Højlund bomber ideale con Allegri; Spinazzola low cost in difesa."
-    },
-    "Parma": {
-        "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
-        "gk": "Daffara / Corvi",
-        "defense": "Delprato, Valeri, Troilo, Britschgi",
-        "midfield": "Adrián Bernabé, Mandela Keita, Sorensen, Almqvist",
-        "attack": "El Bilal Touré, Luka Romero, Frigan",
-        "penalties": ["Bernabé (1°)", "Touré E. (2°)", "Valeri (3°)"],
-        "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
-    },
-    "Roma": {
-        "coach": "Guida Tecnica", "formation": "3-4-2-1 (Intensità & Spinta Offensiva)",
-        "gk": "Mile Svilar (Gollini/De Marzi)",
-        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley",
-        "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
-        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
-        "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
-        "advice": "Svilar top 1 portiere (18 clean sheet); Malen top bomber d'attacco; Wesley e Molina esterni difensivi ad altissima fantamedia."
-    },
-    "Sassuolo": {
-        "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
-        "gk": "Arijanet Murić / Stefano Turati",
-        "defense": "Sebastian Walukiewicz, Jay Idzes, Obrador",
-        "midfield": "Kristian Thorstvedt, Ismaël Koné, Vasilije Adžić",
-        "attack": "Domenico Berardi, Armand Laurienté, Andrea Pinamonti, Bowie",
-        "penalties": ["Berardi (1°)", "Pinamonti (2°)", "Laurienté (3°)"],
-        "advice": "Adžić gemma a centrocampo (1-5 cr); Berardi e Pinamonti certezze per rigori e gol."
-    },
-    "Torino": {
-        "coach": "Ignazio Abate", "formation": "4-2-3-1 (Verticale & Organizzato)",
-        "gk": "Alberto Paleari / Franco Perri",
-        "defense": "Saul Coco, Marcus Pedersen",
-        "midfield": "Nikola Vlašić, Cesare Casadei, Cacciamani",
-        "attack": "Giovanni Simeone, Che Adams, Duván Zapata",
-        "penalties": ["Vlašić (1°)", "Simeone (2°)", "Casadei (3°)"],
-        "advice": "Vlašić centrocampista rigorista da 6-8 gol; Paleari/Perri porta low cost; Simeone 3°-4° slot attacco."
-    },
-    "Udinese": {
-        "coach": "Staff Tecnico", "formation": "3-5-2 (Fisico & Diretto)",
-        "gk": "Maduka Okoye (Padelli/Piana)",
-        "defense": "Oumar Solet, Christian Kabasele, Thomas Kristensen, Mergim Vojvoda, Hassane Kamara",
-        "midfield": "Jesper Karlström, Jurgen Ekkelenkamp, Nicolò Zaniolo",
-        "attack": "Keinan Davis, Adam Buksa, Gueye",
-        "penalties": ["Davis (1°)", "Solet (2°)", "Zaniolo (3°)"],
-        "advice": "Solet difensore da bonus di prima fascia; Vojvoda costanza da modificatore; Zaniolo jolly offensivo listato centrocampista."
-    },
-    "Venezia": {
-        "coach": "Giovanni Stroppa", "formation": "3-5-2 (Ritmo & Organizzazione)",
-        "gk": "Filip Stanković (Grandi/Pozzi)",
-        "defense": "Ridgeciano Haps, Correia, Jay Idzes",
-        "midfield": "Gianluca Busio, Mikael Ellertsson, John Yeboah",
-        "attack": "Akor Adams, Albion Rrahmani, Lauberbach",
-        "penalties": ["Adams A. (1°)", "Rrahmani A. (2°)", "Yeboah (3°)"],
-        "advice": "Busio regista inamovibile e tiratore low cost; Akor Adams scommessa 3ª punta ad alto potenziale realizzativo."
-    }
-}
-
 # ==============================================================================
-# 4. CARICAMENTO LISTONE & FUNZIONI ANALITICHE
+# 5. DEFINIZIONE DI TUTTE LE FUNZIONI (PRIMA DI SIDEBAR E UI)
 # ==============================================================================
-@st.cache_data
-def load_listone():
-    excel_file = 'Quotazioni_Fantacalcio_Stagione_2026_27.xlsx'
-    if os.path.exists(excel_file):
-        try:
-            df = pd.read_excel(excel_file, sheet_name=0, skiprows=1)
-            df.columns = [c.strip() for c in df.columns]
-            return df
-        except Exception:
-            pass
-    return pd.DataFrame([
-        {'Nome': 'Martinez Jo.', 'Squadra': 'Inter', 'R': 'P', 'Qt.A': 17, 'FVM': 63},
-        {'Nome': 'Dimarco', 'Squadra': 'Inter', 'R': 'D', 'Qt.A': 32, 'FVM': 265},
-        {'Nome': 'McTominay', 'Squadra': 'Napoli', 'R': 'C', 'Qt.A': 28, 'FVM': 240},
-        {'Nome': 'Calhanoglu', 'Squadra': 'Inter', 'R': 'C', 'Qt.A': 27, 'FVM': 230},
-        {'Nome': 'Lautaro Martinez', 'Squadra': 'Inter', 'R': 'A', 'Qt.A': 35, 'FVM': 370},
-        {'Nome': 'Ramos G.', 'Squadra': 'Milan', 'R': 'A', 'Qt.A': 27, 'FVM': 232},
-        {'Nome': 'Hojlund', 'Squadra': 'Napoli', 'R': 'A', 'Qt.A': 28, 'FVM': 271}
-    ])
-
-listone_df = load_listone()
-
 def normalize_name(name):
     return str(name).lower().replace("'", "").replace(".", "").replace("-", " ").strip()
 
@@ -886,9 +681,6 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                     card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
                     st.info(card_text)
 
-# ==============================================================================
-# 5. INTEGRAZIONE API-FOOTBALL (STATISTICHE LIVE)
-# ==============================================================================
 API_KEY = st.secrets.get("FOOTBALL_API_KEY", None)
 
 @st.cache_data(ttl=86400)
@@ -998,7 +790,10 @@ with st.sidebar.expander("📰 Live News & Calciomercato (RSS Feed)"):
 
 if st.sidebar.button("🗑️ Reset Completo Asta"):
     if os.path.exists(SAVE_FILE):
-        os.remove(SAVE_FILE)
+        try:
+            os.remove(SAVE_FILE)
+        except Exception:
+            pass
     st.session_state.clear()
     st.rerun()
 
@@ -1033,7 +828,7 @@ tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps
 ])
 
 # ------------------------------------------------------------------------------
-# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE (KEYPAD RILANCI SICURO & API WIDGET)
+# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
 # ------------------------------------------------------------------------------
 with tab_call:
     st.subheader(f"Chiamata & Analisi Istantanea Giocatore ({current_stage})")
