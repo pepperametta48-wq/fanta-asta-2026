@@ -150,26 +150,26 @@ GOALKEEPER_PAIRINGS = {
 }
 
 GOALIE_HIERARCHY = {
-    'Inter': [('Martinez Jo.', 20, 24), ('Provedel', 3, 5), ('Di Gennaro', 1, 1)],
-    'Roma': [('Svilar', 25, 30), ('Gollini', 1, 2), ('De Marzi', 1, 1)],
-    'Como': [('Butez', 18, 22), ('Tornqvist', 1, 2), ('Vigorito', 1, 1)],
-    'Juventus': [('Vicario', 18, 22), ('Perin', 5, 7), ('Pinsoglio', 1, 1)],
-    'Atalanta': [('Carnesecchi', 16, 20), ('Sportiello', 1, 2), ('Vismara', 1, 1)],
-    'Milan': [('Maignan', 15, 19), ('Terracciano', 1, 2), ('Torriani', 1, 1)],
-    'Fiorentina': [('De Gea', 13, 16), ('Christensen O.', 1, 2), ('Lezzerini', 1, 1)],
-    'Napoli': [('Meret', 12, 15), ('Milinkovic-Savic V.', 5, 7), ('Contini', 1, 1)],
-    'Bologna': [('Skorupski', 10, 13), ('Pessina Mas.', 1, 2), ('Happonen', 1, 1)],
-    'Lazio': [('Mandas', 9, 12), ('Motta', 1, 2), ('Renzetti', 1, 1)],
-    'Udinese': [('Okoye', 9, 12), ('Padelli', 1, 2), ('Piana', 1, 1)],
-    'Cagliari': [('Caprile', 9, 12), ('Sherri', 1, 2), ('Radunovic', 1, 1)],
-    'Lecce': [('Falcone', 8, 11), ('Bleve', 1, 2), ('Penev', 1, 1)],
-    'Genoa': [('Bijlow', 8, 11), ('Stolz', 1, 2), ('Sommariva', 1, 1)],
-    'Sassuolo': [('Muric', 7, 10), ('Turati', 1, 2), ('Russo A.', 1, 1)],
-    'Torino': [('Paleari', 5, 7), ('Mascardi', 1, 1), ('Siviero', 1, 1)],
-    'Monza': [('Thiam', 5, 7), ('Pizzignacco', 1, 1), ('Strajnar', 1, 1)],
-    'Parma': [('Daffara', 7, 9), ('Corvi', 1, 2), ('Rinaldi', 1, 1)],
-    'Frosinone': [('Palmisani', 4, 6), ('Desplanches', 2, 3), ('Lolic', 1, 1)],
-    'Venezia': [('Stankovic F.', 6, 8), ('Grandi', 1, 1), ('Pozzi', 1, 1)]
+    'Inter': [('Martinez Jo.', 34, 39), ('Provedel', 8, 10), ('Di Gennaro', 1, 1)],
+    'Roma': [('Svilar', 49, 56), ('Gollini', 1, 2), ('De Marzi', 1, 1)],
+    'Como': [('Butez', 31, 36), ('Tornqvist', 1, 2), ('Vigorito', 1, 1)],
+    'Juventus': [('Vicario', 39, 45), ('Perin', 5, 7), ('Pinsoglio', 1, 1)],
+    'Atalanta': [('Carnesecchi', 34, 40), ('Sportiello', 1, 2), ('Vismara', 1, 1)],
+    'Milan': [('Maignan', 42, 48), ('Terracciano', 1, 2), ('Torriani', 1, 1)],
+    'Fiorentina': [('De Gea', 21, 25), ('Christensen O.', 1, 2), ('Lezzerini', 1, 1)],
+    'Napoli': [('Meret', 28, 33), ('Milinkovic-Savic V.', 11, 14), ('Contini', 1, 1)],
+    'Bologna': [('Skorupski', 17, 21), ('Pessina Mas.', 1, 2), ('Happonen', 1, 1)],
+    'Lazio': [('Mandas', 15, 19), ('Motta', 1, 2), ('Renzetti', 1, 1)],
+    'Udinese': [('Okoye', 14, 17), ('Padelli', 1, 2), ('Piana', 1, 1)],
+    'Cagliari': [('Caprile', 10, 13), ('Sherri', 1, 2), ('Radunovic', 1, 1)],
+    'Lecce': [('Falcone', 12, 15), ('Bleve', 1, 2), ('Penev', 1, 1)],
+    'Genoa': [('Bijlow', 9, 12), ('Stolz', 1, 2), ('Sommariva', 1, 1)],
+    'Sassuolo': [('Muric', 5, 7), ('Turati', 1, 2), ('Russo A.', 1, 1)],
+    'Torino': [('Perri', 5, 7), ('Paleari', 5, 7), ('Siviero', 1, 1)],
+    'Monza': [('Thiam', 4, 6), ('Pizzignacco', 1, 1), ('Strajnar', 1, 1)],
+    'Parma': [('Corvi', 4, 6), ('Daffara', 4, 6), ('Rinaldi', 1, 1)],
+    'Frosinone': [('Palmisani', 3, 5), ('Desplanches', 2, 3), ('Lolic', 1, 1)],
+    'Venezia': [('Stankovic F.', 4, 6), ('Grandi', 1, 1), ('Pozzi', 1, 1)]
 }
 
 ROLE_TIERED_POOLS = {
@@ -190,19 +190,19 @@ ROLE_TIERED_POOLS = {
             {"name": "Di Lorenzo", "team": "Napoli", "base_target": 22, "max": 26, "role": "Intoccabile a Destra (FM 6.33)"},
             {"name": "Rrahmani", "team": "Napoli", "base_target": 21, "max": 25, "role": "Centrale Titolarissimo Allegri (FM 6.45)"},
             {"name": "Scalvini", "team": "Atalanta", "base_target": 20, "max": 24, "role": "Perno Difensivo Sarri (3 gol)"},
-            {"name": "Kempf", "team": "Como", "base_target": 18, "max": 22, "role": "Pilastro Difesa Fabregas (FM 6.52)"},
+            {"name": "Kempf", "team": "Como", "base_target": 19, "max": 22, "role": "Pilastro Difesa Fabregas (FM 6.52)"},
             {"name": "Ostigard", "team": "Genoa", "base_target": 18, "max": 22, "role": "Specialista Aereo da Corner (5 gol)"}
         ]},
         {"tier_label": "Titolare Modificatore / Spinta", "min_p": 10, "max_p": 16, "candidates": [
             {"name": "Kalulu", "team": "Juventus", "base_target": 16, "max": 19, "role": "Titolare Fisso Senza Sbavature (FM 6.35)"},
             {"name": "Yan Couto", "team": "Como", "base_target": 16, "max": 19, "role": "Esterno Spinta Fabregas"},
             {"name": "Molina N.", "team": "Roma", "base_target": 16, "max": 19, "role": "Esterno Offensivo da Bonus"},
-            {"name": "Ndicka", "team": "Roma", "base_target": 15, "max": 18, "role": "Centrale Solido (FM 6.32)"},
+            {"name": "Ndicka", "team": "Roma", "base_target": 16, "max": 18, "role": "Centrale Solido (FM 6.32)"},
             {"name": "Dragusin", "team": "Fiorentina", "base_target": 15, "max": 18, "role": "Titolare Fisso Modificatore Grosso"},
-            {"name": "Gila", "team": "Milan", "base_target": 14, "max": 17, "role": "Affidabilità Pura Difesa a 3 Amorim"},
+            {"name": "Gila", "team": "Milan", "base_target": 15, "max": 17, "role": "Affidabilità Pura Difesa a 3 Amorim"},
             {"name": "Spinazzola", "team": "Napoli", "base_target": 14, "max": 17, "role": "Jolly Bonus Allegri (FM 6.53)"},
             {"name": "Mina", "team": "Cagliari", "base_target": 11, "max": 14, "role": "1° Rigorista / Minutaggio 85%"},
-            {"name": "Doekhi", "team": "Lazio", "base_target": 10, "max": 13, "role": "Centrale Goleador da Piazzato"},
+            {"name": "Doekhi", "team": "Lazio", "base_target": 11, "max": 13, "role": "Centrale Goleador da Piazzato"},
             {"name": "Vojvoda", "team": "Udinese", "base_target": 10, "max": 13, "role": "Titolare Frequente nelle Rose"}
         ]},
         {"tier_label": "Titolare Low Cost / Scommessa", "min_p": 1, "max_p": 8, "candidates": [
@@ -482,7 +482,6 @@ TEAMS_TACTICAL_DB = {
     }
 }
 
-# BENCHMARK REALI FANTALAB (10 SQUADRE / 500 CR)
 DOC_TARGETS = {
     "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
     "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
@@ -526,6 +525,7 @@ DOC_TARGETS = {
     "Esposito Francesco Pio": 14.0, "Esposito F.P.": 14.0, "Bonny Ange-Yoan": 12.0, "Bonny": 12.0, "Kevin Carlos": 11.0, "Carlos K.": 11.0
 }
 
+
 # ==============================================================================
 # 2. PERSISTENZA E RIPRISTINO AUTOMATICO (ANTI-CRASH)
 # ==============================================================================
@@ -533,7 +533,6 @@ def save_state_to_disk():
     state_data = {
         "my_roster": st.session_state.my_roster,
         "selected_keeper_club": st.session_state.selected_keeper_club,
-        "custom_user_targets": st.session_state.custom_user_targets,
         "opponents": st.session_state.opponents,
         "purchased_registry": st.session_state.purchased_registry,
         "history": st.session_state.history,
@@ -561,9 +560,6 @@ if 'my_roster' not in st.session_state:
 
 if 'selected_keeper_club' not in st.session_state:
     st.session_state.selected_keeper_club = saved_data["selected_keeper_club"] if saved_data else 'Inter'
-
-if 'custom_user_targets' not in st.session_state:
-    st.session_state.custom_user_targets = saved_data.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}) if saved_data else {'P': [], 'D': [], 'C': [], 'A': []}
 
 if 'opponents' not in st.session_state:
     if saved_data and "opponents" in saved_data:
@@ -610,20 +606,34 @@ listone_df = load_listone()
 # ==============================================================================
 # 4. MOTORE ANALITICO DI VALUTAZIONE E RE-TIERING DINAMICO
 # ==============================================================================
+def normalize_name(name):
+    return str(name).lower().replace("'", "").replace(".", "").replace("-", " ").strip()
+
 def get_player_base_target(player_row):
     name = str(player_row['Nome']).strip()
     role = str(player_row['R']).strip()
     fvm = int(player_row['FVM']) if pd.notnull(player_row.get('FVM')) else 1
     qta = int(player_row['Qt.A']) if pd.notnull(player_row.get('Qt.A')) else 1
 
+    norm_query = normalize_name(name)
     target = None
+
     if name in DOC_TARGETS:
         target = DOC_TARGETS[name]
     else:
-        for dn, dt in DOC_TARGETS.items():
-            if dn.lower() in name.lower() or name.lower() in dn.lower():
-                target = dt
+        tokens = set(norm_query.split())
+        for doc_name, val in DOC_TARGETS.items():
+            doc_tokens = set(normalize_name(doc_name).split())
+            if tokens == doc_tokens or (len(tokens) > 1 and tokens.issubset(doc_tokens)) or (len(doc_tokens) > 1 and doc_tokens.issubset(tokens)):
+                target = val
                 break
+        
+        if target is None:
+            for doc_name, val in DOC_TARGETS.items():
+                norm_doc = normalize_name(doc_name)
+                if norm_doc in norm_query or norm_query in norm_doc:
+                    target = val
+                    break
 
     if target is None:
         if role == 'P':
@@ -644,16 +654,17 @@ def get_player_base_target(player_row):
             elif fvm >= 40: target = max(10, int(round(fvm * 0.22)))
             else: target = max(1, int(round(qta * 0.9)))
 
+    int_t = int(round(target))
     if role == 'P':
-        max_bid = max(target + 1, int(round(target * 1.20))) if target > 1 else 1
+        max_bid = max(int_t + 1, int(round(int_t * 1.20))) if int_t > 1 else 1
     elif role == 'D':
-        max_bid = max(target + 1, int(round(target * 1.18))) if target > 1 else 1
+        max_bid = max(int_t + 1, int(round(int_t * 1.18))) if int_t > 1 else 1
     elif role == 'C':
-        max_bid = max(target + 1, int(round(target * 1.16))) if target > 2 else target
+        max_bid = max(int_t + 1, int(round(int_t * 1.16))) if int_t > 2 else int_t
     else:
-        max_bid = max(target + 1, int(round(target * 1.15))) if target > 2 else target
+        max_bid = max(int_t + 1, int(round(int_t * 1.15))) if int_t > 2 else int_t
 
-    return target, max_bid
+    return int_t, max_bid
 
 def get_dept_spent(role):
     return sum(p['price'] for p in st.session_state.my_roster if p['role'] == role)
@@ -774,35 +785,10 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
     targets[0] = max(1, targets[0] - diff)
     return targets
 
-# MOTORE CHIAVE DI RE-TIERING DINAMICO (INTEGRA I TOP SCELTI DALL'UTENTE)
-def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
-    if custom_user_targets_list:
-        for cust_name in custom_user_targets_list:
-            if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
-                row = listone_df[listone_df['Nome'] == cust_name]
-                if not row.empty:
-                    r_row = row.iloc[0]
-                    base_t, base_m = get_player_base_target(r_row)
-                    allocated_in_roadmap.add(cust_name)
-                    
-                    dyn_t = max(1, slot_target_budget)
-                    margin = 1.16 if dyn_t > 20 else (1.20 if dyn_t > 5 else 1.0)
-                    dyn_m = int(round(dyn_t * margin)) if dyn_t > 2 else dyn_t
-                    
-                    alts_df = listone_df[(listone_df['R'] == role_code) & (~listone_df['Nome'].isin(allocated_in_roadmap)) & (~listone_df['Nome'].isin(purchased_registry.keys()))]
-                    alts_str = ", ".join([f"{r['Nome']} ({get_player_base_target(r)[0]} cr)" for _, r in alts_df.head(3).iterrows()])
-                    
-                    return {
-                        "chosen_name": cust_name,
-                        "chosen_team": str(r_row['Squadra']),
-                        "chosen_role": "🎯 Mio Top Selezionato",
-                        "base_target": base_t,
-                        "dyn_target": dyn_t,
-                        "dyn_max_bid": dyn_m,
-                        "alts_str": alts_str if alts_str else "Nessuna alternativa disponibile"
-                    }
-
+# MOTORE CHIAVE DI RE-TIERING DINAMICO DEI CANDIDATI
+def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap):
     pool = ROLE_TIERED_POOLS[role_code]
+    
     best_tier = None
     min_dist = 999
     for tier in pool:
@@ -856,8 +842,6 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     allocated_in_roadmap = set(p['name'] for p in st.session_state.my_roster)
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.my_roster)
     
-    user_custom_picks = st.session_state.custom_user_targets.get(role_code, [])
-
     for row_start in range(0, slots_total, num_cols):
         row_slots_count = min(num_cols, slots_total - row_start)
         cols = st.columns(num_cols)
@@ -875,8 +859,7 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                 else:
                     rem_idx = global_slot_idx - len(bought_list)
                     t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
-                    
-                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.purchased_registry, allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
+                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.purchased_registry, allocated_in_roadmap)
                     card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
                     st.info(card_text)
 
@@ -1096,32 +1079,11 @@ with tab_call:
                 st.rerun()
 
 # ------------------------------------------------------------------------------
-# TAB 2: ROADMAP DINAMICA CON SELETTORE TOP PERSONALIZZATI
+# TAB 2: ROADMAP DINAMICA CON INCROCI PORTIERI E RE-TIERING
 # ------------------------------------------------------------------------------
 with tab_roadmap:
     st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
     
-    with st.expander("⭐ Personalizza i Miei Top di Reparto (Costruisci la Roadmap sui tuoi Pupilli)", expanded=False):
-        st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
-        
-        c_tp, c_td, c_tc, c_ta = st.columns(4)
-        with c_tp:
-            p_names = listone_df[listone_df['R'] == 'P']['Nome'].dropna().tolist()
-            sel_p_top = st.multiselect("Top Portieri:", options=p_names, default=st.session_state.custom_user_targets.get('P', []))
-            st.session_state.custom_user_targets['P'] = sel_p_top
-        with c_td:
-            d_names = listone_df[listone_df['R'] == 'D']['Nome'].dropna().tolist()
-            sel_d_top = st.multiselect("Top Difensori:", options=d_names, default=st.session_state.custom_user_targets.get('D', []))
-            st.session_state.custom_user_targets['D'] = sel_d_top
-        with c_tc:
-            c_names = listone_df[listone_df['R'] == 'C']['Nome'].dropna().tolist()
-            sel_c_top = st.multiselect("Top Centrocampisti:", options=c_names, default=st.session_state.custom_user_targets.get('C', []))
-            st.session_state.custom_user_targets['C'] = sel_c_top
-        with c_ta:
-            a_names = listone_df[listone_df['R'] == 'A']['Nome'].dropna().tolist()
-            sel_a_top = st.multiselect("Top Attaccanti:", options=a_names, default=st.session_state.custom_user_targets.get('A', []))
-            st.session_state.custom_user_targets['A'] = sel_a_top
-
     selected_cat = st.selectbox(
         "Seleziona Categoria da Visualizzare:",
         ["Panoramica Completa", "🧤 Portieri (P)", "🛡️ Difensori (D)", "⚙️ Centrocampisti (C)", "⚽ Attaccanti (A)"]
@@ -1220,15 +1182,15 @@ with tab_tactics:
         st.info(team_data['advice'])
 
     st.markdown("---")
-    st.markdown("#### 📊 Benchmark Prezzi Medi Asta (Top Giocatori FantaLab)")
+    st.markdown("#### 📊 Benchmark Prezzi Medi Asta (Top Giocatori)")
     benchmark_df = pd.DataFrame([
-        {"Calciatore": "Lautaro Martínez", "Squadra": "Inter", "Prezzo Medio": "~129.4 cr", "Incidenza Budget": "25.8%", "FantaMedia": "8.25", "Ruolo": "Top 1 Assoluto d'Attacco"},
-        {"Calciatore": "Marcus Thuram", "Squadra": "Inter", "Prezzo Medio": "~116.0 cr", "Incidenza Budget": "23.2%", "FantaMedia": "7.95", "Ruolo": "Partner d'Attacco Inter"},
-        {"Calciatore": "Donyell Malen", "Squadra": "Roma", "Prezzo Medio": "~113.9 cr", "Incidenza Budget": "22.6%", "FantaMedia": "8.84", "Ruolo": "1° Rigorista & Centravanti"},
-        {"Calciatore": "Randal Kolo Muani", "Squadra": "Juventus", "Prezzo Medio": "~109.5 cr", "Incidenza Budget": "21.8%", "FantaMedia": "N.D.", "Ruolo": "Centravanti & 1° Rigorista Juve"},
-        {"Calciatore": "Gonçalo Ramos", "Squadra": "Milan", "Prezzo Medio": "~102.4 cr", "Incidenza Budget": "20.4%", "FantaMedia": "N.D.", "Ruolo": "Centravanti 3-4-2-1 Amorim"},
-        {"Calciatore": "Nico Paz", "Squadra": "Como", "Prezzo Medio": "~87.8 cr", "Incidenza Budget": "17.4%", "FantaMedia": "7.30", "Ruolo": "Top 1 Centrocampo (12 Gol)"},
-        {"Calciatore": "Rasmus Højlund", "Squadra": "Napoli", "Prezzo Medio": "~83.3 cr", "Incidenza Budget": "16.6%", "FantaMedia": "7.56", "Ruolo": "Centravanti 4-3-3 Allegri"}
+        {"Calciatore": "Lautaro Martínez", "Squadra": "Inter", "Prezzo Medio": "~129 cr", "Incidenza Budget": "25.8%", "FantaMedia": "8.25", "Ruolo": "Top Assoluto d'Attacco"},
+        {"Calciatore": "Marcus Thuram", "Squadra": "Inter", "Prezzo Medio": "~116 cr", "Incidenza Budget": "23.2%", "FantaMedia": "7.95", "Ruolo": "Seconda Punta Top"},
+        {"Calciatore": "Donyell Malen", "Squadra": "Roma", "Prezzo Medio": "~113 cr", "Incidenza Budget": "22.6%", "FantaMedia": "8.84", "Ruolo": "1° Rigorista & Centravanti"},
+        {"Calciatore": "Randal Kolo Muani", "Squadra": "Juventus", "Prezzo Medio": "~109 cr", "Incidenza Budget": "21.8%", "FantaMedia": "N.D. (Nuovo)", "Ruolo": "Centravanti & 1° Rigorista"},
+        {"Calciatore": "Gonçalo Ramos", "Squadra": "Milan", "Prezzo Medio": "~102 cr", "Incidenza Budget": "20.4%", "FantaMedia": "N.D. (Nuovo)", "Ruolo": "Centravanti 3-4-2-1 Amorim"},
+        {"Calciatore": "Nico Paz", "Squadra": "Como", "Prezzo Medio": "~87 cr", "Incidenza Budget": "17.4%", "FantaMedia": "7.30", "Ruolo": "Top Centrocampista Offensivo"},
+        {"Calciatore": "Rasmus Højlund", "Squadra": "Napoli", "Prezzo Medio": "~83 cr", "Incidenza Budget": "16.6%", "FantaMedia": "7.56", "Ruolo": "Centravanti 4-3-3 Allegri"}
     ])
     st.dataframe(benchmark_df, use_container_width=True)
 
