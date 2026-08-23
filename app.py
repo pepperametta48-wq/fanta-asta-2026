@@ -174,146 +174,127 @@ GOALIE_HIERARCHY = {
 
 ROLE_TIERED_POOLS = {
     'D': [
-        {"tier_label": "Top Modificatore / Assist", "min_p": 20, "max_p": 45, "candidates": [
-            {"name": "Dimarco", "team": "Inter", "base_target": 38, "max": 44, "role": "Top Assist / Piazzati (36.5% presenze)"},
-            {"name": "Wesley", "team": "Roma", "base_target": 24, "max": 28, "role": "Terzino di Spinta Modificatore"},
-            {"name": "Molina N.", "team": "Roma", "base_target": 24, "max": 28, "role": "Terzino Offensivo da Bonus"},
-            {"name": "Bremer", "team": "Juventus", "base_target": 20, "max": 24, "role": "Top Difensore Modificatore Spalletti"},
-            {"name": "Yan Couto", "team": "Como", "base_target": 20, "max": 24, "role": "Esterno Spinta Fabregas"},
-            {"name": "Pavlovic", "team": "Milan", "base_target": 20, "max": 24, "role": "Centrale Roccioso / Bonus Piazzato"}
+        {"tier_label": "Top Modificatore / Assist", "min_p": 20, "max_p": 55, "candidates": [
+            {"name": "Dimarco", "team": "Inter", "base_target": 52, "max": 60, "role": "Top Assist / Piazzati (FM 7.64)"},
+            {"name": "Bremer", "team": "Juventus", "base_target": 38, "max": 44, "role": "Top Difensore Modificatore (FM 6.81)"},
+            {"name": "Mancini", "team": "Roma", "base_target": 32, "max": 38, "role": "Centrale Goleador / Saltatore (FM 6.51)"},
+            {"name": "Wesley", "team": "Roma", "base_target": 30, "max": 35, "role": "Terzino di Spinta Modificatore (5 gol)"},
+            {"name": "Bastoni", "team": "Inter", "base_target": 26, "max": 31, "role": "Garanzia 6.5 Modificatore (FM 6.34)"},
+            {"name": "Pavlovic", "team": "Milan", "base_target": 26, "max": 31, "role": "Centrale Goleador da Piazzato (5 gol)"}
         ]},
-        {"tier_label": "Centrale da Bonus / Saltatore", "min_p": 12, "max_p": 19, "candidates": [
-            {"name": "Solet", "team": "Udinese", "base_target": 16, "max": 20, "role": "Centrale da Bonus / Corner (FM > 6.4)"},
-            {"name": "Akanji", "team": "Inter", "base_target": 16, "max": 20, "role": "Centrale Titolare Esperienza Chivu"},
-            {"name": "Mancini", "team": "Roma", "base_target": 15, "max": 18, "role": "Centrale Modificatore / Saltatore"},
-            {"name": "Rrahmani", "team": "Napoli", "base_target": 15, "max": 18, "role": "Centrale Titolarissimo Allegri"},
-            {"name": "Ostigard", "team": "Genoa", "base_target": 12, "max": 15, "role": "Modificatore / Colpitore di Testa"},
-            {"name": "Mina", "team": "Cagliari", "base_target": 12, "max": 16, "role": "1° Rigorista / Modificatore (85% min)"}
+        {"tier_label": "Centrale da Bonus / Saltatore", "min_p": 15, "max_p": 25, "candidates": [
+            {"name": "Solet", "team": "Udinese", "base_target": 25, "max": 30, "role": "Centrale Regista Aggiunto (FM 6.40)"},
+            {"name": "Akanji", "team": "Inter", "base_target": 24, "max": 28, "role": "Centrale Titolare Senza Malus (FM 6.41)"},
+            {"name": "Cambiaso", "team": "Juventus", "base_target": 23, "max": 28, "role": "Laterale Titolare Spalletti (3G+4A)"},
+            {"name": "Bisseck", "team": "Inter", "base_target": 23, "max": 27, "role": "Centrale in Ascesa da Bonus (FM 6.65)"},
+            {"name": "Di Lorenzo", "team": "Napoli", "base_target": 22, "max": 26, "role": "Intoccabile a Destra (FM 6.33)"},
+            {"name": "Rrahmani", "team": "Napoli", "base_target": 21, "max": 25, "role": "Centrale Titolarissimo Allegri (FM 6.45)"},
+            {"name": "Scalvini", "team": "Atalanta", "base_target": 20, "max": 24, "role": "Perno Difensivo Sarri (3 gol)"},
+            {"name": "Kempf", "team": "Como", "base_target": 18, "max": 22, "role": "Pilastro Difesa Fabregas (FM 6.52)"},
+            {"name": "Ostigard", "team": "Genoa", "base_target": 18, "max": 22, "role": "Specialista Aereo da Corner (5 gol)"}
         ]},
-        {"tier_label": "Titolare Modificatore / Spinta", "min_p": 7, "max_p": 11, "candidates": [
-            {"name": "Doekhi", "team": "Lazio", "base_target": 11, "max": 14, "role": "Centrale da Piazzato Gattuso"},
-            {"name": "Dragusin", "team": "Fiorentina", "base_target": 10, "max": 13, "role": "Titolare Fisso Modificatore Grosso"},
-            {"name": "Heggem", "team": "Bologna", "base_target": 8, "max": 11, "role": "Centrale Affidabile Tedesco"},
-            {"name": "Coco", "team": "Torino", "base_target": 8, "max": 11, "role": "Pilastro Linea Abate"},
-            {"name": "Delprato", "team": "Parma", "base_target": 8, "max": 11, "role": "Capitano / Rendimento Fisso"},
-            {"name": "Vojvoda", "team": "Udinese", "base_target": 8, "max": 11, "role": "Esterno a Tutta Fascia"},
-            {"name": "Valeri", "team": "Parma", "base_target": 8, "max": 11, "role": "Terzino da Assist e Cross"},
-            {"name": "Zortea", "team": "Bologna", "base_target": 8, "max": 11, "role": "Laterale Offensivo Spinta"},
-            {"name": "Kempf", "team": "Como", "base_target": 8, "max": 10, "role": "Centrale Rendimento Fabregas"}
+        {"tier_label": "Titolare Modificatore / Spinta", "min_p": 10, "max_p": 16, "candidates": [
+            {"name": "Kalulu", "team": "Juventus", "base_target": 16, "max": 19, "role": "Titolare Fisso Senza Sbavature (FM 6.35)"},
+            {"name": "Yan Couto", "team": "Como", "base_target": 16, "max": 19, "role": "Esterno Spinta Fabregas"},
+            {"name": "Molina N.", "team": "Roma", "base_target": 16, "max": 19, "role": "Esterno Offensivo da Bonus"},
+            {"name": "Ndicka", "team": "Roma", "base_target": 15, "max": 18, "role": "Centrale Solido (FM 6.32)"},
+            {"name": "Dragusin", "team": "Fiorentina", "base_target": 15, "max": 18, "role": "Titolare Fisso Modificatore Grosso"},
+            {"name": "Gila", "team": "Milan", "base_target": 14, "max": 17, "role": "Affidabilità Pura Difesa a 3 Amorim"},
+            {"name": "Spinazzola", "team": "Napoli", "base_target": 14, "max": 17, "role": "Jolly Bonus Allegri (FM 6.53)"},
+            {"name": "Mina", "team": "Cagliari", "base_target": 11, "max": 14, "role": "1° Rigorista / Minutaggio 85%"},
+            {"name": "Doekhi", "team": "Lazio", "base_target": 10, "max": 13, "role": "Centrale Goleador da Piazzato"},
+            {"name": "Vojvoda", "team": "Udinese", "base_target": 10, "max": 13, "role": "Titolare Frequente nelle Rose"}
         ]},
-        {"tier_label": "Titolare Low Cost / Copertura", "min_p": 3, "max_p": 6, "candidates": [
-            {"name": "Idzes", "team": "Sassuolo", "base_target": 6, "max": 8, "role": "Titolare Solido Aquilani"},
-            {"name": "Walukiewicz", "team": "Sassuolo", "base_target": 5, "max": 7, "role": "Centrale di Copertura"},
-            {"name": "Birindelli", "team": "Monza", "base_target": 5, "max": 7, "role": "Quinto di Corsa Jurić"},
-            {"name": "Monterisi", "team": "Frosinone", "base_target": 4, "max": 6, "role": "Titolare Low-Cost Alvini"}
-        ]},
-        {"tier_label": "Scommessa / Slot a 1-2 cr", "min_p": 1, "max_p": 2, "candidates": [
-            {"name": "Ziolkowski", "team": "Roma", "base_target": 2, "max": 3, "role": "Rotazione Giovane Low Cost"},
-            {"name": "Bartesaghi", "team": "Milan", "base_target": 2, "max": 3, "role": "Jolly Difesa Amorim"},
-            {"name": "Viery", "team": "Fiorentina", "base_target": 2, "max": 3, "role": "Under Promettente Grosso"},
-            {"name": "Ahanor", "team": "Atalanta", "base_target": 1, "max": 1, "role": "Scommessa Talento Sarri"},
-            {"name": "Oyono", "team": "Frosinone", "base_target": 1, "max": 1, "role": "Terzino di Copertura 1cr"},
-            {"name": "Bracaglia", "team": "Frosinone", "base_target": 1, "max": 2, "role": "Copertura Voto a 1cr"},
-            {"name": "Carboni F.", "team": "Parma", "base_target": 1, "max": 1, "role": "Slot di Completamento 1cr"},
-            {"name": "Ndiaye", "team": "Parma", "base_target": 1, "max": 1, "role": "Slot di Completamento 1cr"}
+        {"tier_label": "Titolare Low Cost / Scommessa", "min_p": 1, "max_p": 8, "candidates": [
+            {"name": "Kaiki", "team": "Como", "base_target": 8, "max": 10, "role": "Terzino Sinistro Fabregas"},
+            {"name": "Rensch", "team": "Roma", "base_target": 8, "max": 10, "role": "Scommessa Assist (FM 6.48)"},
+            {"name": "Heggem", "team": "Bologna", "base_target": 7, "max": 9, "role": "Centrale Mancino Tedesco"},
+            {"name": "Ahanor", "team": "Atalanta", "base_target": 7, "max": 9, "role": "Giovane Talento Sarri"},
+            {"name": "Ziolkowski", "team": "Roma", "base_target": 1, "max": 2, "role": "Under Low Cost a 1 Credito"}
         ]}
     ],
     'C': [
-        {"tier_label": "Supertop / Rigorista Primario", "min_p": 45, "max_p": 65, "candidates": [
-            {"name": "McTominay", "team": "Napoli", "base_target": 55, "max": 65, "role": "1° Slot Assoluto Centrocampo / Gol"},
-            {"name": "Paz N.", "team": "Como", "base_target": 55, "max": 65, "role": "Top Trequartista Assist e Gol (FM 7.30)"},
-            {"name": "Calhanoglu", "team": "Inter", "base_target": 48, "max": 56, "role": "Top 1° Rigorista (89% realizzazione)"},
-            {"name": "Orsolini", "team": "Bologna", "base_target": 48, "max": 56, "role": "Ala d'Attacco / 1° Rigorista Bologna"},
-            {"name": "Pulisic", "team": "Milan", "base_target": 46, "max": 54, "role": "Trequartista da Doppia Cifra Amorim"}
+        {"tier_label": "Supertop / Rigorista Primario", "min_p": 45, "max_p": 90, "candidates": [
+            {"name": "Paz N.", "team": "Como", "base_target": 88, "max": 98, "role": "Supertop Assoluto (12G, FM 7.30)"},
+            {"name": "McTominay", "team": "Napoli", "base_target": 69, "max": 78, "role": "Dominante Inserimenti (FM 7.26)"},
+            {"name": "Calhanoglu", "team": "Inter", "base_target": 69, "max": 78, "role": "Top 1° Rigorista (89% realizzo, 9G)"},
+            {"name": "Orsolini", "team": "Bologna", "base_target": 58, "max": 66, "role": "Ala d'Attacco / 1° Rigorista (10G)"},
+            {"name": "De Bruyne", "team": "Napoli", "base_target": 46, "max": 54, "role": "1° Rigorista Napoli (FM 7.24)"},
+            {"name": "Rabiot", "team": "Milan", "base_target": 44, "max": 52, "role": "Perno Mediana Amorim (6G+4A)"}
         ]},
-        {"tier_label": "Top Tiratore / Trequartista", "min_p": 25, "max_p": 44, "candidates": [
-            {"name": "De Bruyne", "team": "Napoli", "base_target": 38, "max": 44, "role": "Leader Tecnico / 1° Rigorista Napoli"},
-            {"name": "Zaccagni", "team": "Lazio", "base_target": 34, "max": 40, "role": "Esterno d'Attacco / 1° Rigorista Lazio"},
-            {"name": "Da Cunha", "team": "Como", "base_target": 30, "max": 36, "role": "Regista Incursore / 1° Rigorista Como"},
-            {"name": "Vlasic", "team": "Torino", "base_target": 25, "max": 30, "role": "Trequartista / 1° Rigorista Torino"}
+        {"tier_label": "Top / Mezzala da Bonus", "min_p": 25, "max_p": 40, "candidates": [
+            {"name": "Barella", "team": "Inter", "base_target": 33, "max": 38, "role": "Mezzala Totale Titolarità 100% (FM 6.71)"},
+            {"name": "Da Cunha", "team": "Como", "base_target": 32, "max": 38, "role": "1° Rigorista Como (6G, FM 6.91)"},
+            {"name": "Atta", "team": "Fiorentina", "base_target": 30, "max": 36, "role": "Mezzala Inserimento Rivelazione (FM 6.88)"},
+            {"name": "Baturina", "team": "Como", "base_target": 29, "max": 35, "role": "Trequartista Puro (FM 7.12)"},
+            {"name": "Politano", "team": "Napoli", "base_target": 28, "max": 34, "role": "Esterno d'Attacco Tridente Allegri"},
+            {"name": "Zielinski", "team": "Inter", "base_target": 26, "max": 31, "role": "2° Rigorista Inter Rigenerato"},
+            {"name": "Ederson", "team": "Atalanta", "base_target": 26, "max": 31, "role": "Perno Intoccabile Sarri (FM 6.43)"},
+            {"name": "McKennie", "team": "Juventus", "base_target": 25, "max": 30, "role": "Incursore Spalletti (5G+6A)"}
         ]},
-        {"tier_label": "Mezzala da Bonus / Incursore", "min_p": 15, "max_p": 24, "candidates": [
-            {"name": "Rabiot", "team": "Milan", "base_target": 22, "max": 26, "role": "Mediano d'Assalto / Classe Amorim"},
-            {"name": "Atta", "team": "Fiorentina", "base_target": 20, "max": 25, "role": "Mezzala Inserimento Rivelazione Grosso"},
-            {"name": "Baturina", "team": "Como", "base_target": 18, "max": 22, "role": "Trequartista Creativo Fabregas"},
-            {"name": "Ferguson", "team": "Bologna", "base_target": 15, "max": 18, "role": "Incursore da Bonus Tedesco"},
-            {"name": "Pessina", "team": "Monza", "base_target": 15, "max": 18, "role": "Capitano / 1° Rigorista Monza"}
+        {"tier_label": "Incursore / Asimmetria Tattica", "min_p": 15, "max_p": 24, "candidates": [
+            {"name": "Mastantuono", "team": "Fiorentina", "base_target": 24, "max": 28, "role": "Talento Trequartista Viola"},
+            {"name": "Vlasic", "team": "Torino", "base_target": 24, "max": 28, "role": "100% Rigori 7/7 (FM 6.66)"},
+            {"name": "Moreira Diego", "team": "Milan", "base_target": 22, "max": 26, "role": "Asimmetria Tattica (Attaccante listato C)"},
+            {"name": "Gaetano", "team": "Atalanta", "base_target": 21, "max": 25, "role": "Regista da Bonus Sarri (FM 6.31)"},
+            {"name": "Saelemaekers", "team": "Milan", "base_target": 20, "max": 24, "role": "Esterno Offensivo Amorim (FM 6.41)"},
+            {"name": "Rowe", "team": "Bologna", "base_target": 20, "max": 24, "role": "Ala Offensiva Tedesco (FM 6.62)"},
+            {"name": "Zaniolo", "team": "Udinese", "base_target": 19, "max": 23, "role": "Attaccante Aggiunto (FM 6.77)"},
+            {"name": "Frattesi", "team": "Lazio", "base_target": 17, "max": 21, "role": "Mezzala Offensiva con Licenza di Tiro"},
+            {"name": "Koné M.", "team": "Roma", "base_target": 15, "max": 18, "role": "Media Voto Pura 6.26 Senza Insufficienze"}
         ]},
-        {"tier_label": "Incursore / Jolly Squadra Big", "min_p": 8, "max_p": 14, "candidates": [
-            {"name": "Bernabè", "team": "Parma", "base_target": 12, "max": 15, "role": "Regista di Qualità / 1° Rigorista Parma"},
-            {"name": "Saelemaekers", "team": "Milan", "base_target": 12, "max": 16, "role": "Esterno Offensivo Amorim"},
-            {"name": "Samardzic", "team": "Atalanta", "base_target": 12, "max": 15, "role": "Trequartista / 2° Rigorista Sarri"},
-            {"name": "Frattesi", "team": "Lazio", "base_target": 11, "max": 15, "role": "Mezzala Inserimento alla Milinkovic"},
-            {"name": "Gaetano", "team": "Atalanta", "base_target": 10, "max": 13, "role": "Trequartista Inserimento Sarri"},
-            {"name": "Taylor K.", "team": "Lazio", "base_target": 10, "max": 13, "role": "Centrocampista Tecnico / Piazzati"},
-            {"name": "Diouf", "team": "Inter", "base_target": 8, "max": 11, "role": "Jolly Incursore Rotazioni Chivu"},
-            {"name": "Mastantuono", "team": "Fiorentina", "base_target": 8, "max": 12, "role": "Talento Puro / Trequarti Grosso"},
-            {"name": "Ederson", "team": "Atalanta", "base_target": 8, "max": 11, "role": "Perno Intoccabile Sarri"},
-            {"name": "Fagioli", "team": "Fiorentina", "base_target": 8, "max": 11, "role": "Geometria & Assist Grosso"},
-            {"name": "Maldini D.", "team": "Cagliari", "base_target": 8, "max": 10, "role": "Seconda Punta Listato C Pisacane"}
-        ]},
-        {"tier_label": "Regista / Scommessa Talento", "min_p": 3, "max_p": 7, "candidates": [
-            {"name": "Adzic", "team": "Sassuolo", "base_target": 7, "max": 9, "role": "Scommessa Talento Trequarti Aquilani"},
-            {"name": "Calò", "team": "Frosinone", "base_target": 5, "max": 7, "role": "Regista Titolare / 1° Rigorista"},
-            {"name": "Rovella", "team": "Lazio", "base_target": 5, "max": 7, "role": "Perno Mediana Voto Costante"},
-            {"name": "Alajbegovic", "team": "Juventus", "base_target": 5, "max": 7, "role": "Jolly Offensivo Spalletti"},
-            {"name": "Busio", "team": "Venezia", "base_target": 4, "max": 6, "role": "Regista Inamovibile / Piazzati Stroppa"},
-            {"name": "Winks", "team": "Cagliari", "base_target": 4, "max": 6, "role": "Metronomo Centrocampo Pisacane"},
-            {"name": "Ethan-Meichtry", "team": "Genoa", "base_target": 3, "max": 5, "role": "Scommessa Under Low-Cost De Rossi"},
-            {"name": "Karlstrom", "team": "Udinese", "base_target": 3, "max": 5, "role": "Titolare Fisso Interdizione"}
-        ]},
-        {"tier_label": "Copertura Voto 1-2 cr", "min_p": 1, "max_p": 2, "candidates": [
-            {"name": "El Azzouzi A.", "team": "Frosinone", "base_target": 2, "max": 2, "role": "Copertura Voto Low-Cost Alvini"},
-            {"name": "Gandelman", "team": "Lecce", "base_target": 2, "max": 2, "role": "Titolare Sostanza 2cr"},
-            {"name": "Cremaschi", "team": "Parma", "base_target": 1, "max": 1, "role": "Slot Copertura a 1cr"},
-            {"name": "Akinsanmiro", "team": "Monza", "base_target": 1, "max": 1, "role": "Slot Copertura a 1cr"}
+        {"tier_label": "Regista Low Cost / Scommesse", "min_p": 1, "max_p": 14, "candidates": [
+            {"name": "Perrone", "team": "Como", "base_target": 14, "max": 17, "role": "Regista da Voto Fabregas (FM 6.47)"},
+            {"name": "Locatelli", "team": "Juventus", "base_target": 12, "max": 15, "role": "Garanzia Voto e 3° Rigorista Juve"},
+            {"name": "Diouf", "team": "Inter", "base_target": 11, "max": 14, "role": "Jolly Incursore Rotazioni Chivu"},
+            {"name": "Lobotka", "team": "Napoli", "base_target": 10, "max": 12, "role": "Regista Intoccabile Allegri"},
+            {"name": "Adzic", "team": "Sassuolo", "base_target": 8, "max": 10, "role": "Scommessa Talento Trequarti"},
+            {"name": "Busio", "team": "Venezia", "base_target": 8, "max": 10, "role": "Leader Tecnico e Piazzati Venezia"},
+            {"name": "El Azzouzi A.", "team": "Frosinone", "base_target": 2, "max": 3, "role": "Titolare Low Cost 1-2 Crediti"}
         ]}
     ],
     'A': [
-        {"tier_label": "Supertop Bomber", "min_p": 85, "max_p": 135, "candidates": [
-            {"name": "Martinez L.", "team": "Inter", "base_target": 125, "max": 135, "role": "Top Assoluto Capocannoniere (FM 8.25)"},
-            {"name": "Malen", "team": "Roma", "base_target": 110, "max": 118, "role": "Supertop Bomber / 1° Rigorista (FM 8.84)"},
-            {"name": "Gonçalo Ramos", "team": "Milan", "base_target": 90, "max": 105, "role": "Supertop Centravanti Amorim (~100 cr)"},
-            {"name": "Ramos G.", "team": "Milan", "base_target": 90, "max": 105, "role": "Supertop Centravanti Amorim (~100 cr)"},
-            {"name": "Thuram", "team": "Inter", "base_target": 85, "max": 98, "role": "Top Seconda Punta Inter (FM 7.95)"}
+        {"tier_label": "Supertop Bomber", "min_p": 80, "max_p": 140, "candidates": [
+            {"name": "Martinez L.", "team": "Inter", "base_target": 129, "max": 139, "role": "Top 1 Assoluto Spesa (FM 8.25)"},
+            {"name": "Thuram", "team": "Inter", "base_target": 116, "max": 126, "role": "Partner d'Attacco Lautaro (FM 7.95)"},
+            {"name": "Malen", "team": "Roma", "base_target": 114, "max": 124, "role": "Record FM 8.84 e 1° Rigorista Roma"},
+            {"name": "Kolo Muani", "team": "Juventus", "base_target": 109, "max": 119, "role": "1° Rigorista Juventus Spalletti"},
+            {"name": "Ramos G.", "team": "Milan", "base_target": 102, "max": 112, "role": "Centravanti 3-4-2-1 Amorim"},
+            {"name": "Kean", "team": "Fiorentina", "base_target": 84, "max": 94, "role": "Terminale Centrale Grosso"},
+            {"name": "Hojlund", "team": "Napoli", "base_target": 83, "max": 93, "role": "Prima Punta 4-3-3 Allegri (FM 7.56)"},
+            {"name": "Yildiz", "team": "Juventus", "base_target": 82, "max": 92, "role": "Talento Puro e 2° Rigorista (FM 7.30)"}
         ]},
-        {"tier_label": "Top Bomber Titolare", "min_p": 55, "max_p": 84, "candidates": [
-            {"name": "Kolo Muani", "team": "Juventus", "base_target": 80, "max": 92, "role": "Centravanti Titolare / 1° Rigorista Spalletti"},
-            {"name": "Hojlund", "team": "Napoli", "base_target": 75, "max": 88, "role": "Top Centravanti 4-3-3 Allegri (FM 7.56)"},
-            {"name": "Kean", "team": "Fiorentina", "base_target": 68, "max": 78, "role": "Centravanti Titolare Grosso"},
-            {"name": "Yildiz", "team": "Juventus", "base_target": 62, "max": 72, "role": "Seconda Punta Fantasia e Gol Spalletti"},
-            {"name": "Scamacca", "team": "Atalanta", "base_target": 55, "max": 65, "role": "Centravanti Sarri / 1° Rigorista"}
+        {"tier_label": "Secondo Slot / Bomber Affidabili", "min_p": 45, "max_p": 75, "candidates": [
+            {"name": "Douvikas", "team": "Como", "base_target": 72, "max": 80, "role": "14 Gol Como Fabregas (FM 7.38)"},
+            {"name": "Leao", "team": "Milan", "base_target": 70, "max": 78, "role": "Esterno Offensivo Amorim (FM 6.86)"},
+            {"name": "Scamacca", "team": "Atalanta", "base_target": 66, "max": 74, "role": "1° Rigorista Sarri (FM 7.55)"},
+            {"name": "Pulisic", "team": "Milan", "base_target": 62, "max": 70, "role": "Rigorista Alternativo Milan (FM 7.07)"},
+            {"name": "Dybala", "team": "Roma", "base_target": 62, "max": 70, "role": "Saldo Rigori +27.5 pt (91% realizzo)"},
+            {"name": "Nkunku", "team": "Milan", "base_target": 56, "max": 64, "role": "1° Rigorista Designato Milan (FM 6.98)"},
+            {"name": "Dovbyk", "team": "Bologna", "base_target": 52, "max": 60, "role": "Centravanti Titolare Tedesco (FM 6.77)"},
+            {"name": "Krstovic", "team": "Atalanta", "base_target": 48, "max": 55, "role": "10 Reti Alternanza Sarri (FM 7.19)"},
+            {"name": "Berardi", "team": "Sassuolo", "base_target": 45, "max": 52, "role": "Rigorista Infallibile 88% (FM 7.19)"}
         ]},
-        {"tier_label": "3° Slot Alto Rendimento / Semitop", "min_p": 22, "max_p": 50, "candidates": [
-            {"name": "Dovbyk", "team": "Bologna", "base_target": 45, "max": 55, "role": "Centravanti Fisico Tedesco"},
-            {"name": "Douvikas", "team": "Como", "base_target": 38, "max": 46, "role": "Finalizzatore d'Area Fabregas (Altissima resa)"},
-            {"name": "Berardi", "team": "Sassuolo", "base_target": 35, "max": 42, "role": "Leader Tecnico / 1° Rigorista Sassuolo"},
-            {"name": "Davis K.", "team": "Udinese", "base_target": 32, "max": 38, "role": "Centravanti Fisico / 1° Rigorista Udinese"},
-            {"name": "Krstovic", "team": "Atalanta", "base_target": 28, "max": 34, "role": "Prima Punta di Rotazione Sarri"},
-            {"name": "Pinamonti", "team": "Sassuolo", "base_target": 25, "max": 30, "role": "Centravanti d'Area / 2° Rigorista Sassuolo"},
-            {"name": "Adams A.", "team": "Venezia", "base_target": 20, "max": 25, "role": "Centravanti Titolare / 1° Rigorista Venezia"}
+        {"tier_label": "Terzo-Quarto Slot / Rigoristi Provincia", "min_p": 20, "max_p": 40, "candidates": [
+            {"name": "Gudmundsson", "team": "Fiorentina", "base_target": 40, "max": 46, "role": "1° Rigorista Fiorentina (+24.5 pt)"},
+            {"name": "Simeone", "team": "Torino", "base_target": 39, "max": 45, "role": "Centravanti 11 Reti Abate (FM 7.09)"},
+            {"name": "Davis K.", "team": "Udinese", "base_target": 34, "max": 40, "role": "1° Rigorista Udinese (FM 7.37)"},
+            {"name": "Castro", "team": "Roma", "base_target": 34, "max": 40, "role": "Rotazione Offensiva Roma (FM 6.51)"},
+            {"name": "Piccoli", "team": "Bologna", "base_target": 25, "max": 30, "role": "Alternativa Fisica Dovbyk (FM 6.23)"},
+            {"name": "Noslin", "team": "Lazio", "base_target": 25, "max": 30, "role": "Titolare d'Attacco Gattuso"},
+            {"name": "Raspadori", "team": "Atalanta", "base_target": 24, "max": 29, "role": "Jolly Tecnico Sarri"},
+            {"name": "Pellegrino", "team": "Fiorentina", "base_target": 22, "max": 26, "role": "2° Rigorista Viola (FM 6.65)"},
+            {"name": "Cutrone", "team": "Monza", "base_target": 21, "max": 25, "role": "Centravanti Salvezza e 2° Rigorista"},
+            {"name": "Adams A.", "team": "Venezia", "base_target": 20, "max": 24, "role": "1° Rigorista e Centravanti Venezia"}
         ]},
-        {"tier_label": "4° Slot Titolare / Rigorista", "min_p": 10, "max_p": 20, "candidates": [
-            {"name": "Colombo", "team": "Genoa", "base_target": 15, "max": 20, "role": "Centravanti Titolare / 1° Rigorista Genoa"},
-            {"name": "Tourè E.", "team": "Parma", "base_target": 12, "max": 16, "role": "Punta di Sfondamento / 2° Rigorista Parma"},
-            {"name": "Simeone", "team": "Torino", "base_target": 12, "max": 16, "role": "Centravanti Titolare Abate"},
-            {"name": "Piccoli", "team": "Bologna", "base_target": 12, "max": 15, "role": "Alternativa Centravanti Tedesco"},
-            {"name": "Stulic", "team": "Lecce", "base_target": 11, "max": 14, "role": "Centravanti Titolare / 1° Rigorista Lecce"},
-            {"name": "Cutrone", "team": "Monza", "base_target": 10, "max": 13, "role": "Centravanti Aggressivo Jurić"},
-            {"name": "Noslin", "team": "Lazio", "base_target": 10, "max": 13, "role": "Attaccante di Movimento Gattuso"}
-        ]},
-        {"tier_label": "5° Slot Scommessa", "min_p": 3, "max_p": 8, "candidates": [
-            {"name": "Carlos K.", "team": "Cagliari", "base_target": 6, "max": 9, "role": "Centravanti Fisico / 2° Rigorista Pisacane"},
-            {"name": "Vitinha", "team": "Genoa", "base_target": 5, "max": 8, "role": "Seconda Punta / 2° Rigorista Genoa"},
-            {"name": "Geubbels", "team": "Lecce", "base_target": 4, "max": 7, "role": "Seconda Punta / 2° Rigorista Lecce"},
-            {"name": "Bonny", "team": "Inter", "base_target": 4, "max": 7, "role": "Jolly Attacco Rotazioni Chivu"},
-            {"name": "Raimondo", "team": "Frosinone", "base_target": 4, "max": 6, "role": "Centravanti Titolare Low-Cost Alvini"}
-        ]},
-        {"tier_label": "6° Slot Completamento 1-2 cr", "min_p": 1, "max_p": 2, "candidates": [
-            {"name": "Esposito F.P.", "team": "Inter", "base_target": 2, "max": 3, "role": "Under Promettente / Rotazione Chivu"},
-            {"name": "Pierotti", "team": "Lecce", "base_target": 2, "max": 2, "role": "Attaccante Esterno di Copertura"},
-            {"name": "Mendy", "team": "Cagliari", "base_target": 1, "max": 1, "role": "Slot di Completamento a 1cr"},
-            {"name": "Petagna", "team": "Monza", "base_target": 1, "max": 2, "role": "Copertura di Esperienza a 1cr"}
+        {"tier_label": "Quinto-Sesto Slot / Scommesse", "min_p": 1, "max_p": 18, "candidates": [
+            {"name": "Tourè E.", "team": "Parma", "base_target": 18, "max": 22, "role": "Potenziale 7-8 Gol Parma (19.7% rose)"},
+            {"name": "Colombo", "team": "Genoa", "base_target": 15, "max": 19, "role": "1° Rigorista Genoa (Allerta 93% cambi al 62')"},
+            {"name": "Esposito F.P.", "team": "Inter", "base_target": 14, "max": 17, "role": "1ª Riserva Lautaro (FM 6.97)"},
+            {"name": "Bonny", "team": "Inter", "base_target": 12, "max": 15, "role": "Cambio Tattico Chivu (5G+4A)"},
+            {"name": "Carlos K.", "team": "Cagliari", "base_target": 11, "max": 14, "role": "Centravanti Fisico 2° Rigorista"},
+            {"name": "Geubbels", "team": "Lecce", "base_target": 4, "max": 7, "role": "Seconda Punta 2° Rigorista Lecce"},
+            {"name": "Raimondo", "team": "Frosinone", "base_target": 4, "max": 6, "role": "Centravanti Titolare Alvini"}
         ]}
     ]
 }
@@ -501,11 +482,48 @@ TEAMS_TACTICAL_DB = {
     }
 }
 
+# BENCHMARK AGGIORNATI CON PREZZI MEDI REALI FANTALAB (10 SQUADRE / 500 CR)
 DOC_TARGETS = {
-    "Martinez Jo.": 20, "Provedel": 3, "Di Gennaro": 1, "Svilar": 25, "Butez": 18, "Vicario": 18, "Carnesecchi": 16, "Maignan": 15, "De Gea": 13, "Meret": 12,
-    "Dimarco": 38, "Solet": 16, "Ostigard": 12, "Dragusin": 10, "Vojvoda": 8, "Kempf": 8, "Ziolkowski": 2, "Ahanor": 1, "Bremer": 20, "Pavlovic": 18, "Bisseck": 14, "Yan Couto": 20, "Wesley": 24, "Molina N.": 24, "Akanji": 16, "Mancini": 15, "Rrahmani": 15, "Doekhi": 11, "Mina": 12, "Valeri": 8, "Zortea": 8,
-    "McTominay": 55, "Calhanoglu": 48, "Atta": 20, "Frattesi": 11, "Diouf": 8, "Adzic": 7, "Busio": 4, "El Azzouzi A.": 2, "El Azzouzi O.": 2, "Paz N.": 55, "Pulisic": 46, "Orsolini": 48, "Rabiot": 22, "Baturina": 18, "Saelemaekers": 12, "De Bruyne": 38, "Zaccagni": 34, "Da Cunha": 30, "Vlasic": 25, "Bernabè": 12,
-    "Ramos G.": 90, "Hojlund": 75, "Douvikas": 38, "Colombo": 15, "Tourè E.": 6, "Esposito F.P.": 2, "Martinez L.": 129, "Thuram": 116, "Malen": 113, "Kolo Muani": 85, "Kean": 68, "Yildiz": 62, "Scamacca": 52, "Davis K.": 32, "Berardi": 35, "Leao": 50, "Krstovic": 28, "Pinamonti": 25, "Adams A.": 20, "Stulic": 11, "Cutrone": 10
+    "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
+    "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
+    "Meret Alex": 27.5, "Meret": 27.5, "De Gea David": 21.0, "De Gea": 21.0, "Skorupski Lukasz": 17.0, "Skorupski": 17.0,
+    "Mandas Christos": 15.0, "Mandas": 15.0, "Okoye Maduka": 13.5, "Okoye": 13.5, "Falcone Wladimiro": 11.5, "Falcone": 11.5,
+    "Caprile Elia": 9.5, "Caprile": 9.5, "Bijlow Justin": 8.5, "Bijlow": 8.5, "Milinkovic-Savic Vanja": 10.5, "Milinkovic-Savic V.": 10.5,
+    "Provedel Ivan": 7.5, "Provedel": 7.5, "Muric Arijanet": 5.0, "Muric": 5.0, "Corvi Edoardo": 4.0, "Corvi": 4.0,
+    "Perri Lucas": 4.5, "Perri": 4.5, "Thiam Demba": 3.5, "Thiam": 3.5, "Stankovic Filip": 3.5, "Stankovic F.": 3.5,
+    "Dimarco Federico": 52.0, "Dimarco": 52.0, "Bremer Gleison": 38.0, "Bremer": 38.0, "Mancini Gianluca": 32.0, "Mancini": 32.0,
+    "Wesley França": 30.0, "Wesley": 30.0, "Bastoni Alessandro": 26.0, "Bastoni": 26.0, "Pavlovic Strahinja": 26.0, "Pavlovic": 26.0,
+    "Solet Oumar": 25.0, "Solet": 25.0, "Akanji Manuel": 24.0, "Akanji": 24.0, "Cambiaso Andrea": 23.0, "Cambiaso": 23.0,
+    "Bisseck Yann": 23.0, "Bisseck": 23.0, "Di Lorenzo Giovanni": 22.0, "Di Lorenzo": 22.0, "Rrahmani Amir": 21.0, "Rrahmani": 21.0,
+    "Scalvini Giorgio": 20.0, "Scalvini": 20.0, "Kempf Marc Oliver": 18.5, "Kempf": 18.5, "Ostigard Leo": 18.0, "Ostigard": 18.0,
+    "Kalulu Pierre": 16.0, "Kalulu": 16.0, "Ndicka Evan": 15.5, "Ndicka": 15.5, "Gila Mario": 14.5, "Gila": 14.5,
+    "Yan Couto": 16.0, "Molina Nahuel": 16.0, "Molina N.": 16.0, "Dragusin Radu": 15.0, "Dragusin": 15.0,
+    "Spinazzola Leonardo": 14.0, "Spinazzola": 14.0, "Chalobah Trevoh": 13.5, "Chalobah": 13.5, "Miranda Juan": 12.5, "Miranda": 12.5,
+    "Dodò": 12.0, "Dodo": 12.0, "Mina Yerry": 11.0, "Mina": 11.0, "Doekhi Danilho": 10.5, "Doekhi": 10.5,
+    "Vojvoda Mergim": 10.0, "Vojvoda": 10.0, "Kaiki Bruno": 8.0, "Kaiki": 8.0, "Rensch Devyne": 8.0, "Rensch": 8.0,
+    "Heggem Torbjorn": 7.0, "Heggem": 7.0, "Ahanor Honest": 7.0, "Ahanor": 7.0, "Ziolkowski Jan": 1.0, "Ziolkowski": 1.0,
+    "Paz Nico": 87.75, "Nico Paz": 87.75, "McTominay Scott": 68.94, "McTominay": 68.94, "Orsolini Riccardo": 58.0, "Orsolini": 58.0,
+    "Calhanoglu Hakan": 68.81, "Calhanoglu": 68.81, "De Bruyne Kevin": 46.0, "De Bruyne": 46.0, "Rabiot Adrien": 44.0, "Rabiot": 44.0,
+    "Da Cunha Lucas": 32.0, "Da Cunha": 32.0, "Barella Nicolo'": 33.0, "Barella": 33.0, "Atta Arthur": 30.0, "Atta": 30.0,
+    "Baturina Martin": 29.0, "Baturina": 29.0, "Politano Matteo": 28.0, "Politano": 28.0, "Zielinski Piotr": 26.0, "Zielinski": 26.0,
+    "Ederson Dos Santos": 26.0, "Ederson": 26.0, "McKennie Weston": 25.0, "McKennie": 25.0, "Mastantuono Franco": 24.0, "Mastantuono": 24.0,
+    "Vlasic Nikola": 24.0, "Vlasic": 24.0, "Moreira Diego": 22.0, "Diego Moreira": 22.0, "Gaetano Gianluca": 21.0, "Gaetano": 21.0,
+    "Saelemaekers Alexis": 20.0, "Saelemaekers": 20.0, "Rowe Jonathan": 20.0, "Rowe": 20.0, "Sucic Petar": 19.0, "Sucic": 19.0,
+    "Thorstvedt Kristian": 19.0, "Thorstvedt": 19.0, "Casadei Cesare": 18.0, "Casadei": 18.0, "Zaniolo Nicolo'": 19.0, "Zaniolo": 19.0,
+    "Perrone Maximo": 14.0, "Perrone": 14.0, "Manu Koné": 15.0, "Koné M.": 15.0, "Frattesi Davide": 17.0, "Frattesi": 17.0,
+    "Locatelli Manuel": 12.0, "Locatelli": 12.0, "Lobotka Stanislav": 10.0, "Lobotka": 10.0, "Diouf Andy": 11.0, "Diouf": 11.0,
+    "Adzic Vasilije": 8.0, "Adzic": 8.0, "Busio Gianluca": 8.0, "Busio": 8.0, "El Azzouzi Anouar": 2.0, "El Azzouzi A.": 2.0, "Lahdo Adrian": 2.0,
+    "Martinez Lautaro": 129.36, "Lautaro Martinez": 129.36, "Martinez L.": 129.36, "Malen Donyell": 113.9, "Malen": 113.9,
+    "Thuram Marcus": 116.02, "Thuram": 116.02, "Ramos Gonçalo": 102.37, "Ramos G.": 102.37, "Gonçalo Ramos": 102.37,
+    "Hojlund Rasmus": 83.25, "Hojlund": 83.25, "Kolo Muani Randal": 109.48, "Kolo Muani": 109.48, "Kean Moise": 84.44, "Kean": 84.44,
+    "Yildiz Kenan": 82.0, "Yildiz": 82.0, "Pulisic Christian": 62.45, "Pulisic": 62.45, "Douvikas Anastasios": 72.0, "Douvikas": 72.0,
+    "Scamacca Gianluca": 66.0, "Scamacca": 66.0, "Dybala Paulo": 62.0, "Dybala": 62.0, "Leão Rafael": 70.0, "Leao": 70.0,
+    "Krstovic Nikola": 48.0, "Krstovic": 48.0, "Dovbyk Artem": 52.0, "Dovbyk": 52.0, "Nkunku Christopher": 55.85, "Nkunku": 55.85,
+    "Simeone Giovanni": 39.0, "Simeone": 39.0, "Davis Keinan": 34.0, "Davis K.": 34.0, "Berardi Domenico": 45.0, "Berardi": 45.0,
+    "Gudmundsson Albert": 40.0, "Gudmundsson": 40.0, "Castro Santiago": 34.0, "Castro": 34.0, "Piccoli Roberto": 25.0, "Piccoli": 25.0,
+    "Noslin Tijjani": 25.0, "Noslin": 25.0, "Raspadori Giacomo": 24.0, "Raspadori": 24.0, "Pellegrino Mateo": 22.0, "Pellegrino": 22.0,
+    "Touré El Bilal": 18.0, "Tourè E.": 18.0, "Cutrone Patrick": 21.0, "Cutrone": 21.0, "Akor Adams": 20.0, "Adams A.": 20.0,
+    "Esposito Francesco Pio": 14.0, "Esposito F.P.": 14.0, "Bonny Ange-Yoan": 12.0, "Bonny": 12.0, "Kevin Carlos": 11.0, "Carlos K.": 11.0
 }
 
 # ==============================================================================
@@ -758,7 +776,6 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
 
 # MOTORE CHIAVE DI RE-TIERING DINAMICO (INTEGRA I TOP SCELTI DALL'UTENTE)
 def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
-    # 1. Se l'utente ha selezionato dei suoi top personalizzati liberi, assegnali per primi!
     if custom_user_targets_list:
         for cust_name in custom_user_targets_list:
             if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
@@ -768,12 +785,10 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
                     base_t, base_m = get_player_base_target(r_row)
                     allocated_in_roadmap.add(cust_name)
                     
-                    # Target adattato al budget di questo slot
                     dyn_t = max(1, slot_target_budget)
                     margin = 1.16 if dyn_t > 20 else (1.20 if dyn_t > 5 else 1.0)
                     dyn_m = int(round(dyn_t * margin)) if dyn_t > 2 else dyn_t
                     
-                    # Raccogli alternative dal listone
                     alts_df = listone_df[(listone_df['R'] == role_code) & (~listone_df['Nome'].isin(allocated_in_roadmap)) & (~listone_df['Nome'].isin(purchased_registry.keys()))]
                     alts_str = ", ".join([f"{r['Nome']} ({get_player_base_target(r)[0]} cr)" for _, r in alts_df.head(3).iterrows()])
                     
@@ -787,7 +802,6 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
                         "alts_str": alts_str if alts_str else "Nessuna alternativa disponibile"
                     }
 
-    # 2. Algoritmo di default a fasce (Re-Tiering automatico)
     pool = ROLE_TIERED_POOLS[role_code]
     best_tier = None
     min_dist = 999
@@ -832,7 +846,6 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
         "alts_str": ", ".join(alts) if alts else "Nessuna alternativa disponibile"
     }
 
-# RENDERER SCHEDE GRAFICHE A CARD CON RE-TIERING E TOP PERSONALIZZATI
 def render_role_card_grid(role_code, dept_title, num_cols=4):
     slots_total = SLOTS[role_code]
     bought_list = [p for p in st.session_state.my_roster if p['role'] == role_code]
@@ -843,7 +856,6 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     allocated_in_roadmap = set(p['name'] for p in st.session_state.my_roster)
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.my_roster)
     
-    # Recupera i top personalizzati scelti dall'utente per questo ruolo
     user_custom_picks = st.session_state.custom_user_targets.get(role_code, [])
 
     for row_start in range(0, slots_total, num_cols):
@@ -1026,9 +1038,9 @@ with tab_call:
         st.caption(f"📌 **Status Piazzati:** {pen_str}")
 
         if sel_player == "Colombo":
-            st.warning("⚠️ **Allerta Minutaggio (Report Strategico):** Lorenzo Colombo ha il 93% di tasso di sostituzione al 62' minuto. Rischio di saltare i penalty concessi nel finale!")
+            st.warning("⚠️ **Allerta Minutaggio (Report FantaLab):** Lorenzo Colombo ha il 93% di tasso di sostituzione al 62' minuto. Rischio di saltare i penalty concessi nel finale!")
         elif sel_player == "Mina":
-            st.success("🛡️ **Garanzia Minutaggio (Report Strategico):** Yerry Mina ha l'85% di permanenza in campo: batte i rigori e garantisce voto da modificatore!")
+            st.success("🛡️ **Garanzia Minutaggio (Report FantaLab):** Yerry Mina ha l'85% di permanenza in campo: batte i rigori e garantisce voto da modificatore!")
 
         if eval_data["is_full"]:
             st.error(f"🚫 **REPARTO {player_role} COMPLETO:** Hai già riempito tutti gli slot previsti per questo ruolo!")
@@ -1088,7 +1100,6 @@ with tab_call:
 with tab_roadmap:
     st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
     
-    # BOX PERSONALIZZAZIONE TOP DI REPARTO (CUSTOM TARGETS)
     with st.expander("⭐ Personalizza i Miei Top di Reparto (Costruisci la Roadmap sui tuoi Pupilli)", expanded=False):
         st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
         
@@ -1208,15 +1219,15 @@ with tab_tactics:
         st.info(team_data['advice'])
 
     st.markdown("---")
-    st.markdown("#### 📊 Benchmark Prezzi Medi Asta (Top Giocatori)")
+    st.markdown("#### 📊 Benchmark Prezzi Medi Asta (Top Giocatori FantaLab)")
     benchmark_df = pd.DataFrame([
-        {"Calciatore": "Lautaro Martínez", "Squadra": "Inter", "Prezzo Medio": "~129 cr", "Incidenza Budget": "25.8%", "FantaMedia": "8.25", "Ruolo": "Top Assoluto d'Attacco"},
-        {"Calciatore": "Marcus Thuram", "Squadra": "Inter", "Prezzo Medio": "~116 cr", "Incidenza Budget": "23.2%", "FantaMedia": "7.95", "Ruolo": "Seconda Punta Top"},
-        {"Calciatore": "Donyell Malen", "Squadra": "Roma", "Prezzo Medio": "~113 cr", "Incidenza Budget": "22.6%", "FantaMedia": "8.84", "Ruolo": "1° Rigorista & Centravanti"},
-        {"Calciatore": "Randal Kolo Muani", "Squadra": "Juventus", "Prezzo Medio": "~109 cr", "Incidenza Budget": "21.8%", "FantaMedia": "N.D. (Nuovo)", "Ruolo": "Centravanti & 1° Rigorista"},
-        {"Calciatore": "Gonçalo Ramos", "Squadra": "Milan", "Prezzo Medio": "~102 cr", "Incidenza Budget": "20.4%", "FantaMedia": "N.D. (Nuovo)", "Ruolo": "Centravanti 3-4-2-1 Amorim"},
-        {"Calciatore": "Nico Paz", "Squadra": "Como", "Prezzo Medio": "~87 cr", "Incidenza Budget": "17.4%", "FantaMedia": "7.30", "Ruolo": "Top Centrocampista Offensivo"},
-        {"Calciatore": "Rasmus Højlund", "Squadra": "Napoli", "Prezzo Medio": "~83 cr", "Incidenza Budget": "16.6%", "FantaMedia": "7.56", "Ruolo": "Centravanti 4-3-3 Allegri"}
+        {"Calciatore": "Lautaro Martínez", "Squadra": "Inter", "Prezzo Medio": "~129.4 cr", "Incidenza Budget": "25.8%", "FantaMedia": "8.25", "Ruolo": "Top 1 Assoluto d'Attacco"},
+        {"Calciatore": "Marcus Thuram", "Squadra": "Inter", "Prezzo Medio": "~116.0 cr", "Incidenza Budget": "23.2%", "FantaMedia": "7.95", "Ruolo": "Partner d'Attacco Inter"},
+        {"Calciatore": "Donyell Malen", "Squadra": "Roma", "Prezzo Medio": "~113.9 cr", "Incidenza Budget": "22.6%", "FantaMedia": "8.84", "Ruolo": "1° Rigorista & Centravanti"},
+        {"Calciatore": "Randal Kolo Muani", "Squadra": "Juventus", "Prezzo Medio": "~109.5 cr", "Incidenza Budget": "21.8%", "FantaMedia": "N.D.", "Ruolo": "Centravanti & 1° Rigorista Juve"},
+        {"Calciatore": "Gonçalo Ramos", "Squadra": "Milan", "Prezzo Medio": "~102.4 cr", "Incidenza Budget": "20.4%", "FantaMedia": "N.D.", "Ruolo": "Centravanti 3-4-2-1 Amorim"},
+        {"Calciatore": "Nico Paz", "Squadra": "Como", "Prezzo Medio": "~87.8 cr", "Incidenza Budget": "17.4%", "FantaMedia": "7.30", "Ruolo": "Top 1 Centrocampo (12 Gol)"},
+        {"Calciatore": "Rasmus Højlund", "Squadra": "Napoli", "Prezzo Medio": "~83.3 cr", "Incidenza Budget": "16.6%", "FantaMedia": "7.56", "Ruolo": "Centravanti 4-3-3 Allegri"}
     ])
     st.dataframe(benchmark_df, use_container_width=True)
 
