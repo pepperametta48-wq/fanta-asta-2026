@@ -395,8 +395,477 @@ ROLE_TIERED_POOLS = {
     ]
 }
 
+TEAMS_TACTICAL_DB = {
+    "Atalanta": {
+        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
+        "gk": "Carnesecchi (Sportiello vice)",
+        "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
+        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
+        "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
+        "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
+        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista; Ahanor scommessa difensiva a 1 credito."
+    },
+    "Bologna": {
+        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
+        "gk": "Skorupski (Pessina vice)",
+        "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
+        "midfield": "Ferguson, Moro, Bernardeschi",
+        "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
+        "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
+        "advice": "Orsolini 1° slot centrocampo; Rowe 2°-3° slot da bonus; Heggem certezza difensiva a costi contenuti."
+    },
+    "Cagliari": {
+        "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
+        "gk": "Caprile (Sherri/Radunovic)",
+        "defense": "Yerry Mina, Obert, Rodríguez, Zé Pedro",
+        "midfield": "Adopo, Fazzini, Winks",
+        "attack": "Daniel Maldini, Sebastiano Esposito, Kevin Carlos (Mendy vice)",
+        "penalties": ["Mina (1°)", "Kevin Carlos (2°)", "Daniel Maldini (3°)"],
+        "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
+    },
+    "Como": {
+        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
+        "gk": "Jean Butez (Tornqvist/Vigorito)",
+        "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
+        "midfield": "Da Cunha, Perrone",
+        "attack": "Nico Paz, Baturina, Douvikas (Morata vice)",
+        "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
+        "advice": "Butez primato clean sheet (19); Nico Paz e Da Cunha top centrocampo; Douvikas bomber altissima resa; Kempf e Yan Couto pilastri difesa."
+    },
+    "Fiorentina": {
+        "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
+        "gk": "David De Gea (Christensen/Lezzerini)",
+        "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
+        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
+        "attack": "Gudmundsson, Moise Kean, Pellegrino",
+        "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
+        "advice": "Atta e Mastantuono centrocampisti da bonus low cost; Gudmundsson e Kean riferimenti offensivi primari."
+    },
+    "Frosinone": {
+        "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
+        "gk": "Palmisani / Desplanches",
+        "defense": "Monterisi, Bracaglia, Akpoguma, Oyono",
+        "midfield": "Calò, Schmid, Grillitsch, El Azzouzi",
+        "attack": "Raimondo, Ghedjemis, Zerbin",
+        "penalties": ["Calò (1°)", "Schmid (2°)"],
+        "advice": "Calò rigorista economico a centrocampo; El Azzouzi slot a 1 credito per copertura; Bracaglia difensore low cost."
+    },
+    "Genoa": {
+        "coach": "Daniele De Rossi", "formation": "3-5-2 / 4-3-3 (Flessibile)",
+        "gk": "Justin Bijlow (Stolz vice)",
+        "defense": "Ostigard, Vásquez, Marcandalli / Mitaj",
+        "midfield": "Frendrup, Ellertsson, Ethan-Meichtry, Baldanzi/Traoré",
+        "attack": "Lorenzo Colombo, Vitinha",
+        "penalties": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
+        "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
+    },
+    "Inter": {
+        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
+        "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
+        "defense": "Dimarco, Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
+        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
+        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
+        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
+        "advice": "Dimarco top 1 assoluto di difesa; Calhanoglu top bonus centrocampo; coppia portieri Martinez-Provedel obbligatoria; Pio Esposito scommessa a 1-2 cr."
+    },
+    "Juventus": {
+        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
+        "gk": "Guglielmo Vicario (Perin vice)",
+        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
+        "midfield": "Locatelli, Thuram / McKennie",
+        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
+        "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
+        "advice": "Bremer top difensore per modificatore; Yildiz e Kolo Muani bonus pesanti d'attacco; Alajbegović talento a 1-5 cr."
+    },
+    "Lazio": {
+        "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
+        "gk": "Christos Mandas (Motta vice)",
+        "defense": "Marusic, Doekhi, Romagnoli, Provstgaard / Pedraza",
+        "midfield": "Rovella, Kenneth Taylor, Davide Frattesi",
+        "attack": "Zaccagni, Isaksen, Noslin (Ratkov / Dia)",
+        "penalties": ["Zaccagni (1°)", "Taylor K. (2°)", "Cataldi (3°)"],
+        "advice": "Frattesi centrocampista incursore alla Milinkovic; Doekhi difensore goleador da piazzato; Noslin scommessa attacco."
+    },
+    "Lecce": {
+        "coach": "Staff Tecnico", "formation": "4-3-3 (Contenimento & Ripartenza)",
+        "gk": "Wladimiro Falcone (Bleve/Penev)",
+        "defense": "Tiago Gabriel, Gallo, Baschirotto",
+        "midfield": "Berisha, Gandelman, Helgason",
+        "attack": "Banda, Stulić / Geubbels, Pierotti",
+        "penalties": ["Stulić (1°)", "Geubbels (2°)", "Berisha (3°)"],
+        "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
+    },
+    "Milan": {
+        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
+        "gk": "Mike Maignan (Terracciano/Torriani)",
+        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
+        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
+        "attack": "Christian Pulisic, Rafael Leão, Gonçalo Ramos (Nkunku)",
+        "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
+        "advice": "Gonçalo Ramos centravanti ideale per Amorim (~90-100 cr); Pavlovic certezza modificatore e bonus; Diego Moreira bug listato C."
+    },
+    "Monza": {
+        "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
+        "gk": "Demba Thiam (Pizzignacco)",
+        "defense": "Andrea Carboni, Delli Carri, Birindelli, Mangas",
+        "midfield": "Matteo Pessina, Colpani, Akinsanmiro",
+        "attack": "Patrick Cutrone, Dany Mota, Petagna",
+        "penalties": ["Pessina (1°)", "Cutrone (2°)", "Petagna (3°)"],
+        "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
+    },
+    "Napoli": {
+        "coach": "Massimiliano Allegri", "formation": "4-3-3 / 4-2-4 (Flessibile & Diretto)",
+        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
+        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
+        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
+        "attack": "Rasmus Højlund, Politano, Santos, Neres",
+        "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
+        "advice": "McTominay 1° slot assoluto di centrocampo; Højlund bomber ideale con Allegri; Spinazzola low cost in difesa."
+    },
+    "Parma": {
+        "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
+        "gk": "Daffara / Corvi",
+        "defense": "Delprato, Valeri, Troilo, Britschgi",
+        "midfield": "Adrián Bernabé, Mandela Keita, Sorensen, Almqvist",
+        "attack": "El Bilal Touré, Luka Romero, Frigan",
+        "penalties": ["Bernabé (1°)", "Touré E. (2°)", "Valeri (3°)"],
+        "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
+    },
+    "Roma": {
+        "coach": "Guida Tecnica", "formation": "3-4-2-1 (Intensità & Spinta Offensiva)",
+        "gk": "Mile Svilar (Gollini/De Marzi)",
+        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley",
+        "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
+        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
+        "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
+        "advice": "Svilar top 1 portiere (18 clean sheet); Malen top bomber d'attacco; Wesley e Molina esterni difensivi ad altissima fantamedia."
+    },
+    "Sassuolo": {
+        "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
+        "gk": "Arijanet Murić / Stefano Turati",
+        "defense": "Sebastian Walukiewicz, Jay Idzes, Obrador",
+        "midfield": "Kristian Thorstvedt, Ismaël Koné, Vasilije Adžić",
+        "attack": "Domenico Berardi, Armand Laurienté, Andrea Pinamonti, Bowie",
+        "penalties": ["Berardi (1°)", "Pinamonti (2°)", "Laurienté (3°)"],
+        "advice": "Adžić gemma a centrocampo (1-5 cr); Berardi e Pinamonti certezze per rigori e gol."
+    },
+    "Torino": {
+        "coach": "Ignazio Abate", "formation": "4-2-3-1 (Verticale & Organizzato)",
+        "gk": "Alberto Paleari / Franco Perri",
+        "defense": "Saul Coco, Marcus Pedersen",
+        "midfield": "Nikola Vlašić, Cesare Casadei, Cacciamani",
+        "attack": "Giovanni Simeone, Che Adams, Duván Zapata",
+        "penalties": ["Vlašić (1°)", "Simeone (2°)", "Casadei (3°)"],
+        "advice": "Vlašić centrocampista rigorista da 6-8 gol; Paleari/Perri porta low cost; Simeone 3°-4° slot attacco."
+    },
+    "Udinese": {
+        "coach": "Staff Tecnico", "formation": "3-5-2 (Fisico & Diretto)",
+        "gk": "Maduka Okoye (Padelli/Piana)",
+        "defense": "Oumar Solet, Christian Kabasele, Thomas Kristensen, Mergim Vojvoda, Hassane Kamara",
+        "midfield": "Jesper Karlström, Jurgen Ekkelenkamp, Nicolò Zaniolo",
+        "attack": "Keinan Davis, Adam Buksa, Gueye",
+        "penalties": ["Davis (1°)", "Solet (2°)", "Zaniolo (3°)"],
+        "advice": "Solet difensore da bonus di prima fascia; Vojvoda costanza da modificatore; Zaniolo jolly offensivo listato centrocampista."
+    },
+    "Venezia": {
+        "coach": "Giovanni Stroppa", "formation": "3-5-2 (Ritmo & Organizzazione)",
+        "gk": "Filip Stanković (Grandi/Pozzi)",
+        "defense": "Ridgeciano Haps, Correia, Jay Idzes",
+        "midfield": "Gianluca Busio, Mikael Ellertsson, John Yeboah",
+        "attack": "Akor Adams, Albion Rrahmani, Lauberbach",
+        "penalties": ["Adams A. (1°)", "Rrahmani A. (2°)", "Yeboah (3°)"],
+        "advice": "Busio regista inamovibile e tiratore low cost; Akor Adams scommessa 3ª punta ad alto potenziale realizzativo."
+    }
+}
+
 # ==============================================================================
-# 3. CARICAMENTO DEL LISTONE EXCEL (ROBUSTO)
+# 3. FUNZIONI ANALITICHE E DI CALCOLO (DEFINITE PRIMA DELL'UI)
+# ==============================================================================
+def normalize_name(name):
+    return str(name).lower().replace("'", "").replace(".", "").replace("-", " ").strip()
+
+def get_dept_spent(role):
+    return sum(p['price'] for p in st.session_state.get('my_roster', []) if p['role'] == role)
+
+def get_dept_count(role):
+    return len([p for p in st.session_state.get('my_roster', []) if p['role'] == role])
+
+def get_player_base_target(player_row):
+    name = str(player_row['Nome']).strip()
+    role = str(player_row['R']).strip()
+    fvm = int(player_row['FVM']) if pd.notnull(player_row.get('FVM')) else 1
+    qta = int(player_row['Qt.A']) if pd.notnull(player_row.get('Qt.A')) else 1
+
+    norm_query = normalize_name(name)
+    target = None
+
+    if name in DOC_TARGETS:
+        target = DOC_TARGETS[name]
+    else:
+        tokens = set(norm_query.split())
+        for doc_name, val in DOC_TARGETS.items():
+            doc_tokens = set(normalize_name(doc_name).split())
+            if tokens == doc_tokens or (len(tokens) > 1 and tokens.issubset(doc_tokens)) or (len(doc_tokens) > 1 and doc_tokens.issubset(tokens)):
+                target = val
+                break
+        
+        if target is None:
+            for doc_name, val in DOC_TARGETS.items():
+                norm_doc = normalize_name(doc_name)
+                if norm_doc in norm_query or norm_query in norm_doc:
+                    target = val
+                    break
+
+    if target is None:
+        if role == 'P':
+            target = max(1, int(round(qta * 1.1)))
+        elif role == 'D':
+            if fvm >= 200: target = max(30, int(round(fvm * 0.14)))
+            elif fvm >= 50: target = max(12, int(round(fvm * 0.28)))
+            elif fvm >= 20: target = max(5, int(round(fvm * 0.25)))
+            else: target = max(1, int(round(qta * 0.8)))
+        elif role == 'C':
+            if fvm >= 200: target = max(45, int(round(fvm * 0.22)))
+            elif fvm >= 80: target = max(16, int(round(fvm * 0.22)))
+            elif fvm >= 25: target = max(6, int(round(fvm * 0.20)))
+            else: target = max(1, int(round(qta * 0.8)))
+        elif role == 'A':
+            if fvm >= 250: target = max(75, int(round(fvm * 0.32)))
+            elif fvm >= 120: target = max(30, int(round(fvm * 0.26)))
+            elif fvm >= 40: target = max(10, int(round(fvm * 0.22)))
+            else: target = max(1, int(round(qta * 0.9)))
+
+    int_t = int(round(target))
+    if role == 'P':
+        max_bid = max(int_t + 1, int(round(int_t * 1.20))) if int_t > 1 else 1
+    elif role == 'D':
+        max_bid = max(int_t + 1, int(round(int_t * 1.18))) if int_t > 1 else 1
+    elif role == 'C':
+        max_bid = max(int_t + 1, int(round(int_t * 1.16))) if int_t > 2 else int_t
+    else:
+        max_bid = max(int_t + 1, int(round(int_t * 1.15))) if int_t > 2 else int_t
+
+    return int_t, max_bid
+
+def calculate_dynamic_player_evaluation(player_row, my_roster):
+    role = str(player_row['R']).strip()
+    base_target, base_max = get_player_base_target(player_row)
+
+    tot_spent = sum(p['price'] for p in my_roster)
+    tot_budget_left = TOTAL_BUDGET - tot_spent
+    tot_slots_filled = len(my_roster)
+    tot_slots_left = TOTAL_SLOTS - tot_slots_filled
+
+    if tot_slots_left <= 0:
+        return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
+
+    dept_bought = [p for p in my_roster if p['role'] == role]
+    dept_spent = sum(p['price'] for p in dept_bought)
+    dept_filled = len(dept_bought)
+    dept_slots_left = SLOTS[role] - dept_filled
+
+    if dept_slots_left <= 0:
+        return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
+
+    other_slots_needed = tot_slots_left - dept_slots_left
+    max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+    
+    total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
+    scale_factor = tot_budget_left / max(1, total_unfilled_baseline)
+    
+    dyn_target = max(1, int(round(base_target * scale_factor)))
+    max_single_in_dept = max(1, effective_dept_budget - (dept_slots_left - 1))
+    dyn_target = min(dyn_target, max_single_in_dept)
+
+    margin = 1.15 if dyn_target > 25 else (1.20 if dyn_target > 5 else 1.0)
+    dyn_max_bid = int(round(dyn_target * margin))
+    dyn_max_bid = max(dyn_target, min(tot_budget_left - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
+
+    return {
+        "base_target": base_target,
+        "base_max": base_max,
+        "dyn_target": dyn_target,
+        "dyn_max_bid": dyn_max_bid,
+        "scale_factor": round(scale_factor, 2),
+        "dept_spent": dept_spent,
+        "dept_budget_left": effective_dept_budget,
+        "dept_slots_left": dept_slots_left,
+        "is_full": False
+    }
+
+def calculate_dynamic_targets_for_slots(role, my_roster):
+    tot_spent = sum(p['price'] for p in my_roster)
+    tot_budget_left = TOTAL_BUDGET - tot_spent
+    tot_slots_left = TOTAL_SLOTS - len(my_roster)
+
+    dept_bought = [p for p in my_roster if p['role'] == role]
+    dept_spent = sum(p['price'] for p in dept_bought)
+    dept_filled = len(dept_bought)
+    dept_slots_left = SLOTS[role] - dept_filled
+
+    if dept_slots_left <= 0:
+        return []
+
+    other_slots_needed = tot_slots_left - dept_slots_left
+    max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+
+    avail = effective_dept_budget
+
+    weights_map = {
+        'A': {
+            6: [0.40, 0.33, 0.16, 0.07, 0.03, 0.01],
+            5: [0.55, 0.25, 0.12, 0.05, 0.03],
+            4: [0.60, 0.25, 0.10, 0.05],
+            3: [0.68, 0.24, 0.08],
+            2: [0.85, 0.15],
+            1: [1.0]
+        },
+        'C': {
+            8: [0.35, 0.30, 0.13, 0.08, 0.05, 0.04, 0.03, 0.02],
+            7: [0.42, 0.22, 0.14, 0.09, 0.06, 0.04, 0.03],
+            6: [0.48, 0.24, 0.12, 0.08, 0.05, 0.03],
+            5: [0.55, 0.25, 0.10, 0.06, 0.04],
+            4: [0.60, 0.22, 0.12, 0.06],
+            3: [0.70, 0.20, 0.10],
+            2: [0.80, 0.20],
+            1: [1.0]
+        },
+        'D': {
+            8: [0.40, 0.17, 0.13, 0.11, 0.08, 0.08, 0.02, 0.01],
+            7: [0.30, 0.22, 0.18, 0.14, 0.10, 0.04, 0.02],
+            6: [0.35, 0.25, 0.20, 0.12, 0.05, 0.03],
+            5: [0.42, 0.28, 0.18, 0.08, 0.04],
+            4: [0.50, 0.30, 0.14, 0.06],
+            3: [0.60, 0.28, 0.12],
+            2: [0.75, 0.25],
+            1: [1.0]
+        },
+        'P': {
+            3: [max(1, avail - 4), 3, 1],
+            2: [max(1, avail - 1), 1],
+            1: [avail]
+        }
+    }
+
+    if role == 'P':
+        return weights_map['P'][dept_slots_left]
+
+    weights = weights_map[role][dept_slots_left]
+    targets = [max(1, int(round(avail * w))) for w in weights]
+    diff = sum(targets) - avail
+    targets[0] = max(1, targets[0] - diff)
+    return targets
+
+def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
+    if custom_user_targets_list:
+        for cust_name in custom_user_targets_list:
+            if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
+                row = listone_df[listone_df['Nome'] == cust_name]
+                if not row.empty:
+                    r_row = row.iloc[0]
+                    base_t, base_m = get_player_base_target(r_row)
+                    allocated_in_roadmap.add(cust_name)
+                    
+                    dyn_t = max(1, slot_target_budget)
+                    margin = 1.16 if dyn_t > 20 else (1.20 if dyn_t > 5 else 1.0)
+                    dyn_m = int(round(dyn_t * margin)) if dyn_t > 2 else dyn_t
+                    
+                    alts_df = listone_df[(listone_df['R'] == role_code) & (~listone_df['Nome'].isin(allocated_in_roadmap)) & (~listone_df['Nome'].isin(purchased_registry.keys()))]
+                    alts_str = ", ".join([f"{r['Nome']} ({get_player_base_target(r)[0]} cr)" for _, r in alts_df.head(3).iterrows()])
+                    
+                    return {
+                        "chosen_name": cust_name,
+                        "chosen_team": str(r_row['Squadra']),
+                        "chosen_role": "🎯 Mio Top Selezionato",
+                        "base_target": base_t,
+                        "dyn_target": dyn_t,
+                        "dyn_max_bid": dyn_m,
+                        "alts_str": alts_str if alts_str else "Nessuna alternativa disponibile"
+                    }
+
+    pool = ROLE_TIERED_POOLS.get(role_code, [])
+    best_tier = None
+    min_dist = 999
+    for tier in pool:
+        mid_p = (tier['min_p'] + tier['max_p']) / 2.0
+        dist = abs(slot_target_budget - mid_p)
+        if dist < min_dist:
+            min_dist = dist
+            best_tier = tier
+
+    candidates_ordered = []
+    if best_tier:
+        for c in best_tier['candidates']:
+            if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap:
+                candidates_ordered.append(c)
+
+    if len(candidates_ordered) < 4:
+        for tier in pool:
+            if tier != best_tier:
+                for c in tier['candidates']:
+                    if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap and c not in candidates_ordered:
+                        candidates_ordered.append(c)
+                        if len(candidates_ordered) >= 6:
+                            break
+
+    candidates_ordered.sort(key=lambda x: abs(x['base_target'] - slot_target_budget))
+
+    chosen = candidates_ordered[0] if candidates_ordered else {"name": "Scommessa / Copertura", "team": "Serie A", "base_target": 1, "max": 1, "role": "Slot di Completamento"}
+    allocated_in_roadmap.add(chosen['name'])
+
+    alts = [f"{c['name']} ({c['base_target']} cr)" for c in candidates_ordered[1:4]]
+
+    margin = 1.16 if slot_target_budget > 20 else (1.20 if slot_target_budget > 5 else 1.0)
+    max_b = int(round(slot_target_budget * margin)) if slot_target_budget > 2 else slot_target_budget
+
+    return {
+        "chosen_name": chosen['name'],
+        "chosen_team": chosen['team'],
+        "chosen_role": chosen['role'],
+        "base_target": chosen['base_target'],
+        "dyn_target": slot_target_budget,
+        "dyn_max_bid": max_b,
+        "alts_str": ", ".join(alts) if alts else "Nessuna alternativa disponibile"
+    }
+
+def render_role_card_grid(role_code, dept_title, num_cols=4):
+    slots_total = SLOTS[role_code]
+    bought_list = [p for p in st.session_state.get('my_roster', []) if p['role'] == role_code]
+    
+    st.markdown(f"### {dept_title}")
+    st.caption(f"Spesi: **{get_dept_spent(role_code)} cr** / {BASE_DEPT_BUDGET[role_code]} cr | Slot Completati: **{len(bought_list)} / {slots_total}**")
+    
+    allocated_in_roadmap = set(p['name'] for p in st.session_state.get('my_roster', []))
+    dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.get('my_roster', []))
+    
+    user_custom_picks = st.session_state.get('custom_user_targets', {}).get(role_code, [])
+
+    for row_start in range(0, slots_total, num_cols):
+        row_slots_count = min(num_cols, slots_total - row_start)
+        cols = st.columns(num_cols)
+        
+        for idx in range(row_slots_count):
+            global_slot_idx = row_start + idx
+            slot_prefix = 'DIF' if role_code == 'D' else ('CEN' if role_code == 'C' else 'ATT')
+            slot_label = f"{slot_prefix} {global_slot_idx + 1}"
+            
+            with cols[idx]:
+                if global_slot_idx < len(bought_list):
+                    p_bought = bought_list[global_slot_idx]
+                    card_text = f"**{slot_label}: {p_bought['name']}** ({p_bought['team']})\n\n✅ **Acquistato:** `{p_bought['price']} cr`\n\n📌 *Ruolo:* In Rosa"
+                    st.success(card_text)
+                else:
+                    rem_idx = global_slot_idx - len(bought_list)
+                    t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
+                    
+                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
+                    card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
+                    st.info(card_text)
+
+# ==============================================================================
+# 4. CARICAMENTO DEL LISTONE & API-FOOTBALL
 # ==============================================================================
 @st.cache_data
 def safe_load_listone():
@@ -456,8 +925,44 @@ def safe_load_listone():
 
 listone_df = safe_load_listone()
 
+API_KEY = st.secrets.get("FOOTBALL_API_KEY", None)
+
+@st.cache_data(ttl=86400)
+def get_live_player_stats(player_name, team_name):
+    if not API_KEY:
+        return None
+    
+    url = "https://v3.football.api-sports.io/players"
+    headers = {
+        'x-rapidapi-key': API_KEY,
+        'x-rapidapi-host': 'v3.football.api-sports.io'
+    }
+    params = {
+        'search': player_name,
+        'league': '135',
+        'season': '2026'
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=5)
+        data = response.json()
+        if data.get('response'):
+            stats = data['response'][0]['statistics'][0]
+            return {
+                "appearances": stats['games']['appearences'] or 0,
+                "minutes": stats['games']['minutes'] or 0,
+                "rating": stats['games']['rating'] or "N.D.",
+                "goals": stats['goals']['total'] or 0,
+                "assists": stats['goals']['assists'] or 0,
+                "yellow_cards": stats['cards']['yellow'] or 0,
+                "red_cards": stats['cards']['red'] or 0
+            }
+    except Exception:
+        pass
+    return None
+
 # ==============================================================================
-# 4. INIZIALIZZAZIONE SESSION STATE & PERSISTENZA
+# 5. INIZIALIZZAZIONE SESSION STATE & PERSISTENZA
 # ==============================================================================
 def load_state_from_disk():
     if os.path.exists(SAVE_FILE):
@@ -516,7 +1021,7 @@ def save_state_to_disk():
         pass
 
 # ==============================================================================
-# 5. SIDEBAR: STATO, GESTIONE & NOTIZIE
+# 6. SIDEBAR: STATO, GESTIONE & NOTIZIE
 # ==============================================================================
 st.sidebar.title("🎛️ Pannello di Controllo")
 
@@ -596,7 +1101,7 @@ if st.sidebar.button("🗑️ Reset Completo Asta"):
     st.rerun()
 
 # ==============================================================================
-# 6. HEADER & METRICHE GENERALI
+# 7. HEADER & METRICHE GENERALI
 # ==============================================================================
 st.title("⚽ FantaAsta 2026/27 Pro Master Suite")
 st.caption(f"Fase Attiva: **{current_stage}** | Modificatore Difesa: **Attivo** | Motore Dinamico: **Real-Time Active**")
@@ -610,7 +1115,7 @@ m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)
 st.divider()
 
 # ==============================================================================
-# 7. TABS DELL'APPLICAZIONE (SUITE COMPLETA 10 TAB)
+# 8. TABS DELL'APPLICAZIONE (SUITE COMPLETA 10 TAB)
 # ==============================================================================
 tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps, tab_inspect, tab_defense, tab_export = st.tabs([
     "⚡ Assegnazione Live",
