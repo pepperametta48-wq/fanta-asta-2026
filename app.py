@@ -482,7 +482,7 @@ TEAMS_TACTICAL_DB = {
     }
 }
 
-# BENCHMARK AGGIORNATI CON PREZZI MEDI REALI FANTALAB (10 SQUADRE / 500 CR)
+# BENCHMARK REALI FANTALAB (10 SQUADRE / 500 CR)
 DOC_TARGETS = {
     "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
     "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
@@ -1010,7 +1010,7 @@ with tab_call:
         dyn_target, dyn_max_bid, base_target = 1, 1, 1
 
     with col_p2:
-        bid_price = st.number_input("Prezzo Asta (cr)", min_value=1, max_value=tot_budget_left if tot_budget_left > 0 else 1, value=dyn_target if dyn_target > 0 else 1)
+        bid_price = st.number_input("Prezzo Asta (cr)", min_value=1, max_value=tot_budget_left if tot_budget_left > 0 else 1, value=int(round(dyn_target)) if dyn_target > 0 else 1)
         
     with col_p3:
         opp_options = [st.session_state.opponents[k]['name'] for k in st.session_state.opponents]
@@ -1027,9 +1027,10 @@ with tab_call:
         c_eval1, c_eval2, c_eval3, c_eval4 = st.columns(4)
         c_eval1.metric("Squadra & Ruolo", f"{player_team} ({player_role})", f"Qt: {player_qta} | FVM: {player_fvm}")
         
-        target_delta_str = f"{dyn_target - base_target:+d} cr vs listino" if dyn_target != base_target else "In linea con target"
-        c_eval2.metric("Target Adattato alla Cassa", f"{dyn_target} cr", target_delta_str)
-        c_eval3.metric("Stop-Loss Dinamica", f"{dyn_max_bid} cr", "Tetto massimo di sicurezza")
+        delta_val = int(round(dyn_target - base_target))
+        target_delta_str = f"{delta_val:+d} cr vs listino" if delta_val != 0 else "In linea con target"
+        c_eval2.metric("Target Adattato alla Cassa", f"{int(round(dyn_target))} cr", target_delta_str)
+        c_eval3.metric("Stop-Loss Dinamica", f"{int(round(dyn_max_bid))} cr", "Tetto massimo di sicurezza")
         c_eval4.metric(f"Cassa Reparto ({player_role})", f"{eval_data['dept_budget_left']} cr", f"{eval_data['dept_slots_left']} slot liberi")
 
         pen_info = PENALTY_TAKERS.get(player_team, [])
@@ -1361,7 +1362,7 @@ with tab_duel:
         with col_card1:
             st.markdown(f"### 🔵 {p_name_1}")
             st.markdown(f"**Squadra & Ruolo:** {row1['Squadra']} ({row1['R']})")
-            st.markdown(f"**Target Adattato:** `{eval1['dyn_target']} cr` | **Stop-Loss:** `{eval1['dyn_max_bid']} cr`")
+            st.markdown(f"**Target Adattato:** `{int(round(eval1['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval1['dyn_max_bid']))} cr`")
             st.markdown(f"**Quotazione Listone:** {row1['Qt.A']} | **FVM:** {row1['FVM']}")
             pen1 = [p for p in PENALTY_TAKERS.get(row1['Squadra'], []) if p_name_1.lower() in p.lower()]
             st.markdown(f"**Status Rigori:** {pen1[0] if pen1 else 'Nessuno'}")
@@ -1369,19 +1370,19 @@ with tab_duel:
         with col_card2:
             st.markdown(f"### 🔴 {p_name_2}")
             st.markdown(f"**Squadra & Ruolo:** {row2['Squadra']} ({row2['R']})")
-            st.markdown(f"**Target Adattato:** `{eval2['dyn_target']} cr` | **Stop-Loss:** `{eval2['dyn_max_bid']} cr`")
+            st.markdown(f"**Target Adattato:** `{int(round(eval2['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval2['dyn_max_bid']))} cr`")
             st.markdown(f"**Quotazione Listone:** {row2['Qt.A']} | **FVM:** {row2['FVM']}")
             pen2 = [p for p in PENALTY_TAKERS.get(row2['Squadra'], []) if p_name_2.lower() in p.lower()]
             st.markdown(f"**Status Rigori:** {pen2[0] if pen2 else 'Nessuno'}")
 
         st.divider()
-        diff_cr = eval1['dyn_target'] - eval2['dyn_target']
+        diff_cr = int(round(eval1['dyn_target'] - eval2['dyn_target']))
         if diff_cr > 0:
             st.info(f"💡 **Verdetto Economico:** {p_name_1} richiede **+{diff_cr} cr** rispetto a {p_name_2}. Scegli {p_name_2} se vuoi preservare budget per l'attacco.")
         elif diff_cr < 0:
             st.info(f"💡 **Verdetto Economico:** {p_name_2} richiede **+{abs(diff_cr)} cr** rispetto a {p_name_1}. Scegli {p_name_1} per risparmiare.")
         else:
-            st.info(f"💡 **Verdetto Economico:** I due giocatori hanno lo stesso impatto economico ({eval1['dyn_target']} cr). Decidi in base allo status sui rigori!")
+            st.info(f"💡 **Verdetto Economico:** I due giocatori hanno lo stesso impatto economico ({int(round(eval1['dyn_target']))} cr). Decidi in base allo status sui rigori!")
 
 # ------------------------------------------------------------------------------
 # TAB 7: TRACKER RIVALI & MAX BID
