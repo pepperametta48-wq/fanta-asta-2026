@@ -109,6 +109,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ==============================================================================
+# 2. COSTANTI DI GIOCO & BENCHMARK FANTALAB
+# ==============================================================================
 SAVE_FILE = "fanta_auction_save.json"
 TOTAL_BUDGET = 500
 SLOTS = {'P': 3, 'D': 8, 'C': 8, 'A': 6}
@@ -122,68 +125,6 @@ BASELINE_DEPT_CURVES = {
     'A': [90, 75, 38, 15, 6, 2]
 }
 
-# ==============================================================================
-# 2. INIZIALIZZAZIONE SESSION STATE
-# ==============================================================================
-def load_state_from_disk():
-    if os.path.exists(SAVE_FILE):
-        try:
-            with open(SAVE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return None
-    return None
-
-saved_data = load_state_from_disk()
-
-if 'my_roster' not in st.session_state:
-    st.session_state.my_roster = saved_data["my_roster"] if saved_data and "my_roster" in saved_data else []
-
-if 'selected_keeper_club' not in st.session_state:
-    st.session_state.selected_keeper_club = saved_data["selected_keeper_club"] if saved_data and "selected_keeper_club" in saved_data else 'Inter'
-
-if 'custom_user_targets' not in st.session_state:
-    st.session_state.custom_user_targets = saved_data.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}) if saved_data else {'P': [], 'D': [], 'C': [], 'A': []}
-
-if 'opponents' not in st.session_state:
-    if saved_data and "opponents" in saved_data:
-        st.session_state.opponents = saved_data["opponents"]
-    else:
-        st.session_state.opponents = {
-            f"Avversario {i+1}": {
-                'name': f"Avversario {i+1}", 'budget': TOTAL_BUDGET, 'slots_left': TOTAL_SLOTS,
-                'roster': {'P': [], 'D': [], 'C': [], 'A': []}
-            } for i in range(9)
-        }
-
-if 'purchased_registry' not in st.session_state:
-    st.session_state.purchased_registry = saved_data["purchased_registry"] if saved_data and "purchased_registry" in saved_data else {}
-
-if 'history' not in st.session_state:
-    st.session_state.history = saved_data["history"] if saved_data and "history" in saved_data else []
-
-if 'quick_bid_val' not in st.session_state:
-    st.session_state.quick_bid_val = 1
-
-def save_state_to_disk():
-    state_data = {
-        "my_roster": st.session_state.get("my_roster", []),
-        "selected_keeper_club": st.session_state.get("selected_keeper_club", 'Inter'),
-        "custom_user_targets": st.session_state.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}),
-        "opponents": st.session_state.get("opponents", {}),
-        "purchased_registry": st.session_state.get("purchased_registry", {}),
-        "history": st.session_state.get("history", []),
-        "last_saved": datetime.now().strftime("%H:%M:%S")
-    }
-    try:
-        with open(SAVE_FILE, "w", encoding="utf-8") as f:
-            json.dump(state_data, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        st.sidebar.error(f"Errore nel salvataggio: {e}")
-
-# ==============================================================================
-# 3. MATRICI RIGORISTI, BENCHMARK FANTALAB & TATTICHE
-# ==============================================================================
 PENALTY_TAKERS = {
     "Inter": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Martinez L. (3°)"],
     "Genoa": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
@@ -258,7 +199,6 @@ GOALIE_HIERARCHY = {
     'Venezia': [('Stankovic F.', 4, 6), ('Grandi', 1, 1), ('Pozzi', 1, 1)]
 }
 
-# BENCHMARK REALI FANTALAB (10 SQUADRE / 500 CR)[cite: 6]
 DOC_TARGETS = {
     "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
     "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
@@ -381,50 +321,6 @@ ROLE_TIERED_POOLS = {
             {"name": "Adzic", "team": "Sassuolo", "base_target": 8, "max": 10, "role": "Scommessa Talento Trequarti"},
             {"name": "Busio", "team": "Venezia", "base_target": 8, "max": 10, "role": "Leader Tecnico e Piazzati Venezia"},
             {"name": "El Azzouzi A.", "team": "Frosinone", "base_target": 2, "max": 3, "role": "Titolare Low Cost 1-2 Crediti"}
-        ]}
-    ],
-    'A': [
-        {"tier_label": "Supertop Bomber", "min_p": 80, "max_p": 140, "candidates": [
-            {"name": "Martinez L.", "team": "Inter", "base_target": 129, "max": 139, "role": "Top 1 Assoluto Spesa (FM 8.25)"},
-            {"name": "Thuram", "team": "Inter", "base_target": 116, "max": 126, "role": "Partner d'Attacco Lautaro (FM 7.95)"},
-            {"name": "Malen", "team": "Roma", "base_target": 114, "max": 124, "role": "Record FM 8.84 e 1° Rigorista Roma"},
-            {"name": "Kolo Muani", "team": "Juventus", "base_target": 109, "max": 119, "role": "1° Rigorista Juventus Spalletti"},
-            {"name": "Ramos G.", "team": "Milan", "base_target": 102, "max": 112, "role": "Centravanti 3-4-2-1 Amorim"},
-            {"name": "Kean", "team": "Fiorentina", "base_target": 84, "max": 94, "role": "Terminale Centrale Grosso"},
-            {"name": "Hojlund", "team": "Napoli", "base_target": 83, "max": 93, "role": "Prima Punta 4-3-3 Allegri (FM 7.56)"},
-            {"name": "Yildiz", "team": "Juventus", "base_target": 82, "max": 92, "role": "Talento Puro e 2° Rigorista (FM 7.30)"}
-        ]},
-        {"tier_label": "Secondo Slot / Bomber Affidabili", "min_p": 45, "max_p": 75, "candidates": [
-            {"name": "Douvikas", "team": "Como", "base_target": 72, "max": 80, "role": "14 Gol Como Fabregas (FM 7.38)"},
-            {"name": "Leao", "team": "Milan", "base_target": 70, "max": 78, "role": "Esterno Offensivo Amorim (FM 6.86)"},
-            {"name": "Scamacca", "team": "Atalanta", "base_target": 66, "max": 74, "role": "1° Rigorista Sarri (FM 7.55)"},
-            {"name": "Pulisic", "team": "Milan", "base_target": 62, "max": 70, "role": "Rigorista Alternativo Milan (FM 7.07)"},
-            {"name": "Dybala", "team": "Roma", "base_target": 62, "max": 70, "role": "Saldo Rigori +27.5 pt (91% realizzo)"},
-            {"name": "Nkunku", "team": "Milan", "base_target": 56, "max": 64, "role": "1° Rigorista Designato Milan (FM 6.98)"},
-            {"name": "Dovbyk", "team": "Bologna", "base_target": 52, "max": 60, "role": "Centravanti Titolare Tedesco (FM 6.77)"},
-            {"name": "Krstovic", "team": "Atalanta", "base_target": 48, "max": 55, "role": "10 Reti Alternanza Sarri (FM 7.19)"},
-            {"name": "Berardi", "team": "Sassuolo", "base_target": 45, "max": 52, "role": "Rigorista Infallibile 88% (FM 7.19)"}
-        ]},
-        {"tier_label": "Terzo-Quarto Slot / Rigoristi Provincia", "min_p": 20, "max_p": 40, "candidates": [
-            {"name": "Gudmundsson", "team": "Fiorentina", "base_target": 40, "max": 46, "role": "1° Rigorista Fiorentina (+24.5 pt)"},
-            {"name": "Simeone", "team": "Torino", "base_target": 39, "max": 45, "role": "Centravanti 11 Reti Abate (FM 7.09)"},
-            {"name": "Davis K.", "team": "Udinese", "base_target": 34, "max": 40, "role": "1° Rigorista Udinese (FM 7.37)"},
-            {"name": "Castro", "team": "Roma", "base_target": 34, "max": 40, "role": "Rotazione Offensiva Roma (FM 6.51)"},
-            {"name": "Piccoli", "team": "Bologna", "base_target": 25, "max": 30, "role": "Alternativa Fisica Dovbyk (FM 6.23)"},
-            {"name": "Noslin", "team": "Lazio", "base_target": 25, "max": 30, "role": "Titolare d'Attacco Gattuso"},
-            {"name": "Raspadori", "team": "Atalanta", "base_target": 24, "max": 29, "role": "Jolly Tecnico Sarri"},
-            {"name": "Pellegrino", "team": "Fiorentina", "base_target": 22, "max": 26, "role": "2° Rigorista Viola (FM 6.65)"},
-            {"name": "Cutrone", "team": "Monza", "base_target": 21, "max": 25, "role": "Centravanti Salvezza e 2° Rigorista"},
-            {"name": "Adams A.", "team": "Venezia", "base_target": 20, "max": 24, "role": "1° Rigorista e Centravanti Venezia"}
-        ]},
-        {"tier_label": "Quinto-Sesto Slot / Scommesse", "min_p": 1, "max_p": 18, "candidates": [
-            {"name": "Tourè E.", "team": "Parma", "base_target": 18, "max": 22, "role": "Potenziale 7-8 Gol Parma (19.7% rose)"},
-            {"name": "Colombo", "team": "Genoa", "base_target": 15, "max": 19, "role": "1° Rigorista Genoa (Allerta 93% cambi al 62')"},
-            {"name": "Esposito F.P.", "team": "Inter", "base_target": 14, "max": 17, "role": "1ª Riserva Lautaro (FM 6.97)"},
-            {"name": "Bonny", "team": "Inter", "base_target": 12, "max": 15, "role": "Cambio Tattico Chivu (5G+4A)"},
-            {"name": "Carlos K.", "team": "Cagliari", "base_target": 11, "max": 14, "role": "Centravanti Fisico 2° Rigorista"},
-            {"name": "Geubbels", "team": "Lecce", "base_target": 4, "max": 7, "role": "Seconda Punta 2° Rigorista Lecce"},
-            {"name": "Raimondo", "team": "Frosinone", "base_target": 4, "max": 6, "role": "Centravanti Titolare Alvini"}
         ]}
     ]
 }
@@ -613,7 +509,314 @@ TEAMS_TACTICAL_DB = {
 }
 
 # ==============================================================================
-# 5. INTEGRAZIONE API-FOOTBALL (STATISTICHE LIVE & INFORTUNI)
+# 4. CARICAMENTO LISTONE & FUNZIONI DI CALCOLO
+# ==============================================================================
+@st.cache_data
+def load_listone():
+    excel_file = 'Quotazioni_Fantacalcio_Stagione_2026_27.xlsx'
+    if os.path.exists(excel_file):
+        try:
+            df = pd.read_excel(excel_file, sheet_name=0, skiprows=1)
+            df.columns = [c.strip() for c in df.columns]
+            return df
+        except Exception:
+            pass
+    return pd.DataFrame([
+        {'Nome': 'Martinez Jo.', 'Squadra': 'Inter', 'R': 'P', 'Qt.A': 17, 'FVM': 63},
+        {'Nome': 'Dimarco', 'Squadra': 'Inter', 'R': 'D', 'Qt.A': 32, 'FVM': 265},
+        {'Nome': 'McTominay', 'Squadra': 'Napoli', 'R': 'C', 'Qt.A': 28, 'FVM': 240},
+        {'Nome': 'Calhanoglu', 'Squadra': 'Inter', 'R': 'C', 'Qt.A': 27, 'FVM': 230},
+        {'Nome': 'Lautaro Martinez', 'Squadra': 'Inter', 'R': 'A', 'Qt.A': 35, 'FVM': 370},
+        {'Nome': 'Ramos G.', 'Squadra': 'Milan', 'R': 'A', 'Qt.A': 27, 'FVM': 232},
+        {'Nome': 'Hojlund', 'Squadra': 'Napoli', 'R': 'A', 'Qt.A': 28, 'FVM': 271}
+    ])
+
+listone_df = load_listone()
+
+def normalize_name(name):
+    return str(name).lower().replace("'", "").replace(".", "").replace("-", " ").strip()
+
+def get_dept_spent(role):
+    return sum(p['price'] for p in st.session_state.get('my_roster', []) if p['role'] == role)
+
+def get_dept_count(role):
+    return len([p for p in st.session_state.get('my_roster', []) if p['role'] == role])
+
+def get_player_base_target(player_row):
+    name = str(player_row['Nome']).strip()
+    role = str(player_row['R']).strip()
+    fvm = int(player_row['FVM']) if pd.notnull(player_row.get('FVM')) else 1
+    qta = int(player_row['Qt.A']) if pd.notnull(player_row.get('Qt.A')) else 1
+
+    norm_query = normalize_name(name)
+    target = None
+
+    if name in DOC_TARGETS:
+        target = DOC_TARGETS[name]
+    else:
+        tokens = set(norm_query.split())
+        for doc_name, val in DOC_TARGETS.items():
+            doc_tokens = set(normalize_name(doc_name).split())
+            if tokens == doc_tokens or (len(tokens) > 1 and tokens.issubset(doc_tokens)) or (len(doc_tokens) > 1 and doc_tokens.issubset(tokens)):
+                target = val
+                break
+        
+        if target is None:
+            for doc_name, val in DOC_TARGETS.items():
+                norm_doc = normalize_name(doc_name)
+                if norm_doc in norm_query or norm_query in norm_doc:
+                    target = val
+                    break
+
+    if target is None:
+        if role == 'P':
+            target = max(1, int(round(qta * 1.1)))
+        elif role == 'D':
+            if fvm >= 200: target = max(30, int(round(fvm * 0.14)))
+            elif fvm >= 50: target = max(12, int(round(fvm * 0.28)))
+            elif fvm >= 20: target = max(5, int(round(fvm * 0.25)))
+            else: target = max(1, int(round(qta * 0.8)))
+        elif role == 'C':
+            if fvm >= 200: target = max(45, int(round(fvm * 0.22)))
+            elif fvm >= 80: target = max(16, int(round(fvm * 0.22)))
+            elif fvm >= 25: target = max(6, int(round(fvm * 0.20)))
+            else: target = max(1, int(round(qta * 0.8)))
+        elif role == 'A':
+            if fvm >= 250: target = max(75, int(round(fvm * 0.32)))
+            elif fvm >= 120: target = max(30, int(round(fvm * 0.26)))
+            elif fvm >= 40: target = max(10, int(round(fvm * 0.22)))
+            else: target = max(1, int(round(qta * 0.9)))
+
+    int_t = int(round(target))
+    if role == 'P':
+        max_bid = max(int_t + 1, int(round(int_t * 1.20))) if int_t > 1 else 1
+    elif role == 'D':
+        max_bid = max(int_t + 1, int(round(int_t * 1.18))) if int_t > 1 else 1
+    elif role == 'C':
+        max_bid = max(int_t + 1, int(round(int_t * 1.16))) if int_t > 2 else int_t
+    else:
+        max_bid = max(int_t + 1, int(round(int_t * 1.15))) if int_t > 2 else int_t
+
+    return int_t, max_bid
+
+def calculate_dynamic_player_evaluation(player_row, my_roster):
+    role = str(player_row['R']).strip()
+    base_target, base_max = get_player_base_target(player_row)
+
+    tot_spent = sum(p['price'] for p in my_roster)
+    tot_budget_left = TOTAL_BUDGET - tot_spent
+    tot_slots_filled = len(my_roster)
+    tot_slots_left = TOTAL_SLOTS - tot_slots_filled
+
+    if tot_slots_left <= 0:
+        return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
+
+    dept_bought = [p for p in my_roster if p['role'] == role]
+    dept_spent = sum(p['price'] for p in dept_bought)
+    dept_filled = len(dept_bought)
+    dept_slots_left = SLOTS[role] - dept_filled
+
+    if dept_slots_left <= 0:
+        return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
+
+    other_slots_needed = tot_slots_left - dept_slots_left
+    max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+    
+    total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
+    scale_factor = tot_budget_left / max(1, total_unfilled_baseline)
+    
+    dyn_target = max(1, int(round(base_target * scale_factor)))
+    max_single_in_dept = max(1, effective_dept_budget - (dept_slots_left - 1))
+    dyn_target = min(dyn_target, max_single_in_dept)
+
+    margin = 1.15 if dyn_target > 25 else (1.20 if dyn_target > 5 else 1.0)
+    dyn_max_bid = int(round(dyn_target * margin))
+    dyn_max_bid = max(dyn_target, min(tot_budget_left - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
+
+    return {
+        "base_target": base_target,
+        "base_max": base_max,
+        "dyn_target": dyn_target,
+        "dyn_max_bid": dyn_max_bid,
+        "scale_factor": round(scale_factor, 2),
+        "dept_spent": dept_spent,
+        "dept_budget_left": effective_dept_budget,
+        "dept_slots_left": dept_slots_left,
+        "is_full": False
+    }
+
+def calculate_dynamic_targets_for_slots(role, my_roster):
+    tot_spent = sum(p['price'] for p in my_roster)
+    tot_budget_left = TOTAL_BUDGET - tot_spent
+    tot_slots_left = TOTAL_SLOTS - len(my_roster)
+
+    dept_bought = [p for p in my_roster if p['role'] == role]
+    dept_spent = sum(p['price'] for p in dept_bought)
+    dept_filled = len(dept_bought)
+    dept_slots_left = SLOTS[role] - dept_filled
+
+    if dept_slots_left <= 0:
+        return []
+
+    other_slots_needed = tot_slots_left - dept_slots_left
+    max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+
+    avail = effective_dept_budget
+
+    weights_map = {
+        'A': {
+            6: [0.40, 0.33, 0.16, 0.07, 0.03, 0.01],
+            5: [0.55, 0.25, 0.12, 0.05, 0.03],
+            4: [0.60, 0.25, 0.10, 0.05],
+            3: [0.68, 0.24, 0.08],
+            2: [0.85, 0.15],
+            1: [1.0]
+        },
+        'C': {
+            8: [0.35, 0.30, 0.13, 0.08, 0.05, 0.04, 0.03, 0.02],
+            7: [0.42, 0.22, 0.14, 0.09, 0.06, 0.04, 0.03],
+            6: [0.48, 0.24, 0.12, 0.08, 0.05, 0.03],
+            5: [0.55, 0.25, 0.10, 0.06, 0.04],
+            4: [0.60, 0.22, 0.12, 0.06],
+            3: [0.70, 0.20, 0.10],
+            2: [0.80, 0.20],
+            1: [1.0]
+        },
+        'D': {
+            8: [0.40, 0.17, 0.13, 0.11, 0.08, 0.08, 0.02, 0.01],
+            7: [0.30, 0.22, 0.18, 0.14, 0.10, 0.04, 0.02],
+            6: [0.35, 0.25, 0.20, 0.12, 0.05, 0.03],
+            5: [0.42, 0.28, 0.18, 0.08, 0.04],
+            4: [0.50, 0.30, 0.14, 0.06],
+            3: [0.60, 0.28, 0.12],
+            2: [0.75, 0.25],
+            1: [1.0]
+        },
+        'P': {
+            3: [max(1, avail - 4), 3, 1],
+            2: [max(1, avail - 1), 1],
+            1: [avail]
+        }
+    }
+
+    if role == 'P':
+        return weights_map['P'][dept_slots_left]
+
+    weights = weights_map[role][dept_slots_left]
+    targets = [max(1, int(round(avail * w))) for w in weights]
+    diff = sum(targets) - avail
+    targets[0] = max(1, targets[0] - diff)
+    return targets
+
+def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
+    if custom_user_targets_list:
+        for cust_name in custom_user_targets_list:
+            if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
+                row = listone_df[listone_df['Nome'] == cust_name]
+                if not row.empty:
+                    r_row = row.iloc[0]
+                    base_t, base_m = get_player_base_target(r_row)
+                    allocated_in_roadmap.add(cust_name)
+                    
+                    dyn_t = max(1, slot_target_budget)
+                    margin = 1.16 if dyn_t > 20 else (1.20 if dyn_t > 5 else 1.0)
+                    dyn_m = int(round(dyn_t * margin)) if dyn_t > 2 else dyn_t
+                    
+                    alts_df = listone_df[(listone_df['R'] == role_code) & (~listone_df['Nome'].isin(allocated_in_roadmap)) & (~listone_df['Nome'].isin(purchased_registry.keys()))]
+                    alts_str = ", ".join([f"{r['Nome']} ({get_player_base_target(r)[0]} cr)" for _, r in alts_df.head(3).iterrows()])
+                    
+                    return {
+                        "chosen_name": cust_name,
+                        "chosen_team": str(r_row['Squadra']),
+                        "chosen_role": "🎯 Mio Top Selezionato",
+                        "base_target": base_t,
+                        "dyn_target": dyn_t,
+                        "dyn_max_bid": dyn_m,
+                        "alts_str": alts_str if alts_str else "Nessuna alternativa disponibile"
+                    }
+
+    pool = ROLE_TIERED_POOLS[role_code]
+    best_tier = None
+    min_dist = 999
+    for tier in pool:
+        mid_p = (tier['min_p'] + tier['max_p']) / 2.0
+        dist = abs(slot_target_budget - mid_p)
+        if dist < min_dist:
+            min_dist = dist
+            best_tier = tier
+
+    candidates_ordered = []
+    for c in best_tier['candidates']:
+        if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap:
+            candidates_ordered.append(c)
+
+    if len(candidates_ordered) < 4:
+        for tier in pool:
+            if tier != best_tier:
+                for c in tier['candidates']:
+                    if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap and c not in candidates_ordered:
+                        candidates_ordered.append(c)
+                        if len(candidates_ordered) >= 6:
+                            break
+
+    candidates_ordered.sort(key=lambda x: abs(x['base_target'] - slot_target_budget))
+
+    chosen = candidates_ordered[0] if candidates_ordered else {"name": "Scommessa / Copertura", "team": "Serie A", "base_target": 1, "max": 1, "role": "Slot di Completamento"}
+    allocated_in_roadmap.add(chosen['name'])
+
+    alts = [f"{c['name']} ({c['base_target']} cr)" for c in candidates_ordered[1:4]]
+
+    margin = 1.16 if slot_target_budget > 20 else (1.20 if slot_target_budget > 5 else 1.0)
+    max_b = int(round(slot_target_budget * margin)) if slot_target_budget > 2 else slot_target_budget
+
+    return {
+        "chosen_name": chosen['name'],
+        "chosen_team": chosen['team'],
+        "chosen_role": chosen['role'],
+        "base_target": chosen['base_target'],
+        "dyn_target": slot_target_budget,
+        "dyn_max_bid": max_b,
+        "alts_str": ", ".join(alts) if alts else "Nessuna alternativa disponibile"
+    }
+
+def render_role_card_grid(role_code, dept_title, num_cols=4):
+    slots_total = SLOTS[role_code]
+    bought_list = [p for p in st.session_state.my_roster if p['role'] == role_code]
+    
+    st.markdown(f"### {dept_title}")
+    st.caption(f"Spesi: **{get_dept_spent(role_code)} cr** / {BASE_DEPT_BUDGET[role_code]} cr | Slot Completati: **{len(bought_list)} / {slots_total}**")
+    
+    allocated_in_roadmap = set(p['name'] for p in st.session_state.my_roster)
+    dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.my_roster)
+    
+    user_custom_picks = st.session_state.custom_user_targets.get(role_code, [])
+
+    for row_start in range(0, slots_total, num_cols):
+        row_slots_count = min(num_cols, slots_total - row_start)
+        cols = st.columns(num_cols)
+        
+        for idx in range(row_slots_count):
+            global_slot_idx = row_start + idx
+            slot_prefix = 'DIF' if role_code == 'D' else ('CEN' if role_code == 'C' else 'ATT')
+            slot_label = f"{slot_prefix} {global_slot_idx + 1}"
+            
+            with cols[idx]:
+                if global_slot_idx < len(bought_list):
+                    p_bought = bought_list[global_slot_idx]
+                    card_text = f"**{slot_label}: {p_bought['name']}** ({p_bought['team']})\n\n✅ **Acquistato:** `{p_bought['price']} cr`\n\n📌 *Ruolo:* In Rosa"
+                    st.success(card_text)
+                else:
+                    rem_idx = global_slot_idx - len(bought_list)
+                    t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
+                    
+                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.purchased_registry, allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
+                    card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
+                    st.info(card_text)
+
+# ==============================================================================
+# 5. INTEGRAZIONE API-FOOTBALL (STATISTICHE LIVE)
 # ==============================================================================
 API_KEY = st.secrets.get("FOOTBALL_API_KEY", None)
 
