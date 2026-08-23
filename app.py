@@ -9,10 +9,10 @@ import feedparser
 from datetime import datetime
 
 # ==============================================================================
-# 1. SETUP GENERALE & THEME STYLING PRO SUITE
+# 1. SETUP GENERALE, SESSION STATE & THEME STYLING
 # ==============================================================================
 st.set_page_config(
-    page_title="FantaAsta 2026/27 Pro Suite",
+    page_title="FantaAsta 2026/27 Pro Master Suite",
     layout="wide",
     page_icon="⚽",
     initial_sidebar_state="expanded"
@@ -70,7 +70,6 @@ st.markdown("""
         box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
     }
 
-    /* Stile Campo da Calcio Tattico */
     .pitch-container {
         background: linear-gradient(to bottom, #15803d 0%, #166534 50%, #15803d 100%);
         background-size: 100% 40px;
@@ -123,31 +122,65 @@ BASELINE_DEPT_CURVES = {
     'A': [90, 75, 38, 15, 6, 2]
 }
 
-# LOGHI UFFICIALI SERIE A
-TEAM_LOGOS = {
-    "Inter": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/80px-FC_Internazionale_Milano_2021.svg.png",
-    "Milan": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/80px-Logo_of_AC_Milan.svg.png",
-    "Juventus": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Juventus_FC_2017_icon_%28black%29.svg/80px-Juventus_FC_2017_icon_%28black%29.svg.png",
-    "Napoli": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/SSC_Napoli_2024_%28deep_navy_blue_crest%29.svg/80px-SSC_Napoli_2024_%28deep_navy_blue_crest%29.svg.png",
-    "Roma": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/AS_Roma_logo_%282017%29.svg/80px-AS_Roma_logo_%282017%29.svg.png",
-    "Lazio": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/SS_Lazio_badge.svg/80px-SS_Lazio_badge.svg.png",
-    "Atalanta": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/AtalantaBC.svg/80px-AtalantaBC.svg.png",
-    "Fiorentina": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/ACF_Fiorentina_2022.svg/80px-ACF_Fiorentina_2022.svg.png",
-    "Bologna": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Bologna_F.C._1909_logo.svg/80px-Bologna_F.C._1909_logo.svg.png",
-    "Torino": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Torino_FC_Logo.svg/80px-Torino_FC_Logo.svg.png",
-    "Udinese": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Udinese_Calcio_logo.svg/80px-Udinese_Calcio_logo.svg.png",
-    "Genoa": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Genoa_CFC_crest.svg/80px-Genoa_CFC_crest.svg.png",
-    "Cagliari": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Cagliari_Calcio_1920.svg/80px-Cagliari_Calcio_1920.svg.png",
-    "Monza": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/AC_Monza_crest.svg/80px-AC_Monza_crest.svg.png",
-    "Parma": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Parma_Calcio_1913_logo.svg/80px-Parma_Calcio_1913_logo.svg.png",
-    "Como": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Como_1907_Logo.svg/80px-Como_1907_Logo.svg.png",
-    "Lecce": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/US_Lecce_logo.svg/80px-US_Lecce_logo.svg.png",
-    "Sassuolo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/US_Sassuolo_Calcio_logo.svg/80px-US_Sassuolo_Calcio_logo.svg.png",
-    "Venezia": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Venezia_FC_logo_2022.svg/80px-Venezia_FC_logo_2022.svg.png",
-    "Frosinone": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Frosinone_Calcio_logo.svg/80px-Frosinone_Calcio_logo.svg.png"
-}
+# ==============================================================================
+# 2. PERSISTENZA E INIZIALIZZAZIONE SESSION STATE (DIFENSIVA)
+# ==============================================================================
+def load_state_from_disk():
+    if os.path.exists(SAVE_FILE):
+        try:
+            with open(SAVE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return None
+    return None
 
-# MATRICE RIGORISTI E TIRATORI
+saved_data = load_state_from_disk()
+
+if 'my_roster' not in st.session_state:
+    st.session_state.my_roster = saved_data["my_roster"] if saved_data and "my_roster" in saved_data else []
+
+if 'selected_keeper_club' not in st.session_state:
+    st.session_state.selected_keeper_club = saved_data["selected_keeper_club"] if saved_data and "selected_keeper_club" in saved_data else 'Inter'
+
+if 'custom_user_targets' not in st.session_state:
+    st.session_state.custom_user_targets = saved_data.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}) if saved_data else {'P': [], 'D': [], 'C': [], 'A': []}
+
+if 'opponents' not in st.session_state:
+    if saved_data and "opponents" in saved_data:
+        st.session_state.opponents = saved_data["opponents"]
+    else:
+        st.session_state.opponents = {
+            f"Avversario {i+1}": {
+                'name': f"Avversario {i+1}", 'budget': TOTAL_BUDGET, 'slots_left': TOTAL_SLOTS,
+                'roster': {'P': [], 'D': [], 'C': [], 'A': []}
+            } for i in range(9)
+        }
+
+if 'purchased_registry' not in st.session_state:
+    st.session_state.purchased_registry = saved_data["purchased_registry"] if saved_data and "purchased_registry" in saved_data else {}
+
+if 'history' not in st.session_state:
+    st.session_state.history = saved_data["history"] if saved_data and "history" in saved_data else []
+
+def save_state_to_disk():
+    state_data = {
+        "my_roster": st.session_state.get("my_roster", []),
+        "selected_keeper_club": st.session_state.get("selected_keeper_club", 'Inter'),
+        "custom_user_targets": st.session_state.get("custom_user_targets", {'P': [], 'D': [], 'C': [], 'A': []}),
+        "opponents": st.session_state.get("opponents", {}),
+        "purchased_registry": st.session_state.get("purchased_registry", {}),
+        "history": st.session_state.get("history", []),
+        "last_saved": datetime.now().strftime("%H:%M:%S")
+    }
+    try:
+        with open(SAVE_FILE, "w", encoding="utf-8") as f:
+            json.dump(state_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        st.sidebar.error(f"Errore nel salvataggio: {e}")
+
+# ==============================================================================
+# 3. MATRICI DATI, RIGORISTI, BENCHMARK & TATTICHE
+# ==============================================================================
 PENALTY_TAKERS = {
     "Inter": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Martinez L. (3°)"],
     "Genoa": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
@@ -171,7 +204,6 @@ PENALTY_TAKERS = {
     "Atalanta": ["Scamacca (1°)", "Samardzic (2°)", "De Ketelaere (3°)"]
 }
 
-# MATRICE INCROCI CALENDARIO PORTIERI
 GOALKEEPER_PAIRINGS = {
     'Inter': [
         {"club": "Monza", "starter": "Thiam", "target": 5, "max": 7, "diff": "🟢🟢 Alternanza 100% (Low-Cost)", "reason": "Derby lombardo alternato, spesa minima (5 cr), garantisce sempre 1 partita in casa."},
@@ -223,48 +255,47 @@ GOALIE_HIERARCHY = {
     'Venezia': [('Stankovic F.', 4, 6), ('Grandi', 1, 1), ('Pozzi', 1, 1)]
 }
 
-# BENCHMARK MEDI AGGIORNATI FANTALAB
 DOC_TARGETS = {
-    "Svilar Mile": 49, "Svilar": 49, "Maignan Mike": 42, "Maignan": 42, "Vicario Guglielmo": 39, "Vicario": 39,
-    "Martinez Josep": 34, "Martinez Jo.": 34, "Carnesecchi Marco": 34, "Carnesecchi": 34, "Butez Jean": 31, "Butez": 31,
-    "Meret Alex": 28, "Meret": 28, "De Gea David": 21, "De Gea": 21, "Skorupski Lukasz": 17, "Skorupski": 17,
-    "Mandas Christos": 15, "Mandas": 15, "Okoye Maduka": 14, "Okoye": 14, "Falcone Wladimiro": 12, "Falcone": 12,
-    "Caprile Elia": 10, "Caprile": 10, "Bijlow Justin": 9, "Bijlow": 9, "Milinkovic-Savic Vanja": 11, "Milinkovic-Savic V.": 11,
-    "Provedel Ivan": 8, "Provedel": 8, "Muric Arijanet": 5, "Muric": 5, "Corvi Edoardo": 4, "Corvi": 4,
-    "Perri Lucas": 5, "Perri": 5, "Thiam Demba": 4, "Thiam": 4, "Stankovic Filip": 4, "Stankovic F.": 4,
-    "Dimarco Federico": 52, "Dimarco": 52, "Bremer Gleison": 38, "Bremer": 38, "Mancini Gianluca": 32, "Mancini": 32,
-    "Wesley França": 30, "Wesley": 30, "Bastoni Alessandro": 26, "Bastoni": 26, "Pavlovic Strahinja": 26, "Pavlovic": 26,
-    "Solet Oumar": 25, "Solet": 25, "Akanji Manuel": 24, "Akanji": 24, "Cambiaso Andrea": 23, "Cambiaso": 23,
-    "Bisseck Yann": 23, "Bisseck": 23, "Di Lorenzo Giovanni": 22, "Di Lorenzo": 22, "Rrahmani Amir": 21, "Rrahmani": 21,
-    "Scalvini Giorgio": 20, "Scalvini": 20, "Kempf Marc Oliver": 19, "Kempf": 19, "Ostigard Leo": 18, "Ostigard": 18,
-    "Kalulu Pierre": 16, "Kalulu": 16, "Ndicka Evan": 16, "Ndicka": 16, "Gila Mario": 15, "Gila": 15,
-    "Yan Couto": 16, "Molina Nahuel": 16, "Molina N.": 16, "Dragusin Radu": 15, "Dragusin": 15,
-    "Spinazzola Leonardo": 14, "Spinazzola": 14, "Chalobah Trevoh": 14, "Chalobah": 14, "Miranda Juan": 13, "Miranda": 13,
-    "Dodò": 12, "Dodo": 12, "Mina Yerry": 11, "Mina": 11, "Doekhi Danilho": 11, "Doekhi": 11,
-    "Vojvoda Mergim": 10, "Vojvoda": 10, "Kaiki Bruno": 8, "Kaiki": 8, "Rensch Devyne": 8, "Rensch": 8,
-    "Heggem Torbjorn": 7, "Heggem": 7, "Ahanor Honest": 7, "Ahanor": 7, "Ziolkowski Jan": 1, "Ziolkowski": 1,
-    "Paz Nico": 88, "Nico Paz": 88, "McTominay Scott": 69, "McTominay": 69, "Orsolini Riccardo": 58, "Orsolini": 58,
-    "Calhanoglu Hakan": 69, "Calhanoglu": 69, "De Bruyne Kevin": 46, "De Bruyne": 46, "Rabiot Adrien": 44, "Rabiot": 44,
-    "Da Cunha Lucas": 32, "Da Cunha": 32, "Barella Nicolo'": 33, "Barella": 33, "Atta Arthur": 30, "Atta": 30,
-    "Baturina Martin": 29, "Baturina": 29, "Politano Matteo": 28, "Politano": 28, "Zielinski Piotr": 26, "Zielinski": 26,
-    "Ederson Dos Santos": 26, "Ederson": 26, "McKennie Weston": 25, "McKennie": 25, "Mastantuono Franco": 24, "Mastantuono": 24,
-    "Vlasic Nikola": 24, "Vlasic": 24, "Moreira Diego": 22, "Diego Moreira": 22, "Gaetano Gianluca": 21, "Gaetano": 21,
-    "Saelemaekers Alexis": 20, "Saelemaekers": 20, "Rowe Jonathan": 20, "Rowe": 20, "Sucic Petar": 19, "Sucic": 19,
-    "Thorstvedt Kristian": 19, "Thorstvedt": 19, "Casadei Cesare": 18, "Casadei": 18, "Zaniolo Nicolo'": 19, "Zaniolo": 19,
-    "Perrone Maximo": 14, "Perrone": 14, "Manu Koné": 15, "Koné M.": 15, "Frattesi Davide": 17, "Frattesi": 17,
-    "Locatelli Manuel": 12, "Locatelli": 12, "Lobotka Stanislav": 10, "Lobotka": 10, "Diouf Andy": 11, "Diouf": 11,
-    "Adzic Vasilije": 8, "Adzic": 8, "Busio Gianluca": 8, "Busio": 8, "El Azzouzi Anouar": 2, "El Azzouzi A.": 2, "Lahdo Adrian": 2,
-    "Martinez Lautaro": 129, "Lautaro Martinez": 129, "Martinez L.": 129, "Malen Donyell": 114, "Malen": 114,
-    "Thuram Marcus": 116, "Thuram": 116, "Ramos Gonçalo": 102, "Ramos G.": 102, "Gonçalo Ramos": 102,
-    "Hojlund Rasmus": 83, "Hojlund": 83, "Kolo Muani Randal": 109, "Kolo Muani": 109, "Kean Moise": 84, "Kean": 84,
-    "Yildiz Kenan": 82, "Yildiz": 82, "Pulisic Christian": 62, "Pulisic": 62, "Douvikas Anastasios": 72, "Douvikas": 72,
-    "Scamacca Gianluca": 66, "Scamacca": 66, "Dybala Paulo": 62, "Dybala": 62, "Leão Rafael": 70, "Leao": 70,
-    "Krstovic Nikola": 48, "Krstovic": 48, "Dovbyk Artem": 52, "Dovbyk": 52, "Nkunku Christopher": 56, "Nkunku": 56,
-    "Simeone Giovanni": 39, "Simeone": 39, "Davis Keinan": 34, "Davis K.": 34, "Berardi Domenico": 45, "Berardi": 45,
-    "Gudmundsson Albert": 40, "Gudmundsson": 40, "Castro Santiago": 34, "Castro": 34, "Piccoli Roberto": 25, "Piccoli": 25,
-    "Noslin Tijjani": 25, "Noslin": 25, "Raspadori Giacomo": 24, "Raspadori": 24, "Pellegrino Mateo": 22, "Pellegrino": 22,
-    "Touré El Bilal": 18, "Tourè E.": 18, "Cutrone Patrick": 21, "Cutrone": 21, "Akor Adams": 20, "Adams A.": 20,
-    "Esposito Francesco Pio": 14, "Esposito F.P.": 14, "Bonny Ange-Yoan": 12, "Bonny": 12, "Kevin Carlos": 11, "Carlos K.": 11
+    "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
+    "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
+    "Meret Alex": 27.5, "Meret": 27.5, "De Gea David": 21.0, "De Gea": 21.0, "Skorupski Lukasz": 17.0, "Skorupski": 17.0,
+    "Mandas Christos": 15.0, "Mandas": 15.0, "Okoye Maduka": 13.5, "Okoye": 13.5, "Falcone Wladimiro": 11.5, "Falcone": 11.5,
+    "Caprile Elia": 9.5, "Caprile": 9.5, "Bijlow Justin": 8.5, "Bijlow": 8.5, "Milinkovic-Savic Vanja": 10.5, "Milinkovic-Savic V.": 10.5,
+    "Provedel Ivan": 7.5, "Provedel": 7.5, "Muric Arijanet": 5.0, "Muric": 5.0, "Corvi Edoardo": 4.0, "Corvi": 4.0,
+    "Perri Lucas": 4.5, "Perri": 4.5, "Thiam Demba": 3.5, "Thiam": 3.5, "Stankovic Filip": 3.5, "Stankovic F.": 3.5,
+    "Dimarco Federico": 52.0, "Dimarco": 52.0, "Bremer Gleison": 38.0, "Bremer": 38.0, "Mancini Gianluca": 32.0, "Mancini": 32.0,
+    "Wesley França": 30.0, "Wesley": 30.0, "Bastoni Alessandro": 26.0, "Bastoni": 26.0, "Pavlovic Strahinja": 26.0, "Pavlovic": 26.0,
+    "Solet Oumar": 25.0, "Solet": 25.0, "Akanji Manuel": 24.0, "Akanji": 24.0, "Cambiaso Andrea": 23.0, "Cambiaso": 23.0,
+    "Bisseck Yann": 23.0, "Bisseck": 23.0, "Di Lorenzo Giovanni": 22.0, "Di Lorenzo": 22.0, "Rrahmani Amir": 21.0, "Rrahmani": 21.0,
+    "Scalvini Giorgio": 20.0, "Scalvini": 20.0, "Kempf Marc Oliver": 18.5, "Kempf": 18.5, "Ostigard Leo": 18.0, "Ostigard": 18.0,
+    "Kalulu Pierre": 16.0, "Kalulu": 16.0, "Ndicka Evan": 15.5, "Ndicka": 15.5, "Gila Mario": 14.5, "Gila": 14.5,
+    "Yan Couto": 16.0, "Molina Nahuel": 16.0, "Molina N.": 16.0, "Dragusin Radu": 15.0, "Dragusin": 15.0,
+    "Spinazzola Leonardo": 14.0, "Spinazzola": 14.0, "Chalobah Trevoh": 13.5, "Chalobah": 13.5, "Miranda Juan": 12.5, "Miranda": 12.5,
+    "Dodò": 12.0, "Dodo": 12.0, "Mina Yerry": 11.0, "Mina": 11.0, "Doekhi Danilho": 10.5, "Doekhi": 10.5,
+    "Vojvoda Mergim": 10.0, "Vojvoda": 10.0, "Kaiki Bruno": 8.0, "Kaiki": 8.0, "Rensch Devyne": 8.0, "Rensch": 8.0,
+    "Heggem Torbjorn": 7.0, "Heggem": 7.0, "Ahanor Honest": 7.0, "Ahanor": 7.0, "Ziolkowski Jan": 1.0, "Ziolkowski": 1.0,
+    "Paz Nico": 87.75, "Nico Paz": 87.75, "McTominay Scott": 68.94, "McTominay": 68.94, "Orsolini Riccardo": 58.0, "Orsolini": 58.0,
+    "Calhanoglu Hakan": 68.81, "Calhanoglu": 68.81, "De Bruyne Kevin": 46.0, "De Bruyne": 46.0, "Rabiot Adrien": 44.0, "Rabiot": 44.0,
+    "Da Cunha Lucas": 32.0, "Da Cunha": 32.0, "Barella Nicolo'": 33.0, "Barella": 33.0, "Atta Arthur": 30.0, "Atta": 30.0,
+    "Baturina Martin": 29.0, "Baturina": 29.0, "Politano Matteo": 28.0, "Politano": 28.0, "Zielinski Piotr": 26.0, "Zielinski": 26.0,
+    "Ederson Dos Santos": 26.0, "Ederson": 26.0, "McKennie Weston": 25.0, "McKennie": 25.0, "Mastantuono Franco": 24.0, "Mastantuono": 24.0,
+    "Vlasic Nikola": 24.0, "Vlasic": 24.0, "Moreira Diego": 22.0, "Diego Moreira": 22.0, "Gaetano Gianluca": 21.0, "Gaetano": 21.0,
+    "Saelemaekers Alexis": 20.0, "Saelemaekers": 20.0, "Rowe Jonathan": 20.0, "Rowe": 20.0, "Sucic Petar": 19.0, "Sucic": 19.0,
+    "Thorstvedt Kristian": 19.0, "Thorstvedt": 19.0, "Casadei Cesare": 18.0, "Casadei": 18.0, "Zaniolo Nicolo'": 19.0, "Zaniolo": 19.0,
+    "Perrone Maximo": 14.0, "Perrone": 14.0, "Manu Koné": 15.0, "Koné M.": 15.0, "Frattesi Davide": 17.0, "Frattesi": 17.0,
+    "Locatelli Manuel": 12.0, "Locatelli": 12.0, "Lobotka Stanislav": 10.0, "Lobotka": 10.0, "Diouf Andy": 11.0, "Diouf": 11.0,
+    "Adzic Vasilije": 8.0, "Adzic": 8.0, "Busio Gianluca": 8.0, "Busio": 8.0, "El Azzouzi Anouar": 2.0, "El Azzouzi A.": 2.0, "Lahdo Adrian": 2.0,
+    "Martinez Lautaro": 129.36, "Lautaro Martinez": 129.36, "Martinez L.": 129.36, "Malen Donyell": 113.9, "Malen": 113.9,
+    "Thuram Marcus": 116.02, "Thuram": 116.02, "Ramos Gonçalo": 102.37, "Ramos G.": 102.37, "Gonçalo Ramos": 102.37,
+    "Hojlund Rasmus": 83.25, "Hojlund": 83.25, "Kolo Muani Randal": 109.48, "Kolo Muani": 109.48, "Kean Moise": 84.44, "Kean": 84.44,
+    "Yildiz Kenan": 82.0, "Yildiz": 82.0, "Pulisic Christian": 62.45, "Pulisic": 62.45, "Douvikas Anastasios": 72.0, "Douvikas": 72.0,
+    "Scamacca Gianluca": 66.0, "Scamacca": 66.0, "Dybala Paulo": 62.0, "Dybala": 62.0, "Leão Rafael": 70.0, "Leao": 70.0,
+    "Krstovic Nikola": 48.0, "Krstovic": 48.0, "Dovbyk Artem": 52.0, "Dovbyk": 52.0, "Nkunku Christopher": 55.85, "Nkunku": 55.85,
+    "Simeone Giovanni": 39.0, "Simeone": 39.0, "Davis Keinan": 34.0, "Davis K.": 34.0, "Berardi Domenico": 45.0, "Berardi": 45.0,
+    "Gudmundsson Albert": 40.0, "Gudmundsson": 40.0, "Castro Santiago": 34.0, "Castro": 34.0, "Piccoli Roberto": 25.0, "Piccoli": 25.0,
+    "Noslin Tijjani": 25.0, "Noslin": 25.0, "Raspadori Giacomo": 24.0, "Raspadori": 24.0, "Pellegrino Mateo": 22.0, "Pellegrino": 22.0,
+    "Touré El Bilal": 18.0, "Tourè E.": 18.0, "Cutrone Patrick": 21.0, "Cutrone": 21.0, "Akor Adams": 20.0, "Adams A.": 20.0,
+    "Esposito Francesco Pio": 14.0, "Esposito F.P.": 14.0, "Bonny Ange-Yoan": 12.0, "Bonny": 12.0, "Kevin Carlos": 11.0, "Carlos K.": 11.0
 }
 
 ROLE_TIERED_POOLS = {
@@ -285,19 +316,19 @@ ROLE_TIERED_POOLS = {
             {"name": "Di Lorenzo", "team": "Napoli", "base_target": 22, "max": 26, "role": "Intoccabile a Destra (FM 6.33)"},
             {"name": "Rrahmani", "team": "Napoli", "base_target": 21, "max": 25, "role": "Centrale Titolarissimo Allegri (FM 6.45)"},
             {"name": "Scalvini", "team": "Atalanta", "base_target": 20, "max": 24, "role": "Perno Difensivo Sarri (3 gol)"},
-            {"name": "Kempf", "team": "Como", "base_target": 19, "max": 22, "role": "Pilastro Difesa Fabregas (FM 6.52)"},
+            {"name": "Kempf", "team": "Como", "base_target": 18, "max": 22, "role": "Pilastro Difesa Fabregas (FM 6.52)"},
             {"name": "Ostigard", "team": "Genoa", "base_target": 18, "max": 22, "role": "Specialista Aereo da Corner (5 gol)"}
         ]},
         {"tier_label": "Titolare Modificatore / Spinta", "min_p": 10, "max_p": 16, "candidates": [
             {"name": "Kalulu", "team": "Juventus", "base_target": 16, "max": 19, "role": "Titolare Fisso Senza Sbavature (FM 6.35)"},
             {"name": "Yan Couto", "team": "Como", "base_target": 16, "max": 19, "role": "Esterno Spinta Fabregas"},
             {"name": "Molina N.", "team": "Roma", "base_target": 16, "max": 19, "role": "Esterno Offensivo da Bonus"},
-            {"name": "Ndicka", "team": "Roma", "base_target": 16, "max": 18, "role": "Centrale Solido (FM 6.32)"},
+            {"name": "Ndicka", "team": "Roma", "base_target": 15, "max": 18, "role": "Centrale Solido (FM 6.32)"},
             {"name": "Dragusin", "team": "Fiorentina", "base_target": 15, "max": 18, "role": "Titolare Fisso Modificatore Grosso"},
-            {"name": "Gila", "team": "Milan", "base_target": 15, "max": 17, "role": "Affidabilità Pura Difesa a 3 Amorim"},
+            {"name": "Gila", "team": "Milan", "base_target": 14, "max": 17, "role": "Affidabilità Pura Difesa a 3 Amorim"},
             {"name": "Spinazzola", "team": "Napoli", "base_target": 14, "max": 17, "role": "Jolly Bonus Allegri (FM 6.53)"},
             {"name": "Mina", "team": "Cagliari", "base_target": 11, "max": 14, "role": "1° Rigorista / Minutaggio 85%"},
-            {"name": "Doekhi", "team": "Lazio", "base_target": 11, "max": 13, "role": "Centrale Goleador da Piazzato"},
+            {"name": "Doekhi", "team": "Lazio", "base_target": 10, "max": 13, "role": "Centrale Goleador da Piazzato"},
             {"name": "Vojvoda", "team": "Udinese", "base_target": 10, "max": 13, "role": "Titolare Frequente nelle Rose"}
         ]},
         {"tier_label": "Titolare Low Cost / Scommessa", "min_p": 1, "max_p": 8, "candidates": [
@@ -597,7 +628,6 @@ st.sidebar.markdown(f"**Budget Rimasto:** `{tot_budget_left} / 500 cr`")
 st.sidebar.markdown(f"**Slot Mancanti:** `{tot_slots_needed} / 25`")
 st.sidebar.markdown(f"**Pmax Assoluto:** `{p_max_safe} cr`")
 
-# PROGRESS BAR CASSA REPARTI
 st.sidebar.divider()
 st.sidebar.markdown("**📊 Avanzamento Spesa Reparti:**")
 for r_code, r_name in [('P', '🧤 Portieri'), ('D', '🛡️ Difensori'), ('C', '⚙️ Centrocampisti'), ('A', '⚽ Attaccanti')]:
@@ -607,9 +637,8 @@ for r_code, r_name in [('P', '🧤 Portieri'), ('D', '🛡️ Difensori'), ('C',
     st.sidebar.caption(f"{r_name}: **{sp} / {cap} cr**")
     st.sidebar.progress(ratio)
 
-# PANIC BUTTON ATTACCO SE CASSA CRITICA
 if tot_budget_left <= 190 and len([p for p in st.session_state.my_roster if p['role'] == 'A']) == 0:
-    st.sidebar.error("🚨 **PANIC BUTTON ATTIVO:** Budget residuo sotto al 38%! Frena gli acquisti negli altri reparti per preservare i crediti del bomber titolare.")
+    st.sidebar.error("🚨 **PANIC BUTTON ATTIVO:** Budget residuo sotto al 38%! Preserva i crediti per il bomber titolare.")
 
 st.sidebar.divider()
 col_sb1, col_sb2 = st.sidebar.columns(2)
@@ -687,7 +716,7 @@ tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps
 ])
 
 # ------------------------------------------------------------------------------
-# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE (KEYPAD RILANCI RAPIDI & PREDICTOR RIVALI)
+# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
 # ------------------------------------------------------------------------------
 with tab_call:
     st.subheader(f"Chiamata & Analisi Istantanea Giocatore ({current_stage})")
@@ -732,7 +761,6 @@ with tab_call:
         st.write("")
         btn_confirm = st.button("Conferma Assegnazione", use_container_width=True)
 
-    # KEYPAD RILANCIO VELOCE
     st.markdown("**⚡ Rilancio Rapido Keypad:**")
     kp1, kp2, kp3, kp4 = st.columns(4)
     if kp1.button("➕ 1 cr", use_container_width=True):
@@ -756,7 +784,6 @@ with tab_call:
         c_eval3.metric("Stop-Loss Dinamica", f"{int(round(dyn_max_bid))} cr", "Tetto massimo di sicurezza")
         c_eval4.metric(f"Cassa Reparto ({player_role})", f"{eval_data['dept_budget_left']} cr", f"{eval_data['dept_slots_left']} slot liberi")
 
-        # PREDICTOR MINACCIA RIVALI
         threat_opps = []
         for ok, ov in st.session_state.opponents.items():
             opp_role_count = len(ov['roster'][player_role])
@@ -833,7 +860,7 @@ with tab_call:
                 st.rerun()
 
 # ------------------------------------------------------------------------------
-# TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & LOCK-IN STRATEGY
+# TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
 # ------------------------------------------------------------------------------
 with tab_roadmap:
     st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
@@ -991,10 +1018,9 @@ with tab_field:
 
     st.markdown("---")
     
-    # Render visivo del campo da calcio verde
     st.markdown('<div class="pitch-container">', unsafe_allow_html=True)
     
-    # Linea Attaccanti
+    # Linea Attacco
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_a):
         if i < len(starters_a):
@@ -1003,7 +1029,7 @@ with tab_field:
             st.markdown(f'<div class="player-disc-empty">⚽ Attaccante {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Linea Centrocampisti
+    # Linea Centrocampo
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_c):
         if i < len(starters_c):
@@ -1012,7 +1038,7 @@ with tab_field:
             st.markdown(f'<div class="player-disc-empty">⚙️ Centrocampista {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Linea Difensori
+    # Linea Difesa
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_d):
         if i < len(starters_d):
