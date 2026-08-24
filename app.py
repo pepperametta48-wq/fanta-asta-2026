@@ -1333,7 +1333,7 @@ with tab_call:
                 st.info(f"{sel_player} assegnato a {dest_buyer_name} per {bid_price} cr.")
                 st.rerun()
 
-    # ---------------------------------------------------------
+   # ---------------------------------------------------------
     # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA & PROFONDA)
     # ---------------------------------------------------------
     st.markdown("---")
@@ -1353,9 +1353,19 @@ with tab_call:
         
         if slots_left > 0:
             dyn_targets = calculate_dynamic_targets_for_slots(r, st.session_state.get('my_roster', []))
-            user_custom_picks = st.session_state.get('custom_user_targets', {}).get(r, [])
             
-            # Scorriamo i prossimi slot vuoti in profondità per intercettare tutti i tuoi Top (max 4 per non saturare la UI)
+            # Recuperiamo i target personalizzati dell'utente
+            user_custom_picks = list(st.session_state.get('custom_user_targets', {}).get(r, []))
+            
+            # FIX PORTIERI: Inseriamo forzatamente i portieri del "Blocco" selezionato tra le priorità
+            if r == 'P':
+                k_club = st.session_state.get('selected_keeper_club', 'Inter')
+                k_list = GOALIE_HIERARCHY.get(k_club, [])
+                for k_info in k_list:
+                    if k_info[0] not in user_custom_picks:
+                        user_custom_picks.append(k_info[0])
+            
+            # Scorriamo i prossimi slot vuoti in profondità per intercettare tutti i tuoi Top (max 4)
             for idx in range(min(slots_left, 4)): 
                 if idx < len(dyn_targets):
                     t_budget = dyn_targets[idx]
@@ -1363,15 +1373,26 @@ with tab_call:
                     slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks)
                     
                     if slot_res['chosen_name'] != "Scommessa / Copertura":
+                        is_custom = slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
+                        
+                        # Generazione Etichetta Visiva Dinamica
+                        card_style = "🤖 Consigliato"
+                        if is_custom:
+                            if r == 'P' and slot_res['chosen_name'] in [k[0] for k in GOALIE_HIERARCHY.get(st.session_state.get('selected_keeper_club', 'Inter'), [])] and slot_res['chosen_name'] not in st.session_state.get('custom_user_targets', {}).get('P', []):
+                                card_style = f"🧱 Blocco {st.session_state.get('selected_keeper_club', 'Inter')}"
+                            else:
+                                card_style = "🎯 Tuo Top"
+
                         recs.append({
                             'name': slot_res['chosen_name'],
                             'team': slot_res['chosen_team'],
                             'role': r,
                             'target': slot_res['dyn_target'],
                             'max': slot_res['dyn_max_bid'],
-                            'is_custom': slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
+                            'is_custom': is_custom,
+                            'card_style': card_style
                         })
-                        # Lo aggiungiamo al set temporaneo così nel ciclo successivo non lo propone di nuovo
+                        # Lo aggiungiamo al set temporaneo per passare al successivo
                         temp_allocated.add(slot_res['chosen_name'])
                         
                         if len(recs) >= 4:
@@ -1380,23 +1401,20 @@ with tab_call:
             break
             
     if recs:
-        # Ordiniamo prima i tuoi Top Selezionati, poi le scommesse dell'algoritmo
+        # Ordiniamo dando priorità ai tuoi Top e al Blocco Portieri, poi i suggeriti
         recs = sorted(recs, key=lambda x: x['is_custom'], reverse=True)
         
         rec_cols = st.columns(min(4, len(recs)))
         for i, rec in enumerate(recs[:4]):
             with rec_cols[i]:
-                # Stile diverso se è un tuo Top
-                card_style = "🎯 Tuo Top" if rec['is_custom'] else "🤖 Consigliato"
-                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n{card_style}\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
+                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n{rec['card_style']}\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
                 
-                # Bottone che aggiorna il player selezionato e triggera un rerun
                 if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                     st.session_state.target_call_player = rec['name']
                     st.rerun()
     else:
         st.caption("Nessun giocatore primario consigliato per questo filtro. Sei a posto con i titolari, punta su scommesse a 1 cr!")
-
+        
 # ------------------------------------------------------------------------------
 # TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
 # ------------------------------------------------------------------------------
