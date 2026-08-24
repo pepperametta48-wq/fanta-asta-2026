@@ -665,7 +665,8 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     
     # 1. Calcolo Spese Normali
     tot_spent = sum(p['price'] for p in my_roster)
-    tot_budget_left = TOTAL_BUDGET - tot_spent
+    # Trova questa riga in ENTRAMBE le funzioni della Sezione 3 e modificala così:
+tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
     tot_slots_filled = len(my_roster)
     tot_slots_left = TOTAL_SLOTS - tot_slots_filled
     
@@ -778,7 +779,8 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
 
 def calculate_dynamic_targets_for_slots(role, my_roster):
     tot_spent = sum(p['price'] for p in my_roster)
-    tot_budget_left = TOTAL_BUDGET - tot_spent
+    # Trova questa riga in ENTRAMBE le funzioni della Sezione 3 e modificala così:
+tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
     tot_slots_left = TOTAL_SLOTS - len(my_roster)
 
     dept_bought = [p for p in my_roster if p['role'] == role]
@@ -1116,7 +1118,8 @@ current_stage = st.sidebar.selectbox(
 )
 
 tot_spent = sum(p['price'] for p in st.session_state.my_roster)
-tot_budget_left = TOTAL_BUDGET - tot_spent
+# Calcolo con compensazione penali
+tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
 tot_slots_needed = TOTAL_SLOTS - len(st.session_state.my_roster)
 p_max_safe = tot_budget_left - (tot_slots_needed - 1) if tot_slots_needed > 0 else 0
 
