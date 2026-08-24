@@ -731,55 +731,9 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
         "is_full": False
     }
 
-    # 2. LOGICA LOCK-IN STRATEGY
-    locked_budget_tot = 0
-    locked_budget_dept = 0
-    if st.session_state.get('lock_in_active', False):
-        purchased_names = [p['name'] for p in my_roster]
-        for r_code in ['P', 'D', 'C', 'A']:
-            for t_name in st.session_state.get('custom_user_targets', {}).get(r_code, []):
-                if t_name not in purchased_names and t_name != player_row['Nome']:
-                    row = listone_df[listone_df['Nome'] == t_name]
-                    if not row.empty:
-                        bt, _ = get_player_base_target(row.iloc[0])
-                        locked_budget_tot += bt
-                        if r_code == role:
-                            locked_budget_dept += bt
-                            
-    eff_tot_budget = max(1, tot_budget_left - locked_budget_tot)
-    
-    # 3. Calcolo Adattivo
-    other_slots_needed = tot_slots_left - dept_slots_left
-    max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
-    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (BASE_DEPT_BUDGET[role] - dept_spent) - locked_budget_dept))
-    
-    total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
-    scale_factor = eff_tot_budget / max(1, total_unfilled_baseline)
-    
-    dyn_target = max(1, int(round(base_target * scale_factor)))
-    max_single_in_dept = max(1, effective_dept_budget - (dept_slots_left - 1))
-    dyn_target = min(dyn_target, max_single_in_dept)
-
-    margin = 1.15 if dyn_target > 25 else (1.20 if dyn_target > 5 else 1.0)
-    dyn_max_bid = int(round(dyn_target * margin))
-    dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
-
-    return {
-        "base_target": base_target,
-        "base_max": base_max,
-        "dyn_target": dyn_target,
-        "dyn_max_bid": dyn_max_bid,
-        "scale_factor": round(scale_factor, 2),
-        "dept_spent": dept_spent,
-        "dept_budget_left": effective_dept_budget,
-        "dept_slots_left": dept_slots_left,
-        "is_full": False
-    }
-
 def calculate_dynamic_targets_for_slots(role, my_roster):
     tot_spent = sum(p['price'] for p in my_roster)
-    # Trova questa riga in ENTRAMBE le funzioni della Sezione 3 e modificala così:
-tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
+    tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
     tot_slots_left = TOTAL_SLOTS - len(my_roster)
 
     dept_bought = [p for p in my_roster if p['role'] == role]
@@ -1085,10 +1039,8 @@ if 'history' not in st.session_state:
 if 'quick_bid_val' not in st.session_state:
     st.session_state.quick_bid_val = 1
 
-# NUOVA VARIABILE PER PENALI/SVINCOLI
 if 'budget_adjustments' not in st.session_state:
     st.session_state.budget_adjustments = saved_data.get("budget_adjustments", 0) if saved_data else 0
-
 
 def save_state_to_disk():
     state_data = {
@@ -1098,7 +1050,7 @@ def save_state_to_disk():
         "opponents": st.session_state.get("opponents", {}),
         "purchased_registry": st.session_state.get("purchased_registry", {}),
         "history": st.session_state.get("history", []),
-        "budget_adjustments": st.session_state.get("budget_adjustments", 0), # SALVATAGGIO PENALI
+        "budget_adjustments": st.session_state.get("budget_adjustments", 0),
         "last_saved": datetime.now().strftime("%H:%M:%S")
     }
     try:
@@ -1106,6 +1058,7 @@ def save_state_to_disk():
             json.dump(state_data, f, ensure_ascii=False, indent=2)
     except Exception:
         pass
+
 # ==============================================================================
 # 6. SIDEBAR: STATO, GESTIONE & NOTIZIE
 # ==============================================================================
@@ -1117,7 +1070,6 @@ current_stage = st.sidebar.selectbox(
 )
 
 tot_spent = sum(p['price'] for p in st.session_state.my_roster)
-# Calcolo con compensazione penali
 tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
 tot_slots_needed = TOTAL_SLOTS - len(st.session_state.my_roster)
 p_max_safe = tot_budget_left - (tot_slots_needed - 1) if tot_slots_needed > 0 else 0
@@ -1135,9 +1087,6 @@ for r_code, r_name in [('P', '🧤 Portieri'), ('D', '🛡️ Difensori'), ('C',
     ratio = min(1.0, sp / cap) if cap > 0 else 0.0
     st.sidebar.caption(f"{r_name}: **{sp} / {cap} cr**")
     st.sidebar.progress(ratio)
-
-if tot_budget_left <= 190 and len([p for p in st.session_state.my_roster if p['role'] == 'A']) == 0:
-    st.sidebar.error("🚨 **PANIC BUTTON ATTIVO:** Budget residuo sotto al 38%! Preserva i crediti per il bomber titolare.")
 
 st.sidebar.divider()
 st.sidebar.markdown("**🔒 Lock-in Strategy (Slot Bloccati)**")
@@ -1171,23 +1120,29 @@ if col_sb2.button("↩️ Undo", use_container_width=True, help="Annulla l'ultim
         b_name = last_action['buyer']
         p_name = last_action['name']
         p_price = last_action['price']
-        p_role = last_action['role']
+        p_role = last_action.get('role', 'Sconosciuto')
 
         if b_name == "La Mia Squadra":
             st.session_state.my_roster = [p for p in st.session_state.my_roster if p['name'] != p_name]
+            if last_action.get('action') == 'SVINCOLO':
+                st.session_state.budget_adjustments -= last_action.get('penalty', 0)
         else:
             for opp_k, opp_v in st.session_state.opponents.items():
                 if opp_v['name'] == b_name:
-                    opp_v['budget'] += p_price
-                    opp_v['slots_left'] += 1
-                    opp_v['roster'][p_role] = [p for p in opp_v['roster'][p_role] if p['name'] != p_name]
+                    if last_action.get('action') == 'SVINCOLO':
+                        opp_v['budget'] -= abs(p_price)
+                        opp_v['slots_left'] -= 1
+                    else:
+                        opp_v['budget'] += p_price
+                        opp_v['slots_left'] += 1
+                        opp_v['roster'][p_role] = [p for p in opp_v['roster'][p_role] if p['name'] != p_name]
                     break
 
-        if p_name in st.session_state.purchased_registry:
+        if p_name in st.session_state.purchased_registry and last_action.get('action') != 'SVINCOLO':
             del st.session_state.purchased_registry[p_name]
 
         save_state_to_disk()
-        st.sidebar.warning(f"Annullato acquisto di {p_name}!")
+        st.sidebar.warning(f"Annullata l'ultima operazione per {p_name}!")
         st.rerun()
 
 with st.sidebar.expander("📰 Live News & Calciomercato (RSS Feed)"):
@@ -1219,7 +1174,6 @@ m2.metric("Slot Mancanti", f"{tot_slots_needed} / 25")
 m3.metric("Offerta Max Sicura (Pmax)", f"{p_max_safe} cr")
 m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)):.1f} cr")
 
-# Valutazione globale per il Panic Button
 panic_mode = tot_budget_left <= 190 and get_dept_count('A') == 0
 
 if panic_mode:
@@ -1833,7 +1787,6 @@ with tab_inspect:
                 st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
 
     st.markdown("---")
-    st.markdown("---")
     with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
         st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati o penalizzati automaticamente in base alla regola scelta.")
         
@@ -1875,15 +1828,10 @@ with tab_inspect:
                 else:
                     refund = custom_refund
 
-                # Processo per La Mia Squadra (richiede l'aggiustamento della penale)
                 if selected_drop_team == "La Mia Squadra":
                     st.session_state.my_roster = [p for p in st.session_state.my_roster if p['name'] != sel_drop_player]
-                    # Calcolo della penale: siccome l'algoritmo riaggiunge l'intero costo eliminando il giocatore, 
-                    # applichiamo una compensazione negativa equivalente ai crediti "bruciati".
                     penalty = refund - orig_price
                     st.session_state.budget_adjustments += penalty
-                
-                # Processo per Avversari (il budget è una semplice variabile intera)
                 else:
                     for r_code in ['P', 'D', 'C', 'A']:
                         opp_obj['roster'][r_code] = [p for p in opp_obj['roster'][r_code] if p['name'] != sel_drop_player]
@@ -1895,7 +1843,7 @@ with tab_inspect:
 
                 st.session_state.history.append({
                     'buyer': selected_drop_team, 'name': sel_drop_player, 'team': dropped_p['team'],
-                    'role': dropped_p.get('role', 'Sconosciuto'), 'price': -refund, 'action': 'SVINCOLO'
+                    'role': dropped_p.get('role', 'Sconosciuto'), 'price': -refund, 'action': 'SVINCOLO', 'penalty': penalty if selected_drop_team == "La Mia Squadra" else 0
                 })
 
                 save_state_to_disk()
@@ -1903,6 +1851,7 @@ with tab_inspect:
                 st.rerun()
         else:
             st.info(f"Nessun giocatore attualmente presente nella rosa di {selected_drop_team}.")
+
 # ------------------------------------------------------------------------------
 # TAB 9: GRIGLIA DIFESA & PORTIERI
 # ------------------------------------------------------------------------------
@@ -1962,7 +1911,8 @@ with tab_export:
             "my_roster": st.session_state.my_roster,
             "opponents": st.session_state.opponents,
             "purchased_registry": st.session_state.purchased_registry,
-            "history": st.session_state.history
+            "history": st.session_state.history,
+            "budget_adjustments": st.session_state.budget_adjustments
         }, ensure_ascii=False, indent=2)
         
         st.download_button(
