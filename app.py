@@ -884,15 +884,30 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
             with cols[idx]:
                 if global_slot_idx < len(bought_list):
                     p_bought = bought_list[global_slot_idx]
-                    card_text = f"**{slot_label}: {p_bought['name']}** ({p_bought['team']})\n\n✅ **Acquistato:** `{p_bought['price']} cr`\n\n📌 *Ruolo:* In Rosa"
-                    st.success(card_text)
+                    logo_img = f"<img src='{get_team_logo_url(p_bought['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    card_html = f"""
+                    <div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>
+                        <div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_bought['name']}</b></div>
+                        ✅ <b>Acquistato:</b> <code>{p_bought['price']} cr</code><br>
+                        📌 <i>Ruolo:</i> In Rosa
+                    </div>
+                    """
+                    st.markdown(card_html, unsafe_allow_html=True)
                 else:
                     rem_idx = global_slot_idx - len(bought_list)
                     t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
                     
                     slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
-                    card_text = f"**{slot_label}: {slot_res['chosen_name']}** ({slot_res['chosen_team']})\n\n🎯 **Target Ricalcolato:** `{slot_res['dyn_target']} cr` | 🛑 **Max:** `{slot_res['dyn_max_bid']} cr`\n\n📌 *Ruolo:* **{slot_res['chosen_role']}**\n\n🔄 *Piani B/C liberi:* {slot_res['alts_str']}"
-                    st.info(card_text)
+                    logo_img = f"<img src='{get_team_logo_url(slot_res['chosen_team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    card_html = f"""
+                    <div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>
+                        <div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {slot_res['chosen_name']}</b></div>
+                        🎯 <b>Target:</b> <code>{slot_res['dyn_target']} cr</code> | 🛑 <b>Max:</b> <code>{slot_res['dyn_max_bid']} cr</code><br>
+                        📌 <i>Ruolo:</i> <b>{slot_res['chosen_role']}</b><br><br>
+                        <small>🔄 <i>Piani B:</i> {slot_res['alts_str']}</small>
+                    </div>
+                    """
+                    st.markdown(card_html, unsafe_allow_html=True)
 
 # ==============================================================================
 # 4. CARICAMENTO DEL LISTONE & API-FOOTBALL
@@ -1441,13 +1456,22 @@ with tab_call:
         if len(recs) >= 4:
             break
             
-    if recs:
+  if recs:
         recs = sorted(recs, key=lambda x: x['is_custom'], reverse=True)
         
         rec_cols = st.columns(min(4, len(recs)))
         for i, rec in enumerate(recs[:4]):
             with rec_cols[i]:
-                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n{rec['card_style']}\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
+                logo_img = f"<img src='{get_team_logo_url(rec['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                card_html = f"""
+                <div style='padding: 12px; border: 1px solid #6366f1; border-radius: 8px; background: rgba(99, 102, 241, 0.1); margin-bottom: 10px;'>
+                    <div style='margin-bottom: 8px;'>{logo_img}<b>{rec['role']} | {rec['name']}</b></div>
+                    <small>{rec['card_style']}</small><br>
+                    🎯 Target: <code>{rec['target']} cr</code><br>
+                    🛑 Max: <code>{rec['max']} cr</code>
+                </div>
+                """
+                st.markdown(card_html, unsafe_allow_html=True)
                 
                 if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                     st.session_state.target_call_player = rec['name']
@@ -1619,7 +1643,9 @@ with tab_field:
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_a):
         if i < len(starters_a):
-            st.markdown(f'<div class="player-disc">⚽ <b>{starters_a[i]["name"]}</b><br><small>{starters_a[i]["price"]} cr</small></div>', unsafe_allow_html=True)
+            p = starters_a[i]
+            logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
+            st.markdown(f'<div class="player-disc">{logo}⚽ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
         else:
             st.markdown(f'<div class="player-disc-empty">⚽ Attaccante {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -1627,7 +1653,9 @@ with tab_field:
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_c):
         if i < len(starters_c):
-            st.markdown(f'<div class="player-disc">⚙️ <b>{starters_c[i]["name"]}</b><br><small>{starters_c[i]["price"]} cr</small></div>', unsafe_allow_html=True)
+            p = starters_c[i]
+            logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
+            st.markdown(f'<div class="player-disc">{logo}⚙️ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
         else:
             st.markdown(f'<div class="player-disc-empty">⚙️ Centrocampista {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -1635,14 +1663,18 @@ with tab_field:
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_d):
         if i < len(starters_d):
-            st.markdown(f'<div class="player-disc">🛡️ <b>{starters_d[i]["name"]}</b><br><small>{starters_d[i]["price"]} cr</small></div>', unsafe_allow_html=True)
+            p = starters_d[i]
+            logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
+            st.markdown(f'<div class="player-disc">{logo}🛡️ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
         else:
             st.markdown(f'<div class="player-disc-empty">🛡️ Difensore {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     if starters_p:
-        st.markdown(f'<div class="player-disc">🧤 <b>{starters_p[0]["name"]}</b><br><small>{starters_p[0]["price"]} cr</small></div>', unsafe_allow_html=True)
+        p = starters_p[0]
+        logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
+        st.markdown(f'<div class="player-disc">{logo}🧤 <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
     else:
         st.markdown('<div class="player-disc-empty">🧤 Portiere</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -1686,27 +1718,10 @@ with tab_barometer:
 # ------------------------------------------------------------------------------
 # TAB 6: COMPARATORE LIVE "TESTA A TESTA" (DECISION DUEL)
 # ------------------------------------------------------------------------------
-with tab_duel:
-    st.subheader("⚔️ Confronto Testa a Testa Live (Decision Duel)")
-    
-    all_player_names = sorted(list(listone_df['Nome'].dropna().unique()))
-    
-    col_d1, col_d2 = st.columns(2)
-    with col_d1:
-        p_name_1 = st.selectbox("Seleziona Calciatore A:", options=all_player_names, index=0)
-    with col_d2:
-        p_name_2 = st.selectbox("Seleziona Calciatore B:", options=all_player_names, index=min(1, len(all_player_names)-1))
-
-    if p_name_1 and p_name_2:
-        row1 = listone_df[listone_df['Nome'] == p_name_1].iloc[0]
-        row2 = listone_df[listone_df['Nome'] == p_name_2].iloc[0]
-        
-        eval1 = calculate_dynamic_player_evaluation(row1, st.session_state.my_roster)
-        eval2 = calculate_dynamic_player_evaluation(row2, st.session_state.my_roster)
-
-        col_card1, col_card2 = st.columns(2)
+col_card1, col_card2 = st.columns(2)
         with col_card1:
-            st.markdown(f"### 🔵 {p_name_1}")
+            logo1 = get_team_logo_url(row1['Squadra'])
+            st.markdown(f"### <img src='{logo1}' width='32' style='vertical-align: middle;'> {p_name_1}", unsafe_allow_html=True)
             st.markdown(f"**Squadra & Ruolo:** {row1['Squadra']} ({row1['R']})")
             st.markdown(f"**Target Adattato:** `{int(round(eval1['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval1['dyn_max_bid']))} cr`")
             st.markdown(f"**Quotazione Listone:** {row1['Qt.A']} | **FVM:** {row1['FVM']}")
@@ -1714,13 +1729,13 @@ with tab_duel:
             st.markdown(f"**Status Rigori:** {pen1[0] if pen1 else 'Nessuno'}")
             
         with col_card2:
-            st.markdown(f"### 🔴 {p_name_2}")
+            logo2 = get_team_logo_url(row2['Squadra'])
+            st.markdown(f"### <img src='{logo2}' width='32' style='vertical-align: middle;'> {p_name_2}", unsafe_allow_html=True)
             st.markdown(f"**Squadra & Ruolo:** {row2['Squadra']} ({row2['R']})")
             st.markdown(f"**Target Adattato:** `{int(round(eval2['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval2['dyn_max_bid']))} cr`")
             st.markdown(f"**Quotazione Listone:** {row2['Qt.A']} | **FVM:** {row2['FVM']}")
             pen2 = [p for p in PENALTY_TAKERS.get(row2['Squadra'], []) if p_name_2.lower() in p.lower()]
             st.markdown(f"**Status Rigori:** {pen2[0] if pen2 else 'Nessuno'}")
-
         st.divider()
         diff_cr = int(round(eval1['dyn_target'] - eval2['dyn_target']))
         if diff_cr > 0:
@@ -1772,19 +1787,19 @@ with tab_inspect:
         with col_rp:
             st.markdown("**Portieri (P)**")
             for pl in inspect_opp['roster']['P']:
-                st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
+                st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
         with col_rd:
             st.markdown("**Difensori (D)**")
             for pl in inspect_opp['roster']['D']:
-                st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
+                st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
         with col_rc:
             st.markdown("**Centrocampisti (C)**")
             for pl in inspect_opp['roster']['C']:
-                st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
+                st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
         with col_ra:
             st.markdown("**Attaccanti (A)**")
             for pl in inspect_opp['roster']['A']:
-                st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
+                st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
 
     st.markdown("---")
     with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
