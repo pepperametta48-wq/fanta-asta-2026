@@ -1334,50 +1334,68 @@ with tab_call:
                 st.rerun()
 
     # ---------------------------------------------------------
-    # SCHEDA CONSIGLIATI DALLA ROADMAP
+    # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA & PROFONDA)
     # ---------------------------------------------------------
     st.markdown("---")
-    st.markdown("### 💡 Consigliati per te (Clicca per chiamare)")
+    st.markdown("### 💡 I tuoi prossimi obiettivi (Roadmap)")
     
     roles_to_check = [active_role] if active_role else ['P', 'D', 'C', 'A']
     recs = []
     
-    # Cloniamo i set per la simulazione
+    # Cloniamo i set per la simulazione in modo isolato
     temp_allocated = set(p['name'] for p in st.session_state.get('my_roster', []))
     purchased_reg = st.session_state.get('purchased_registry', {})
     
     for r in roles_to_check:
         slots_total = SLOTS[r]
         bought_count = get_dept_count(r)
-        if bought_count < slots_total:
+        slots_left = slots_total - bought_count
+        
+        if slots_left > 0:
             dyn_targets = calculate_dynamic_targets_for_slots(r, st.session_state.get('my_roster', []))
-            if dyn_targets:
-                t_budget = dyn_targets[0] # Prendi il target per il primo slot vuoto
-                user_custom_picks = st.session_state.get('custom_user_targets', {}).get(r, [])
-                
-                slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks)
-                
-                if slot_res['chosen_name'] != "Scommessa / Copertura":
-                    recs.append({
-                        'name': slot_res['chosen_name'],
-                        'team': slot_res['chosen_team'],
-                        'role': r,
-                        'target': slot_res['dyn_target'],
-                        'max': slot_res['dyn_max_bid']
-                    })
-                    temp_allocated.add(slot_res['chosen_name'])
-    
+            user_custom_picks = st.session_state.get('custom_user_targets', {}).get(r, [])
+            
+            # Scorriamo i prossimi slot vuoti in profondità per intercettare tutti i tuoi Top (max 4 per non saturare la UI)
+            for idx in range(min(slots_left, 4)): 
+                if idx < len(dyn_targets):
+                    t_budget = dyn_targets[idx]
+                    
+                    slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks)
+                    
+                    if slot_res['chosen_name'] != "Scommessa / Copertura":
+                        recs.append({
+                            'name': slot_res['chosen_name'],
+                            'team': slot_res['chosen_team'],
+                            'role': r,
+                            'target': slot_res['dyn_target'],
+                            'max': slot_res['dyn_max_bid'],
+                            'is_custom': slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
+                        })
+                        # Lo aggiungiamo al set temporaneo così nel ciclo successivo non lo propone di nuovo
+                        temp_allocated.add(slot_res['chosen_name'])
+                        
+                        if len(recs) >= 4:
+                            break
+        if len(recs) >= 4:
+            break
+            
     if recs:
-        rec_cols = st.columns(min(4, len(recs))) # Mostriamo fino a 4 consigli
+        # Ordiniamo prima i tuoi Top Selezionati, poi le scommesse dell'algoritmo
+        recs = sorted(recs, key=lambda x: x['is_custom'], reverse=True)
+        
+        rec_cols = st.columns(min(4, len(recs)))
         for i, rec in enumerate(recs[:4]):
             with rec_cols[i]:
-                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
-                # Bottone che aggiorna il player selezionato tramite session state
-                if st.button(f"📢 Chiama {rec['name']}", key=f"btn_call_rec_{rec['name']}", use_container_width=True):
+                # Stile diverso se è un tuo Top
+                card_style = "🎯 Tuo Top" if rec['is_custom'] else "🤖 Consigliato"
+                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n{card_style}\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
+                
+                # Bottone che aggiorna il player selezionato e triggera un rerun
+                if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                     st.session_state.target_call_player = rec['name']
                     st.rerun()
     else:
-        st.caption("Nessun giocatore primario consigliato per questo filtro (Reparti completi o target non trovati).")
+        st.caption("Nessun giocatore primario consigliato per questo filtro. Sei a posto con i titolari, punta su scommesse a 1 cr!")
 
 # ------------------------------------------------------------------------------
 # TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
