@@ -1150,6 +1150,9 @@ tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps
 # ------------------------------------------------------------------------------
 # TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
+# ------------------------------------------------------------------------------
 with tab_call:
     st.subheader(f"Chiamata & Analisi Istantanea Giocatore ({current_stage})")
     
@@ -1163,9 +1166,25 @@ with tab_call:
 
     available_names = [n for n in sub_df['Nome'].dropna().unique() if n not in st.session_state.purchased_registry]
     
+    # ---------------------------------------------------------
+    # SINCRONIZZAZIONE STATO PER CLICK SUI CONSIGLIATI
+    # ---------------------------------------------------------
+    if 'target_call_player' not in st.session_state:
+        st.session_state.target_call_player = available_names[0] if available_names else "Nessun dato"
+        
+    if st.session_state.target_call_player not in available_names and available_names:
+        st.session_state.target_call_player = available_names[0]
+        
+    try:
+        default_idx = available_names.index(st.session_state.target_call_player)
+    except ValueError:
+        default_idx = 0
+    # ---------------------------------------------------------
+
     col_p1, col_p2, col_p3, col_p4 = st.columns([3, 1, 2, 2])
     with col_p1:
-        sel_player = st.selectbox("Cerca Calciatore Chiamato", options=available_names if available_names else ["Nessun dato"])
+        sel_player = st.selectbox("Cerca Calciatore Chiamato", options=available_names if available_names else ["Nessun dato"], index=default_idx)
+        st.session_state.target_call_player = sel_player # Sincronizza input manuale
         
     player_info = listone_df[listone_df['Nome'] == sel_player].iloc[0] if sel_player != "Nessun dato" else None
     player_role = str(player_info['R']).strip() if player_info is not None else "C"
@@ -1262,11 +1281,6 @@ with tab_call:
         pen_str = f"⚽ Rigorista: {is_penalty[0]}" if is_penalty else "Nessun rigore primario"
         st.caption(f"📌 **Status Piazzati:** {pen_str}")
 
-        if sel_player == "Colombo":
-            st.warning("⚠️ **Allerta Minutaggio:** Lorenzo Colombo ha il 93% di tasso di sostituzione al 62' minuto. Rischio di saltare i penalty concessi nel finale!")
-        elif sel_player == "Mina":
-            st.success("🛡️ **Garanzia Minutaggio:** Yerry Mina ha l'85% di permanenza in campo: batte i rigori e garantisce voto da modificatore!")
-
         if eval_data["is_full"]:
             st.error(f"🚫 **REPARTO {player_role} COMPLETO:** Hai già riempito tutti gli slot previsti per questo ruolo!")
         elif bid_price <= dyn_target:
@@ -1318,6 +1332,52 @@ with tab_call:
                 save_state_to_disk()
                 st.info(f"{sel_player} assegnato a {dest_buyer_name} per {bid_price} cr.")
                 st.rerun()
+
+    # ---------------------------------------------------------
+    # SCHEDA CONSIGLIATI DALLA ROADMAP
+    # ---------------------------------------------------------
+    st.markdown("---")
+    st.markdown("### 💡 Consigliati per te (Clicca per chiamare)")
+    
+    roles_to_check = [active_role] if active_role else ['P', 'D', 'C', 'A']
+    recs = []
+    
+    # Cloniamo i set per la simulazione
+    temp_allocated = set(p['name'] for p in st.session_state.get('my_roster', []))
+    purchased_reg = st.session_state.get('purchased_registry', {})
+    
+    for r in roles_to_check:
+        slots_total = SLOTS[r]
+        bought_count = get_dept_count(r)
+        if bought_count < slots_total:
+            dyn_targets = calculate_dynamic_targets_for_slots(r, st.session_state.get('my_roster', []))
+            if dyn_targets:
+                t_budget = dyn_targets[0] # Prendi il target per il primo slot vuoto
+                user_custom_picks = st.session_state.get('custom_user_targets', {}).get(r, [])
+                
+                slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks)
+                
+                if slot_res['chosen_name'] != "Scommessa / Copertura":
+                    recs.append({
+                        'name': slot_res['chosen_name'],
+                        'team': slot_res['chosen_team'],
+                        'role': r,
+                        'target': slot_res['dyn_target'],
+                        'max': slot_res['dyn_max_bid']
+                    })
+                    temp_allocated.add(slot_res['chosen_name'])
+    
+    if recs:
+        rec_cols = st.columns(min(4, len(recs))) # Mostriamo fino a 4 consigli
+        for i, rec in enumerate(recs[:4]):
+            with rec_cols[i]:
+                st.info(f"**{rec['role']} | {rec['name']}** ({rec['team']})\n\n🎯 Target: `{rec['target']} cr`\n🛑 Max: `{rec['max']} cr`")
+                # Bottone che aggiorna il player selezionato tramite session state
+                if st.button(f"📢 Chiama {rec['name']}", key=f"btn_call_rec_{rec['name']}", use_container_width=True):
+                    st.session_state.target_call_player = rec['name']
+                    st.rerun()
+    else:
+        st.caption("Nessun giocatore primario consigliato per questo filtro (Reparti completi o target non trovati).")
 
 # ------------------------------------------------------------------------------
 # TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
