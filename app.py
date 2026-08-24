@@ -662,29 +662,45 @@ def get_player_base_target(player_row):
 def calculate_dynamic_player_evaluation(player_row, my_roster):
     role = str(player_row['R']).strip()
     base_target, base_max = get_player_base_target(player_row)
-
+    
+    # 1. Calcolo Spese Normali
     tot_spent = sum(p['price'] for p in my_roster)
     tot_budget_left = TOTAL_BUDGET - tot_spent
     tot_slots_filled = len(my_roster)
     tot_slots_left = TOTAL_SLOTS - tot_slots_filled
-
-    if tot_slots_left <= 0:
-        return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
-
+    
     dept_bought = [p for p in my_roster if p['role'] == role]
     dept_spent = sum(p['price'] for p in dept_bought)
     dept_filled = len(dept_bought)
     dept_slots_left = SLOTS[role] - dept_filled
 
-    if dept_slots_left <= 0:
+    if tot_slots_left <= 0 or dept_slots_left <= 0:
         return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
 
+    # 2. LOGICA LOCK-IN STRATEGY
+    locked_budget_tot = 0
+    locked_budget_dept = 0
+    if st.session_state.get('lock_in_active', False):
+        purchased_names = [p['name'] for p in my_roster]
+        for r_code in ['P', 'D', 'C', 'A']:
+            for t_name in st.session_state.get('custom_user_targets', {}).get(r_code, []):
+                if t_name not in purchased_names and t_name != player_row['Nome']:
+                    row = listone_df[listone_df['Nome'] == t_name]
+                    if not row.empty:
+                        bt, _ = get_player_base_target(row.iloc[0])
+                        locked_budget_tot += bt
+                        if r_code == role:
+                            locked_budget_dept += bt
+                            
+    eff_tot_budget = max(1, tot_budget_left - locked_budget_tot)
+    
+    # 3. Calcolo Adattivo
     other_slots_needed = tot_slots_left - dept_slots_left
-    max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
-    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+    max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (BASE_DEPT_BUDGET[role] - dept_spent) - locked_budget_dept))
     
     total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
-    scale_factor = tot_budget_left / max(1, total_unfilled_baseline)
+    scale_factor = eff_tot_budget / max(1, total_unfilled_baseline)
     
     dyn_target = max(1, int(round(base_target * scale_factor)))
     max_single_in_dept = max(1, effective_dept_budget - (dept_slots_left - 1))
@@ -692,7 +708,7 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
 
     margin = 1.15 if dyn_target > 25 else (1.20 if dyn_target > 5 else 1.0)
     dyn_max_bid = int(round(dyn_target * margin))
-    dyn_max_bid = max(dyn_target, min(tot_budget_left - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
+    dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
 
     return {
         "base_target": base_target,
@@ -719,56 +735,49 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
     if dept_slots_left <= 0:
         return []
 
+    # LOCK-IN: Calcoliamo quanti slot e quanti crediti sono "prenotati"
+    locked_budget_dept = 0
+    locked_slots_dept = 0
+    purchased_names = [p['name'] for p in my_roster]
+    custom_targets = st.session_state.get('custom_user_targets', {}).get(role, [])
+    
+    unpurchased_locked = []
+    
+    if st.session_state.get('lock_in_active', False):
+        for t_name in custom_targets:
+            if t_name not in purchased_names:
+                row = listone_df[listone_df['Nome'] == t_name]
+                if not row.empty:
+                    bt, _ = get_player_base_target(row.iloc[0])
+                    locked_budget_dept += bt
+                    locked_slots_dept += 1
+                    unpurchased_locked.append(bt)
+
     other_slots_needed = tot_slots_left - dept_slots_left
     max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
     effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
 
-    avail = effective_dept_budget
+    distributable_budget = max(dept_slots_left - locked_slots_dept, effective_dept_budget - locked_budget_dept)
+    distributable_slots = max(0, dept_slots_left - locked_slots_dept)
 
     weights_map = {
-        'A': {
-            6: [0.40, 0.33, 0.16, 0.07, 0.03, 0.01],
-            5: [0.55, 0.25, 0.12, 0.05, 0.03],
-            4: [0.60, 0.25, 0.10, 0.05],
-            3: [0.68, 0.24, 0.08],
-            2: [0.85, 0.15],
-            1: [1.0]
-        },
-        'C': {
-            8: [0.35, 0.30, 0.13, 0.08, 0.05, 0.04, 0.03, 0.02],
-            7: [0.42, 0.22, 0.14, 0.09, 0.06, 0.04, 0.03],
-            6: [0.48, 0.24, 0.12, 0.08, 0.05, 0.03],
-            5: [0.55, 0.25, 0.10, 0.06, 0.04],
-            4: [0.60, 0.22, 0.12, 0.06],
-            3: [0.70, 0.20, 0.10],
-            2: [0.80, 0.20],
-            1: [1.0]
-        },
-        'D': {
-            8: [0.40, 0.17, 0.13, 0.11, 0.08, 0.08, 0.02, 0.01],
-            7: [0.30, 0.22, 0.18, 0.14, 0.10, 0.04, 0.02],
-            6: [0.35, 0.25, 0.20, 0.12, 0.05, 0.03],
-            5: [0.42, 0.28, 0.18, 0.08, 0.04],
-            4: [0.50, 0.30, 0.14, 0.06],
-            3: [0.60, 0.28, 0.12],
-            2: [0.75, 0.25],
-            1: [1.0]
-        },
-        'P': {
-            3: [max(1, avail - 4), 3, 1],
-            2: [max(1, avail - 1), 1],
-            1: [avail]
-        }
+        'A': {6: [0.40, 0.33, 0.16, 0.07, 0.03, 0.01], 5: [0.55, 0.25, 0.12, 0.05, 0.03], 4: [0.60, 0.25, 0.10, 0.05], 3: [0.68, 0.24, 0.08], 2: [0.85, 0.15], 1: [1.0], 0: []},
+        'C': {8: [0.35, 0.30, 0.13, 0.08, 0.05, 0.04, 0.03, 0.02], 7: [0.42, 0.22, 0.14, 0.09, 0.06, 0.04, 0.03], 6: [0.48, 0.24, 0.12, 0.08, 0.05, 0.03], 5: [0.55, 0.25, 0.10, 0.06, 0.04], 4: [0.60, 0.22, 0.12, 0.06], 3: [0.70, 0.20, 0.10], 2: [0.80, 0.20], 1: [1.0], 0: []},
+        'D': {8: [0.40, 0.17, 0.13, 0.11, 0.08, 0.08, 0.02, 0.01], 7: [0.30, 0.22, 0.18, 0.14, 0.10, 0.04, 0.02], 6: [0.35, 0.25, 0.20, 0.12, 0.05, 0.03], 5: [0.42, 0.28, 0.18, 0.08, 0.04], 4: [0.50, 0.30, 0.14, 0.06], 3: [0.60, 0.28, 0.12], 2: [0.75, 0.25], 1: [1.0], 0: []},
+        'P': {3: [max(1, distributable_budget - 4), 3, 1], 2: [max(1, distributable_budget - 1), 1], 1: [distributable_budget], 0: []}
     }
 
     if role == 'P':
-        return weights_map['P'][dept_slots_left]
-
-    weights = weights_map[role][dept_slots_left]
-    targets = [max(1, int(round(avail * w))) for w in weights]
-    diff = sum(targets) - avail
-    targets[0] = max(1, targets[0] - diff)
-    return targets
+        dist_targets = weights_map['P'].get(distributable_slots, [])
+    else:
+        weights = weights_map[role].get(distributable_slots, [])
+        dist_targets = [max(1, int(round(distributable_budget * w))) for w in weights]
+        if dist_targets:
+            diff = sum(dist_targets) - distributable_budget
+            dist_targets[0] = max(1, dist_targets[0] - diff)
+            
+    final_targets = sorted(unpurchased_locked + dist_targets, reverse=True)
+    return final_targets
 
 def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
     if custom_user_targets_list:
@@ -959,7 +968,7 @@ def get_live_player_stats(player_name, team_name):
             player_info = data['response'][0]
             stats = player_info['statistics'][0]
             
-            apps = stats['games'].get('appearences') or 0  # handling the typo from API
+            apps = stats['games'].get('appearences') or 0
             shots_total = stats.get('shots', {}).get('total') or 0
             
             return {
@@ -1070,6 +1079,26 @@ if tot_budget_left <= 190 and len([p for p in st.session_state.my_roster if p['r
     st.sidebar.error("🚨 **PANIC BUTTON ATTIVO:** Budget residuo sotto al 38%! Preserva i crediti per il bomber titolare.")
 
 st.sidebar.divider()
+st.sidebar.markdown("**🔒 Lock-in Strategy (Slot Bloccati)**")
+lock_in_active = st.sidebar.toggle("Congela crediti per i Top", value=st.session_state.get('lock_in_active', False))
+st.session_state.lock_in_active = lock_in_active
+
+if lock_in_active:
+    locked_cr = 0
+    locked_sl = 0
+    purchased_names = [p['name'] for p in st.session_state.get('my_roster', [])]
+    for r_code in ['P', 'D', 'C', 'A']:
+        for t_name in st.session_state.get('custom_user_targets', {}).get(r_code, []):
+            if t_name not in purchased_names:
+                row = listone_df[listone_df['Nome'] == t_name]
+                if not row.empty:
+                    bt, _ = get_player_base_target(row.iloc[0])
+                    locked_cr += bt
+                    locked_sl += 1
+    
+    st.sidebar.info(f"❄️ **Congelati:** `{locked_cr} cr` per `{locked_sl}` slot\n\n💰 **Cassa Libera Reale:** `{tot_budget_left - locked_cr} cr`")
+
+st.sidebar.divider()
 col_sb1, col_sb2 = st.sidebar.columns(2)
 if col_sb1.button("💾 Salva", use_container_width=True):
     save_state_to_disk()
@@ -1150,9 +1179,6 @@ tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps
 # ------------------------------------------------------------------------------
 # TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-# TAB 1: CHIAMATA & ASSEGNAZIONE LIVE
-# ------------------------------------------------------------------------------
 with tab_call:
     st.subheader(f"Chiamata & Analisi Istantanea Giocatore ({current_stage})")
     
@@ -1166,9 +1192,6 @@ with tab_call:
 
     available_names = [n for n in sub_df['Nome'].dropna().unique() if n not in st.session_state.purchased_registry]
     
-    # ---------------------------------------------------------
-    # SINCRONIZZAZIONE STATO PER CLICK SUI CONSIGLIATI
-    # ---------------------------------------------------------
     if 'target_call_player' not in st.session_state:
         st.session_state.target_call_player = available_names[0] if available_names else "Nessun dato"
         
@@ -1179,12 +1202,11 @@ with tab_call:
         default_idx = available_names.index(st.session_state.target_call_player)
     except ValueError:
         default_idx = 0
-    # ---------------------------------------------------------
 
     col_p1, col_p2, col_p3, col_p4 = st.columns([3, 1, 2, 2])
     with col_p1:
         sel_player = st.selectbox("Cerca Calciatore Chiamato", options=available_names if available_names else ["Nessun dato"], index=default_idx)
-        st.session_state.target_call_player = sel_player # Sincronizza input manuale
+        st.session_state.target_call_player = sel_player
         
     player_info = listone_df[listone_df['Nome'] == sel_player].iloc[0] if sel_player != "Nessun dato" else None
     player_role = str(player_info['R']).strip() if player_info is not None else "C"
@@ -1333,7 +1355,7 @@ with tab_call:
                 st.info(f"{sel_player} assegnato a {dest_buyer_name} per {bid_price} cr.")
                 st.rerun()
 
-   # ---------------------------------------------------------
+    # ---------------------------------------------------------
     # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA & PROFONDA)
     # ---------------------------------------------------------
     st.markdown("---")
@@ -1342,7 +1364,6 @@ with tab_call:
     roles_to_check = [active_role] if active_role else ['P', 'D', 'C', 'A']
     recs = []
     
-    # Cloniamo i set per la simulazione in modo isolato
     temp_allocated = set(p['name'] for p in st.session_state.get('my_roster', []))
     purchased_reg = st.session_state.get('purchased_registry', {})
     
@@ -1354,10 +1375,8 @@ with tab_call:
         if slots_left > 0:
             dyn_targets = calculate_dynamic_targets_for_slots(r, st.session_state.get('my_roster', []))
             
-            # Recuperiamo i target personalizzati dell'utente
             user_custom_picks = list(st.session_state.get('custom_user_targets', {}).get(r, []))
             
-            # FIX PORTIERI: Inseriamo forzatamente i portieri del "Blocco" selezionato tra le priorità
             if r == 'P':
                 k_club = st.session_state.get('selected_keeper_club', 'Inter')
                 k_list = GOALIE_HIERARCHY.get(k_club, [])
@@ -1365,7 +1384,6 @@ with tab_call:
                     if k_info[0] not in user_custom_picks:
                         user_custom_picks.append(k_info[0])
             
-            # Scorriamo i prossimi slot vuoti in profondità per intercettare tutti i tuoi Top (max 4)
             for idx in range(min(slots_left, 4)): 
                 if idx < len(dyn_targets):
                     t_budget = dyn_targets[idx]
@@ -1375,7 +1393,6 @@ with tab_call:
                     if slot_res['chosen_name'] != "Scommessa / Copertura":
                         is_custom = slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
                         
-                        # Generazione Etichetta Visiva Dinamica
                         card_style = "🤖 Consigliato"
                         if is_custom:
                             if r == 'P' and slot_res['chosen_name'] in [k[0] for k in GOALIE_HIERARCHY.get(st.session_state.get('selected_keeper_club', 'Inter'), [])] and slot_res['chosen_name'] not in st.session_state.get('custom_user_targets', {}).get('P', []):
@@ -1392,7 +1409,6 @@ with tab_call:
                             'is_custom': is_custom,
                             'card_style': card_style
                         })
-                        # Lo aggiungiamo al set temporaneo per passare al successivo
                         temp_allocated.add(slot_res['chosen_name'])
                         
                         if len(recs) >= 4:
@@ -1401,7 +1417,6 @@ with tab_call:
             break
             
     if recs:
-        # Ordiniamo dando priorità ai tuoi Top e al Blocco Portieri, poi i suggeriti
         recs = sorted(recs, key=lambda x: x['is_custom'], reverse=True)
         
         rec_cols = st.columns(min(4, len(recs)))
@@ -1414,7 +1429,7 @@ with tab_call:
                     st.rerun()
     else:
         st.caption("Nessun giocatore primario consigliato per questo filtro. Sei a posto con i titolari, punta su scommesse a 1 cr!")
-        
+
 # ------------------------------------------------------------------------------
 # TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
 # ------------------------------------------------------------------------------
@@ -1576,7 +1591,6 @@ with tab_field:
     
     st.markdown('<div class="pitch-container">', unsafe_allow_html=True)
     
-    # Linea Attacco
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_a):
         if i < len(starters_a):
@@ -1585,7 +1599,6 @@ with tab_field:
             st.markdown(f'<div class="player-disc-empty">⚽ Attaccante {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Linea Centrocampo
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_c):
         if i < len(starters_c):
@@ -1594,7 +1607,6 @@ with tab_field:
             st.markdown(f'<div class="player-disc-empty">⚙️ Centrocampista {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Linea Difesa
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     for i in range(req_d):
         if i < len(starters_d):
@@ -1603,7 +1615,6 @@ with tab_field:
             st.markdown(f'<div class="player-disc-empty">🛡️ Difensore {i+1}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Linea Portiere
     st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
     if starters_p:
         st.markdown(f'<div class="player-disc">🧤 <b>{starters_p[0]["name"]}</b><br><small>{starters_p[0]["price"]} cr</small></div>', unsafe_allow_html=True)
