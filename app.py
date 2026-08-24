@@ -1834,33 +1834,76 @@ with tab_inspect:
                 st.write(f"• {pl['name']} ({pl['team']}) - **{pl['price']} cr**")
 
     st.markdown("---")
-    with st.expander("🔄 Gestione Svincoli / Mercato di Riparazione (La Mia Rosa)"):
-        st.caption("Svincola un calciatore per recuperare crediti e liberare lo slot di reparto.")
-        if st.session_state.my_roster:
-            my_player_names = [p['name'] for p in st.session_state.my_roster]
-            sel_drop_player = st.selectbox("Seleziona Calciatore da Svincolare:", options=my_player_names)
-            drop_mode = st.radio("Regola di Recupero Crediti:", ["Recupero 100% (Intero Prezzo)", "Recupero 50% (Metà Prezzo)", "Recupero 1 Credito"])
-            
-            if st.button("Conferma Svincolo Calciatore"):
-                dropped = next((p for p in st.session_state.my_roster if p['name'] == sel_drop_player), None)
-                if dropped:
-                    if "100%" in drop_mode:
-                        refund = dropped['price']
-                    elif "50%" in drop_mode:
-                        refund = int(round(dropped['price'] / 2))
-                    else:
-                        refund = 1
-                    
-                    st.session_state.my_roster = [p for p in st.session_state.my_roster if p['name'] != sel_drop_player]
-                    if sel_drop_player in st.session_state.purchased_registry:
-                        del st.session_state.purchased_registry[sel_drop_player]
-                    
-                    save_state_to_disk()
-                    st.success(f"{sel_drop_player} svincolato! Recuperati {refund} crediti.")
-                    st.rerun()
-        else:
-            st.info("Nessun giocatore attualmente presente nella tua rosa.")
+    st.markdown("---")
+    with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
+        st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati o penalizzati automaticamente in base alla regola scelta.")
+        
+        teams_list = ["La Mia Squadra"] + [v['name'] for v in st.session_state.opponents.values()]
+        selected_drop_team = st.selectbox("Seleziona Squadra:", options=teams_list)
 
+        if selected_drop_team == "La Mia Squadra":
+            team_roster = st.session_state.my_roster
+        else:
+            opp_key = next(k for k, v in st.session_state.opponents.items() if v['name'] == selected_drop_team)
+            opp_obj = st.session_state.opponents[opp_key]
+            team_roster = []
+            for r_list in opp_obj['roster'].values():
+                team_roster.extend(r_list)
+
+        if team_roster:
+            player_names = [p['name'] for p in team_roster]
+            sel_drop_player = st.selectbox("Seleziona Calciatore da Svincolare:", options=player_names)
+
+            dropped_p = next(p for p in team_roster if p['name'] == sel_drop_player)
+            orig_price = dropped_p['price']
+            
+            st.write(f"💵 Prezzo di acquisto originale: **{orig_price} cr**")
+
+            drop_mode = st.radio("Regola di Recupero Crediti:", 
+                                 ["Recupero 100% (Intero Prezzo)", "Recupero 50% (Metà Prezzo)", "Recupero 1 Credito", "Personalizzato"])
+            
+            custom_refund = 0
+            if "Personalizzato" in drop_mode:
+                custom_refund = st.number_input("Crediti da rimborsare:", min_value=0, max_value=orig_price, value=0)
+
+            if st.button(f"✂️ Conferma Svincolo di {sel_drop_player}", type="primary"):
+                if "100%" in drop_mode:
+                    refund = orig_price
+                elif "50%" in drop_mode:
+                    refund = int(round(orig_price / 2))
+                elif "1 Credito" in drop_mode:
+                    refund = 1
+                else:
+                    refund = custom_refund
+
+                # Processo per La Mia Squadra (richiede l'aggiustamento della penale)
+                if selected_drop_team == "La Mia Squadra":
+                    st.session_state.my_roster = [p for p in st.session_state.my_roster if p['name'] != sel_drop_player]
+                    # Calcolo della penale: siccome l'algoritmo riaggiunge l'intero costo eliminando il giocatore, 
+                    # applichiamo una compensazione negativa equivalente ai crediti "bruciati".
+                    penalty = refund - orig_price
+                    st.session_state.budget_adjustments += penalty
+                
+                # Processo per Avversari (il budget è una semplice variabile intera)
+                else:
+                    for r_code in ['P', 'D', 'C', 'A']:
+                        opp_obj['roster'][r_code] = [p for p in opp_obj['roster'][r_code] if p['name'] != sel_drop_player]
+                    opp_obj['budget'] += refund
+                    opp_obj['slots_left'] += 1
+
+                if sel_drop_player in st.session_state.purchased_registry:
+                    del st.session_state.purchased_registry[sel_drop_player]
+
+                st.session_state.history.append({
+                    'buyer': selected_drop_team, 'name': sel_drop_player, 'team': dropped_p['team'],
+                    'role': dropped_p.get('role', 'Sconosciuto'), 'price': -refund, 'action': 'SVINCOLO'
+                })
+
+                save_state_to_disk()
+                st.success(f"✅ Svincolo eseguito! {selected_drop_team} ha recuperato {refund} cr. Il PMax globale è stato ricalcolato.")
+                st.rerun()
+        else:
+            st.info(f"Nessun giocatore attualmente presente nella rosa di {selected_drop_team}.")
 # ------------------------------------------------------------------------------
 # TAB 9: GRIGLIA DIFESA & PORTIERI
 # ------------------------------------------------------------------------------
