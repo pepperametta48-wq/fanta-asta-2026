@@ -710,6 +710,60 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     dyn_max_bid = int(round(dyn_target * margin))
     dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
 
+    # =================================================================
+    # 🔥 PANIC BUTTON: MODALITÀ DIFESA DEL BUDGET ATTIVA
+    # Se il budget è <= 38% e non hai attaccanti, forza offerte a 1 cr per P, D, C
+    # =================================================================
+    panic_active = tot_budget_left <= 190 and len([p for p in my_roster if p['role'] == 'A']) == 0
+    if panic_active and role != 'A':
+        dyn_target = 1
+        dyn_max_bid = 1
+
+    return {
+        "base_target": base_target,
+        "base_max": base_max,
+        "dyn_target": dyn_target,
+        "dyn_max_bid": dyn_max_bid,
+        "scale_factor": round(scale_factor, 2),
+        "dept_spent": dept_spent,
+        "dept_budget_left": effective_dept_budget,
+        "dept_slots_left": dept_slots_left,
+        "is_full": False
+    }
+
+    # 2. LOGICA LOCK-IN STRATEGY
+    locked_budget_tot = 0
+    locked_budget_dept = 0
+    if st.session_state.get('lock_in_active', False):
+        purchased_names = [p['name'] for p in my_roster]
+        for r_code in ['P', 'D', 'C', 'A']:
+            for t_name in st.session_state.get('custom_user_targets', {}).get(r_code, []):
+                if t_name not in purchased_names and t_name != player_row['Nome']:
+                    row = listone_df[listone_df['Nome'] == t_name]
+                    if not row.empty:
+                        bt, _ = get_player_base_target(row.iloc[0])
+                        locked_budget_tot += bt
+                        if r_code == role:
+                            locked_budget_dept += bt
+                            
+    eff_tot_budget = max(1, tot_budget_left - locked_budget_tot)
+    
+    # 3. Calcolo Adattivo
+    other_slots_needed = tot_slots_left - dept_slots_left
+    max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (BASE_DEPT_BUDGET[role] - dept_spent) - locked_budget_dept))
+    
+    total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
+    scale_factor = eff_tot_budget / max(1, total_unfilled_baseline)
+    
+    dyn_target = max(1, int(round(base_target * scale_factor)))
+    max_single_in_dept = max(1, effective_dept_budget - (dept_slots_left - 1))
+    dyn_target = min(dyn_target, max_single_in_dept)
+
+    margin = 1.15 if dyn_target > 25 else (1.20 if dyn_target > 5 else 1.0)
+    dyn_max_bid = int(round(dyn_target * margin))
+    dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
+
     return {
         "base_target": base_target,
         "base_max": base_max,
@@ -1157,6 +1211,16 @@ m1.metric("Budget Rimanente", f"{tot_budget_left} cr", f"-{tot_spent} spesi")
 m2.metric("Slot Mancanti", f"{tot_slots_needed} / 25")
 m3.metric("Offerta Max Sicura (Pmax)", f"{p_max_safe} cr")
 m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)):.1f} cr")
+
+# Valutazione globale per il Panic Button
+panic_mode = tot_budget_left <= 190 and get_dept_count('A') == 0
+
+if panic_mode:
+    st.error("""
+    🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n
+    Hai raggiunto la **soglia critica del 38% del budget** (≤ 190 cr) senza aver acquistato alcun attaccante titolare. 
+    Per garantirti i fondi necessari all'acquisto dei bomber, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!
+    """)
 
 st.divider()
 
