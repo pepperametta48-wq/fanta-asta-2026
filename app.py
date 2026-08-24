@@ -665,8 +665,7 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     
     # 1. Calcolo Spese Normali
     tot_spent = sum(p['price'] for p in my_roster)
-    # Trova questa riga in ENTRAMBE le funzioni della Sezione 3 e modificala così:
-tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
+    tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
     tot_slots_filled = len(my_roster)
     tot_slots_left = TOTAL_SLOTS - tot_slots_filled
     
@@ -713,7 +712,7 @@ tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjust
 
     # =================================================================
     # 🔥 PANIC BUTTON: MODALITÀ DIFESA DEL BUDGET ATTIVA
-    # Se il budget è <= 38% e non hai attaccanti, forza offerte a 1 cr per P, D, C
+    # Se il budget è <= 38% e non hai attaccanti, forza offerte a 1 cr
     # =================================================================
     panic_active = tot_budget_left <= 190 and len([p for p in my_roster if p['role'] == 'A']) == 0
     if panic_active and role != 'A':
