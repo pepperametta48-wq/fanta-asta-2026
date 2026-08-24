@@ -148,6 +148,18 @@ PENALTY_TAKERS = {
     "Atalanta": ["Scamacca (1°)", "Samardzic (2°)", "De Ketelaere (3°)"]
 }
 
+SERIE_A_LOGOS = {
+    "Inter": "505", "Milan": "489", "Juventus": "496", "Roma": "497",
+    "Napoli": "492", "Atalanta": "499", "Lazio": "487", "Fiorentina": "502",
+    "Bologna": "500", "Torino": "503", "Sassuolo": "488", "Genoa": "495",
+    "Udinese": "494", "Lecce": "867", "Cagliari": "490", "Monza": "1579",
+    "Frosinone": "501", "Como": "882", "Parma": "523", "Venezia": "517"
+}
+
+def get_team_logo_url(team_name):
+    team_id = SERIE_A_LOGOS.get(team_name, "505")
+    return f"https://media.api-sports.io/football/teams/{team_id}.png"
+
 GOALKEEPER_PAIRINGS = {
     'Inter': [
         {"club": "Monza", "starter": "Thiam", "target": 5, "max": 7, "diff": "🟢🟢 Alternanza 100% (Low-Cost)", "reason": "Derby lombardo alternato, spesa minima (5 cr), garantisce sempre 1 partita in casa."},
@@ -579,7 +591,7 @@ TEAMS_TACTICAL_DB = {
 }
 
 # ==============================================================================
-# 3. FUNZIONI ANALITICHE E DI CALCOLO (DEFINITE PRIMA DELL'UI)
+# 3. FUNZIONI ANALITICHE E DI CALCOLO
 # ==============================================================================
 def normalize_name(name):
     return str(name).lower().replace("'", "").replace(".", "").replace("-", " ").strip()
@@ -937,25 +949,30 @@ def get_live_player_stats(player_name, team_name):
         'x-rapidapi-key': API_KEY,
         'x-rapidapi-host': 'v3.football.api-sports.io'
     }
-    params = {
-        'search': player_name,
-        'league': '135',
-        'season': '2026'
-    }
+    params = {'search': player_name, 'league': '135', 'season': '2026'}
     
     try:
         response = requests.get(url, headers=headers, params=params, timeout=5)
         data = response.json()
+        
         if data.get('response'):
-            stats = data['response'][0]['statistics'][0]
+            player_info = data['response'][0]
+            stats = player_info['statistics'][0]
+            
+            apps = stats['games'].get('appearences') or 0  # handling the typo from API
+            shots_total = stats.get('shots', {}).get('total') or 0
+            
             return {
-                "appearances": stats['games']['appearences'] or 0,
-                "minutes": stats['games']['minutes'] or 0,
-                "rating": stats['games']['rating'] or "N.D.",
-                "goals": stats['goals']['total'] or 0,
-                "assists": stats['goals']['assists'] or 0,
-                "yellow_cards": stats['cards']['yellow'] or 0,
-                "red_cards": stats['cards']['red'] or 0
+                "appearances": apps,
+                "minutes": stats['games'].get('minutes') or 0,
+                "rating": stats['games'].get('rating') or "N.D.",
+                "goals": stats['goals'].get('total') or 0,
+                "assists": stats['goals'].get('assists') or 0,
+                "yellow_cards": stats['cards'].get('yellow') or 0,
+                "red_cards": stats['cards'].get('red') or 0,
+                "shots_per_game": round(shots_total / apps, 2) if apps > 0 else 0.0,
+                "is_injured": player_info['player'].get('injured', False),
+                "photo": player_info['player'].get('photo', "")
             }
     except Exception:
         pass
@@ -1210,12 +1227,22 @@ with tab_call:
 
         live_stats = get_live_player_stats(sel_player, player_team)
         if live_stats:
-            st.markdown("##### 📈 Statistiche Live Stagionali (API-Football)")
+            st.markdown("##### 📈 Statistiche Avanzate & Scouting (API-Football)")
+            
+            logo_url = get_team_logo_url(player_team)
+            st.markdown(f"""
+                <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 15px;">
+                    <img src="{live_stats['photo']}" width="60" style="border-radius:50%; border: 2px solid #3b82f6;">
+                    <img src="{logo_url}" width="40">
+                    <h4 style="margin:0;">Status Fisico: {'🔴 Infortunato' if live_stats['is_injured'] else '🟢 Disponibile'}</h4>
+                </div>
+            """, unsafe_allow_html=True)
+            
             st_col1, st_col2, st_col3, st_col4 = st.columns(4)
-            st_col1.metric("Presenze / Minuti", f"{live_stats['appearances']} ({live_stats['minutes']} min)")
-            st_col2.metric("Media Voto API", f"{live_stats['rating']}")
-            st_col3.metric("Gol / Assist", f"⚽ {live_stats['goals']} | 🎯 {live_stats['assists']}")
-            st_col4.metric("Cartellini (G / R)", f"🟨 {live_stats['yellow_cards']} | 🟥 {live_stats['red_cards']}")
+            st_col1.metric("Pres. / Minuti", f"{live_stats['appearances']} ({live_stats['minutes']} min)")
+            st_col2.metric("Gol / Assist", f"⚽ {live_stats['goals']} | 🎯 {live_stats['assists']}")
+            st_col3.metric("Tiri a Partita", f"🎯 {live_stats['shots_per_game']}")
+            st_col4.metric("Cartellini", f"🟨 {live_stats['yellow_cards']} | 🟥 {live_stats['red_cards']}")
 
         threat_opps = []
         for ok, ov in st.session_state.opponents.items():
@@ -1236,9 +1263,9 @@ with tab_call:
         st.caption(f"📌 **Status Piazzati:** {pen_str}")
 
         if sel_player == "Colombo":
-            st.warning("⚠️ **Allerta Minutaggio (Report FantaLab):** Lorenzo Colombo ha il 93% di tasso di sostituzione al 62' minuto. Rischio di saltare i penalty concessi nel finale!"[cite: 6])
+            st.warning("⚠️ **Allerta Minutaggio:** Lorenzo Colombo ha il 93% di tasso di sostituzione al 62' minuto. Rischio di saltare i penalty concessi nel finale!")
         elif sel_player == "Mina":
-            st.success("🛡️ **Garanzia Minutaggio (Report FantaLab):** Yerry Mina ha l'85% di permanenza in campo: batte i rigori e garantisce voto da modificatore!"[cite: 6])
+            st.success("🛡️ **Garanzia Minutaggio:** Yerry Mina ha l'85% di permanenza in campo: batte i rigori e garantisce voto da modificatore!")
 
         if eval_data["is_full"]:
             st.error(f"🚫 **REPARTO {player_role} COMPLETO:** Hai già riempito tutti gli slot previsti per questo ruolo!")
