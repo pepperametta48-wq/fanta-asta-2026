@@ -1084,6 +1084,11 @@ if 'history' not in st.session_state:
 if 'quick_bid_val' not in st.session_state:
     st.session_state.quick_bid_val = 1
 
+# NUOVA VARIABILE PER PENALI/SVINCOLI
+if 'budget_adjustments' not in st.session_state:
+    st.session_state.budget_adjustments = saved_data.get("budget_adjustments", 0) if saved_data else 0
+
+
 def save_state_to_disk():
     state_data = {
         "my_roster": st.session_state.get("my_roster", []),
@@ -1092,6 +1097,7 @@ def save_state_to_disk():
         "opponents": st.session_state.get("opponents", {}),
         "purchased_registry": st.session_state.get("purchased_registry", {}),
         "history": st.session_state.get("history", []),
+        "budget_adjustments": st.session_state.get("budget_adjustments", 0), # SALVATAGGIO PENALI
         "last_saved": datetime.now().strftime("%H:%M:%S")
     }
     try:
@@ -1099,7 +1105,6 @@ def save_state_to_disk():
             json.dump(state_data, f, ensure_ascii=False, indent=2)
     except Exception:
         pass
-
 # ==============================================================================
 # 6. SIDEBAR: STATO, GESTIONE & NOTIZIE
 # ==============================================================================
