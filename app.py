@@ -153,7 +153,7 @@ SERIE_A_LOGOS = {
     "Napoli": "492", "Atalanta": "499", "Lazio": "487", "Fiorentina": "502",
     "Bologna": "500", "Torino": "503", "Sassuolo": "488", "Genoa": "495",
     "Udinese": "494", "Lecce": "867", "Cagliari": "490", "Monza": "1579",
-    "Frosinone": "501", "Como": "882", "Parma": "523", "Venezia": "517"
+    "Frosinone": "512", "Como": "859", "Parma": "523", "Venezia": "517"
 }
 
 def get_team_logo_url(team_name):
@@ -1580,6 +1580,7 @@ with tab_tactics:
 
     col_t1, col_t2 = st.columns([1, 1])
     with col_t1:
+        # Recuperiamo il logo in base alla squadra selezionata
         logo_t = get_team_logo_url(sel_team_guide)
         st.markdown(f"### <img src='{logo_t}' width='35' style='vertical-align: middle; margin-right: 8px;'> {sel_team_guide}", unsafe_allow_html=True)
         st.markdown(f"**👔 Allenatore:** {team_data['coach']}")
