@@ -1722,20 +1722,42 @@ with tab_roadmap:
         kp_cols = st.columns(3)
         for idx, (k_col, k_info) in enumerate(zip(kp_cols, k_list)):
             with k_col:
+                slot_label = f"POR {idx+1}"
                 if idx < len(p_bought):
                     p_b = p_bought[idx]
-                    card_text = f"**POR {idx+1}: {p_b['name']}** ({p_b['team']})\n\n✅ **Acquistato:** `{p_b['price']} cr`\n\n📌 *Ruolo:* Titolare in Rosa"
-                    st.success(card_text)
+                    logo_img = f"<img src='{get_team_logo_url(p_b['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    card_html = (
+                        "<div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>"
+                        f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_b['name']}</b></div>"
+                        f"✅ <b>Acquistato:</b> <code>{p_b['price']} cr</code><br>"
+                        "📌 <i>Ruolo:</i> Titolare in Rosa"
+                        "</div>"
+                    )
+                    st.markdown(card_html, unsafe_allow_html=True)
                 else:
                     if idx == 1 and co_starter_lost:
                         top_pair = GOALKEEPER_PAIRINGS.get(k_club, GOALKEEPER_PAIRINGS['Inter'])[0]
-                        card_text = f"**POR 2: {top_pair['starter']}** ({top_pair['club']})\n\n⚠️ *Incrocio Calendario Consigliato*\n\n🎯 **Target:** `{top_pair['target']} cr` | 🛑 **Max:** `{top_pair['max']} cr`\n\n📌 *Ruolo:* **Alternanza con {p_bought[0]['name']}**"
-                        st.info(card_text)
+                        logo_img = f"<img src='{get_team_logo_url(top_pair['club'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                        card_html = (
+                            "<div style='padding: 14px; border: 1px solid #eab308; border-radius: 10px; background: rgba(234, 179, 8, 0.15); height: 100%;'>"
+                            f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {top_pair['starter']}</b></div>"
+                            f"⚠️ <i>Incrocio Calendario Consigliato</i><br><br>"
+                            f"🎯 <b>Target:</b> <code>{top_pair['target']} cr</code> | 🛑 <b>Max:</b> <code>{top_pair['max']} cr</code><br>"
+                            f"📌 <i>Ruolo:</i> <b>Alternanza con {p_bought[0]['name']}</b>"
+                            "</div>"
+                        )
+                        st.markdown(card_html, unsafe_allow_html=True)
                     else:
-                        card_text = f"**POR {idx+1}: {k_info[0]}** ({k_club})\n\n🎯 **Target:** `{k_info[1]} cr` | 🛑 **Max:** `{k_info[2]} cr`\n\n📌 *Ruolo:* **Copertura Blocco {k_club}**"
-                        st.info(card_text)
+                        logo_img = f"<img src='{get_team_logo_url(k_club)}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                        card_html = (
+                            "<div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>"
+                            f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {k_info[0]}</b></div>"
+                            f"🎯 <b>Target:</b> <code>{k_info[1]} cr</code> | 🛑 <b>Max:</b> <code>{k_info[2]} cr</code><br>"
+                            f"📌 <i>Ruolo:</i> <b>Copertura Blocco {k_club}</b>"
+                            "</div>"
+                        )
+                        st.markdown(card_html, unsafe_allow_html=True)
         st.divider()
-
     if selected_cat in ["Panoramica Completa", "🛡️ Difensori (D)"]:
         render_role_card_grid('D', f"🛡️ Difensori (Pilastro Modificatore - Budget Base: {st.session_state.base_dept_budget['D']} cr)", num_cols=4)
         st.divider()
