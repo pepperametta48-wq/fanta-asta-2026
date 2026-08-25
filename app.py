@@ -153,7 +153,7 @@ SERIE_A_LOGOS = {
     "Napoli": "492", "Atalanta": "499", "Lazio": "487", "Fiorentina": "502",
     "Bologna": "500", "Torino": "503", "Sassuolo": "488", "Genoa": "495",
     "Udinese": "494", "Lecce": "867", "Cagliari": "490", "Monza": "1579",
-    "Frosinone": "512", "Como": "859", "Parma": "523", "Venezia": "517"
+    "Frosinone": "512", "Como": "895", "Parma": "523", "Venezia": "517"
 }
 
 def get_team_logo_url(team_name):
