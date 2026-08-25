@@ -117,7 +117,6 @@ TOTAL_BUDGET = 500
 SLOTS = {'P': 3, 'D': 8, 'C': 8, 'A': 6}
 TOTAL_SLOTS = sum(SLOTS.values())
 
-# Definizione Strategie Avanzate
 STRATEGIES = {
     "📊 Equilibrata (Mediana di Mercato)": {'P': 35, 'D': 95, 'C': 160, 'A': 210},
     "🧠 Rischio Calcolato (Centrocampo Dominante)": {'P': 30, 'D': 135, 'C': 210, 'A': 125},
@@ -794,7 +793,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     other_slots_needed = tot_slots_left - dept_slots_left
     max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
     
-    # Preleviamo il budget base aggiornato dalla strategia d'asta scelta
     current_dept_base_budget = st.session_state.base_dept_budget[role]
     effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (current_dept_base_budget - dept_spent) - locked_budget_dept))
     
@@ -809,7 +807,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     dyn_max_bid = int(round(dyn_target * margin))
     dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
 
-    # Panic Button calcolato proporzionalmente alla strategia scelta
     panic_threshold = st.session_state.base_dept_budget['A'] * 0.9
     panic_active = tot_budget_left <= panic_threshold and len([p for p in my_roster if p['role'] == 'A']) == 0
     if panic_active and role != 'A':
@@ -886,7 +883,10 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
     final_targets = sorted(unpurchased_locked + dist_targets, reverse=True)
     return final_targets
 
-def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None):
+def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registry, allocated_in_roadmap, custom_user_targets_list=None, rejected_players=None):
+    if rejected_players is None:
+        rejected_players = []
+        
     if custom_user_targets_list:
         for cust_name in custom_user_targets_list:
             if cust_name not in purchased_registry and cust_name not in allocated_in_roadmap:
@@ -926,14 +926,14 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
     candidates_ordered = []
     if best_tier:
         for c in best_tier['candidates']:
-            if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap:
+            if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap and c['name'] not in rejected_players:
                 candidates_ordered.append(c)
 
     if len(candidates_ordered) < 4:
         for tier in pool:
             if tier != best_tier:
                 for c in tier['candidates']:
-                    if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap and c not in candidates_ordered:
+                    if c['name'] not in purchased_registry and c['name'] not in allocated_in_roadmap and c['name'] not in rejected_players and c not in candidates_ordered:
                         candidates_ordered.append(c)
                         if len(candidates_ordered) >= 6:
                             break
@@ -970,6 +970,7 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.get('my_roster', []))
     
     user_custom_picks = st.session_state.get('custom_user_targets', {}).get(role_code, [])
+    rejected_list = st.session_state.get('rejected_players', [])
 
     for row_start in range(0, slots_total, num_cols):
         row_slots_count = min(num_cols, slots_total - row_start)
@@ -996,7 +997,7 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                     rem_idx = global_slot_idx - len(bought_list)
                     t_budget = dyn_targets_remaining[rem_idx] if rem_idx < len(dyn_targets_remaining) else 1
                     
-                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
+                    slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks, rejected_players=rejected_list)
                     logo_img = f"<img src='{get_team_logo_url(slot_res['chosen_team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
                     card_html = (
                         "<div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>"
@@ -1007,6 +1008,29 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                         "</div>"
                     )
                     st.markdown(card_html, unsafe_allow_html=True)
+                    
+                    st.markdown("<div style='margin-top: 5px;'>", unsafe_allow_html=True)
+                    bc1, bc2 = st.columns(2)
+                    is_custom = slot_res['chosen_name'] in user_custom_picks
+                    
+                    if slot_res['chosen_name'] != "Scommessa / Copertura":
+                        if is_custom:
+                            if bc1.button("🔓 Sblocca", key=f"unlock_{role_code}_{global_slot_idx}", use_container_width=True):
+                                st.session_state.custom_user_targets[role_code].remove(slot_res['chosen_name'])
+                                save_state_to_disk()
+                                st.rerun()
+                        else:
+                            if bc1.button("🔒 Blocca", key=f"lock_{role_code}_{global_slot_idx}", use_container_width=True):
+                                st.session_state.custom_user_targets[role_code].append(slot_res['chosen_name'])
+                                save_state_to_disk()
+                                st.rerun()
+                            if bc2.button("🔄 Cambia", key=f"change_{role_code}_{global_slot_idx}", use_container_width=True):
+                                if 'rejected_players' not in st.session_state:
+                                    st.session_state.rejected_players = []
+                                st.session_state.rejected_players.append(slot_res['chosen_name'])
+                                save_state_to_disk()
+                                st.rerun()
+                    st.markdown("</div>", unsafe_allow_html=True)
 
 # ==============================================================================
 # 4. CARICAMENTO DEL LISTONE & API-FOOTBALL
@@ -1162,6 +1186,9 @@ if 'selected_strategy' not in st.session_state:
 if 'base_dept_budget' not in st.session_state:
     st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
 
+if 'rejected_players' not in st.session_state:
+    st.session_state.rejected_players = saved_data.get("rejected_players", []) if saved_data else []
+
 def save_state_to_disk():
     state_data = {
         "my_roster": st.session_state.get("my_roster", []),
@@ -1172,6 +1199,7 @@ def save_state_to_disk():
         "history": st.session_state.get("history", []),
         "budget_adjustments": st.session_state.get("budget_adjustments", 0),
         "selected_strategy": st.session_state.get("selected_strategy", "📊 Equilibrata (Mediana di Mercato)"),
+        "rejected_players": st.session_state.get("rejected_players", []),
         "last_saved": datetime.now().strftime("%H:%M:%S")
     }
     try:
@@ -1515,7 +1543,7 @@ with tab_call:
                 st.rerun()
 
     # ---------------------------------------------------------
-    # SCHEDA CONSIGLIATI DALLA ROADMAP
+    # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA CON CAMBIA/BLOCCA)
     # ---------------------------------------------------------
     st.markdown("---")
     st.markdown("### 💡 I tuoi prossimi obiettivi (Roadmap)")
@@ -1525,6 +1553,7 @@ with tab_call:
     
     temp_allocated = set(p['name'] for p in st.session_state.get('my_roster', []))
     purchased_reg = st.session_state.get('purchased_registry', {})
+    rejected_list = st.session_state.get('rejected_players', [])
     
     for r in roles_to_check:
         slots_total = SLOTS[r]
@@ -1547,7 +1576,7 @@ with tab_call:
                 if idx < len(dyn_targets):
                     t_budget = dyn_targets[idx]
                     
-                    slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks)
+                    slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks, rejected_players=rejected_list)
                     
                     if slot_res['chosen_name'] != "Scommessa / Copertura":
                         is_custom = slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
@@ -1592,9 +1621,26 @@ with tab_call:
                 )
                 st.markdown(card_html, unsafe_allow_html=True)
                 
+                # BOTTONI DI INTERAZIONE DINAMICA
                 if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                     st.session_state.target_call_player = rec['name']
                     st.rerun()
+                
+                bc1, bc2 = st.columns(2)
+                if rec['is_custom']:
+                    if bc1.button("🔓 Sblocca", key=f"unlock_rec_{rec['name']}_{i}", use_container_width=True):
+                        st.session_state.custom_user_targets[rec['role']].remove(rec['name'])
+                        save_state_to_disk()
+                        st.rerun()
+                else:
+                    if bc1.button("🔒 Blocca", key=f"lock_rec_{rec['name']}_{i}", use_container_width=True):
+                        st.session_state.custom_user_targets[rec['role']].append(rec['name'])
+                        save_state_to_disk()
+                        st.rerun()
+                    if bc2.button("🔄 Cambia", key=f"change_rec_{rec['name']}_{i}", use_container_width=True):
+                        st.session_state.rejected_players.append(rec['name'])
+                        save_state_to_disk()
+                        st.rerun()
     else:
         st.caption("Nessun giocatore primario consigliato per questo filtro. Sei a posto con i titolari, punta su scommesse a 1 cr!")
 
@@ -1602,11 +1648,16 @@ with tab_call:
 # TAB 2: ROADMAP DINAMICA CON SELETTORE TOP & RE-TIERING
 # ------------------------------------------------------------------------------
 with tab_roadmap:
-    st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
-    
-    st.info(f"Hai impostato la strategia **{st.session_state.selected_strategy}** dalla barra laterale. "
-            f"Il sistema sta allocando i tuoi crediti e ricalcolando i target di conseguenza.")
-    
+    col_rm1, col_rm2 = st.columns([3, 1])
+    with col_rm1:
+        st.subheader("🗺️ Roadmap & Strategia Ricalcolata")
+        st.info(f"Strategia attiva: **{st.session_state.selected_strategy}**.")
+    with col_rm2:
+        if st.button("🔄 Ripristina Scartati", use_container_width=True, help="Azzera la memoria dei giocatori scartati con il tasto 'Cambia'"):
+            st.session_state.rejected_players = []
+            save_state_to_disk()
+            st.rerun()
+            
     with st.expander("⭐ Personalizza i Miei Top di Reparto (Lock-in Strategy)", expanded=False):
         st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
         
