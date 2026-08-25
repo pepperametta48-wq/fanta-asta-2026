@@ -663,7 +663,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     role = str(player_row['R']).strip()
     base_target, base_max = get_player_base_target(player_row)
     
-    # 1. Calcolo Spese Normali
     tot_spent = sum(p['price'] for p in my_roster)
     tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
     tot_slots_filled = len(my_roster)
@@ -677,7 +676,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     if tot_slots_left <= 0 or dept_slots_left <= 0:
         return {"base_target": base_target, "dyn_target": 0, "dyn_max_bid": 0, "is_full": True, "dept_budget_left": 0, "dept_slots_left": 0}
 
-    # 2. LOGICA LOCK-IN STRATEGY
     locked_budget_tot = 0
     locked_budget_dept = 0
     if st.session_state.get('lock_in_active', False):
@@ -694,7 +692,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
                             
     eff_tot_budget = max(1, tot_budget_left - locked_budget_tot)
     
-    # 3. Calcolo Adattivo
     other_slots_needed = tot_slots_left - dept_slots_left
     max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
     effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (BASE_DEPT_BUDGET[role] - dept_spent) - locked_budget_dept))
@@ -710,10 +707,6 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     dyn_max_bid = int(round(dyn_target * margin))
     dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
 
-    # =================================================================
-    # 🔥 PANIC BUTTON: MODALITÀ DIFESA DEL BUDGET ATTIVA
-    # Se il budget è <= 38% e non hai attaccanti, forza offerte a 1 cr
-    # =================================================================
     panic_active = tot_budget_left <= 190 and len([p for p in my_roster if p['role'] == 'A']) == 0
     if panic_active and role != 'A':
         dyn_target = 1
@@ -744,7 +737,6 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
     if dept_slots_left <= 0:
         return []
 
-    # LOCK-IN: Calcoliamo quanti slot e quanti crediti sono "prenotati"
     locked_budget_dept = 0
     locked_slots_dept = 0
     purchased_names = [p['name'] for p in my_roster]
@@ -885,13 +877,13 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                 if global_slot_idx < len(bought_list):
                     p_bought = bought_list[global_slot_idx]
                     logo_img = f"<img src='{get_team_logo_url(p_bought['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
-                    card_html = f"""
-                    <div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>
-                        <div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_bought['name']}</b></div>
-                        ✅ <b>Acquistato:</b> <code>{p_bought['price']} cr</code><br>
-                        📌 <i>Ruolo:</i> In Rosa
-                    </div>
-                    """
+                    card_html = (
+                        "<div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>"
+                        f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_bought['name']}</b></div>"
+                        f"✅ <b>Acquistato:</b> <code>{p_bought['price']} cr</code><br>"
+                        "📌 <i>Ruolo:</i> In Rosa"
+                        "</div>"
+                    )
                     st.markdown(card_html, unsafe_allow_html=True)
                 else:
                     rem_idx = global_slot_idx - len(bought_list)
@@ -899,14 +891,14 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                     
                     slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks)
                     logo_img = f"<img src='{get_team_logo_url(slot_res['chosen_team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
-                    card_html = f"""
-                    <div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>
-                        <div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {slot_res['chosen_name']}</b></div>
-                        🎯 <b>Target:</b> <code>{slot_res['dyn_target']} cr</code> | 🛑 <b>Max:</b> <code>{slot_res['dyn_max_bid']} cr</code><br>
-                        📌 <i>Ruolo:</i> <b>{slot_res['chosen_role']}</b><br><br>
-                        <small>🔄 <i>Piani B:</i> {slot_res['alts_str']}</small>
-                    </div>
-                    """
+                    card_html = (
+                        "<div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>"
+                        f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {slot_res['chosen_name']}</b></div>"
+                        f"🎯 <b>Target:</b> <code>{slot_res['dyn_target']} cr</code> | 🛑 <b>Max:</b> <code>{slot_res['dyn_max_bid']} cr</code><br>"
+                        f"📌 <i>Ruolo:</i> <b>{slot_res['chosen_role']}</b><br><br>"
+                        f"<small>🔄 <i>Piani B:</i> {slot_res['alts_str']}</small>"
+                        "</div>"
+                    )
                     st.markdown(card_html, unsafe_allow_html=True)
 
 # ==============================================================================
@@ -1192,11 +1184,11 @@ m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)
 panic_mode = tot_budget_left <= 190 and get_dept_count('A') == 0
 
 if panic_mode:
-    st.error("""
-    🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n
-    Hai raggiunto la **soglia critica del 38% del budget** (≤ 190 cr) senza aver acquistato alcun attaccante titolare. 
-    Per garantirti i fondi necessari all'acquisto dei bomber, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!
-    """)
+    st.error(
+        "🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n\n"
+        "Hai raggiunto la **soglia critica del 38% del budget** (≤ 190 cr) senza aver acquistato alcun attaccante titolare. "
+        "Per garantirti i fondi necessari all'acquisto dei bomber, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!"
+    )
 
 st.divider()
 
@@ -1311,13 +1303,17 @@ with tab_call:
             st.markdown("##### 📈 Statistiche Avanzate & Scouting (API-Football)")
             
             logo_url = get_team_logo_url(player_team)
-            st.markdown(f"""
-                <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 15px;">
-                    <img src="{live_stats['photo']}" width="60" style="border-radius:50%; border: 2px solid #3b82f6;">
-                    <img src="{logo_url}" width="40">
-                    <h4 style="margin:0;">Status Fisico: {'🔴 Infortunato' if live_stats['is_injured'] else '🟢 Disponibile'}</h4>
-                </div>
-            """, unsafe_allow_html=True)
+            photo_url = live_stats.get('photo', '')
+            status_txt = '🔴 Infortunato' if live_stats.get('is_injured') else '🟢 Disponibile'
+            
+            html_block = (
+                '<div style="display:flex; align-items:center; gap: 15px; margin-bottom: 15px;">'
+                f'<img src="{photo_url}" width="60" style="border-radius:50%; border: 2px solid #3b82f6;">'
+                f'<img src="{logo_url}" width="40">'
+                f'<h4 style="margin:0;">Status Fisico: {status_txt}</h4>'
+                '</div>'
+            )
+            st.markdown(html_block, unsafe_allow_html=True)
             
             st_col1, st_col2, st_col3, st_col4 = st.columns(4)
             st_col1.metric("Pres. / Minuti", f"{live_stats['appearances']} ({live_stats['minutes']} min)")
@@ -1396,7 +1392,7 @@ with tab_call:
                 st.rerun()
 
     # ---------------------------------------------------------
-    # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA & PROFONDA)
+    # SCHEDA CONSIGLIATI DALLA ROADMAP
     # ---------------------------------------------------------
     st.markdown("---")
     st.markdown("### 💡 I tuoi prossimi obiettivi (Roadmap)")
@@ -1463,14 +1459,14 @@ with tab_call:
         for i, rec in enumerate(recs[:4]):
             with rec_cols[i]:
                 logo_img = f"<img src='{get_team_logo_url(rec['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
-                card_html = f"""
-                <div style='padding: 12px; border: 1px solid #6366f1; border-radius: 8px; background: rgba(99, 102, 241, 0.1); margin-bottom: 10px;'>
-                    <div style='margin-bottom: 8px;'>{logo_img}<b>{rec['role']} | {rec['name']}</b></div>
-                    <small>{rec['card_style']}</small><br>
-                    🎯 Target: <code>{rec['target']} cr</code><br>
-                    🛑 Max: <code>{rec['max']} cr</code>
-                </div>
-                """
+                card_html = (
+                    "<div style='padding: 12px; border: 1px solid #6366f1; border-radius: 8px; background: rgba(99, 102, 241, 0.1); margin-bottom: 10px;'>"
+                    f"<div style='margin-bottom: 8px;'>{logo_img}<b>{rec['role']} | {rec['name']}</b></div>"
+                    f"<small>{rec['card_style']}</small><br>"
+                    f"🎯 Target: <code>{rec['target']} cr</code><br>"
+                    f"🛑 Max: <code>{rec['max']} cr</code>"
+                    "</div>"
+                )
                 st.markdown(card_html, unsafe_allow_html=True)
                 
                 if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
@@ -1706,19 +1702,37 @@ with tab_barometer:
 
     st.markdown("---")
     if deflation_on:
-        st.error("""
-        🚨 **ALLERTA DEFLAZIONE ATTIVA:** La cassa media della lega è scesa sotto i 10 crediti per slot! 
-        I rivali non hanno più liquidità per contendersi i giocatori. Ora puoi aggiudicarti tutti i tuoi 4°/5° slot d'attacco e centrocampo a **prezzo di saldo o a 1 credito**!
-        """)
+        st.error(
+            "🚨 **ALLERTA DEFLAZIONE ATTIVA:** La cassa media della lega è scesa sotto i 10 crediti per slot! "
+            "I rivali non hanno più liquidità per contendersi i giocatori. Ora puoi aggiudicarti tutti i tuoi 4°/5° slot d'attacco e centrocampo a **prezzo di saldo o a 1 credito**!"
+        )
     else:
-        st.info("""
-        📊 **MERCATO IN EQUILIBRIO:** C'è ancora liquidità per i primi slot. Mantieni la disciplina sui tetti Stop-Loss e fai sfogare i rivali sui giocatori non prioritari.
-        """)
+        st.info(
+            "📊 **MERCATO IN EQUILIBRIO:** C'è ancora liquidità per i primi slot. Mantieni la disciplina sui tetti Stop-Loss e fai sfogare i rivali sui giocatori non prioritari."
+        )
 
 # ------------------------------------------------------------------------------
 # TAB 6: COMPARATORE LIVE "TESTA A TESTA" (DECISION DUEL)
 # ------------------------------------------------------------------------------
-col_card1, col_card2 = st.columns(2)
+with tab_duel:
+    st.subheader("⚔️ Confronto Testa a Testa Live (Decision Duel)")
+    
+    all_player_names = sorted(list(listone_df['Nome'].dropna().unique()))
+    
+    col_d1, col_d2 = st.columns(2)
+    with col_d1:
+        p_name_1 = st.selectbox("Seleziona Calciatore A:", options=all_player_names, index=0)
+    with col_d2:
+        p_name_2 = st.selectbox("Seleziona Calciatore B:", options=all_player_names, index=min(1, len(all_player_names)-1))
+
+    if p_name_1 and p_name_2:
+        row1 = listone_df[listone_df['Nome'] == p_name_1].iloc[0]
+        row2 = listone_df[listone_df['Nome'] == p_name_2].iloc[0]
+        
+        eval1 = calculate_dynamic_player_evaluation(row1, st.session_state.my_roster)
+        eval2 = calculate_dynamic_player_evaluation(row2, st.session_state.my_roster)
+
+        col_card1, col_card2 = st.columns(2)
         with col_card1:
             logo1 = get_team_logo_url(row1['Squadra'])
             st.markdown(f"### <img src='{logo1}' width='32' style='vertical-align: middle;'> {p_name_1}", unsafe_allow_html=True)
@@ -1736,6 +1750,7 @@ col_card1, col_card2 = st.columns(2)
             st.markdown(f"**Quotazione Listone:** {row2['Qt.A']} | **FVM:** {row2['FVM']}")
             pen2 = [p for p in PENALTY_TAKERS.get(row2['Squadra'], []) if p_name_2.lower() in p.lower()]
             st.markdown(f"**Status Rigori:** {pen2[0] if pen2 else 'Nessuno'}")
+
         st.divider()
         diff_cr = int(round(eval1['dyn_target'] - eval2['dyn_target']))
         if diff_cr > 0:
@@ -1800,6 +1815,7 @@ with tab_inspect:
             st.markdown("**Attaccanti (A)**")
             for pl in inspect_opp['roster']['A']:
                 st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
+
     st.markdown("---")
     with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
         st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati o penalizzati automaticamente in base alla regola scelta.")
