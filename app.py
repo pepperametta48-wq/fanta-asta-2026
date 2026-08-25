@@ -212,46 +212,139 @@ GOALIE_HIERARCHY = {
 }
 
 DOC_TARGETS = {
-    "Svilar Mile": 48.5, "Svilar": 48.5, "Maignan Mike": 42.0, "Maignan": 42.0, "Vicario Guglielmo": 39.0, "Vicario": 39.0,
-    "Martinez Josep": 34.0, "Martinez Jo.": 34.0, "Carnesecchi Marco": 33.5, "Carnesecchi": 33.5, "Butez Jean": 31.0, "Butez": 31.0,
-    "Meret Alex": 27.5, "Meret": 27.5, "De Gea David": 21.0, "De Gea": 21.0, "Skorupski Lukasz": 17.0, "Skorupski": 17.0,
-    "Mandas Christos": 15.0, "Mandas": 15.0, "Okoye Maduka": 13.5, "Okoye": 13.5, "Falcone Wladimiro": 11.5, "Falcone": 11.5,
-    "Caprile Elia": 9.5, "Caprile": 9.5, "Bijlow Justin": 8.5, "Bijlow": 8.5, "Milinkovic-Savic Vanja": 10.5, "Milinkovic-Savic V.": 10.5,
-    "Provedel Ivan": 7.5, "Provedel": 7.5, "Muric Arijanet": 5.0, "Muric": 5.0, "Corvi Edoardo": 4.0, "Corvi": 4.0,
-    "Perri Lucas": 4.5, "Perri": 4.5, "Thiam Demba": 3.5, "Thiam": 3.5, "Stankovic Filip": 3.5, "Stankovic F.": 3.5,
-    "Dimarco Federico": 52.0, "Dimarco": 52.0, "Bremer Gleison": 38.0, "Bremer": 38.0, "Mancini Gianluca": 32.0, "Mancini": 32.0,
-    "Wesley França": 30.0, "Wesley": 30.0, "Bastoni Alessandro": 26.0, "Bastoni": 26.0, "Pavlovic Strahinja": 26.0, "Pavlovic": 26.0,
-    "Solet Oumar": 25.0, "Solet": 25.0, "Akanji Manuel": 24.0, "Akanji": 24.0, "Cambiaso Andrea": 23.0, "Cambiaso": 23.0,
-    "Bisseck Yann": 23.0, "Bisseck": 23.0, "Di Lorenzo Giovanni": 22.0, "Di Lorenzo": 22.0, "Rrahmani Amir": 21.0, "Rrahmani": 21.0,
-    "Scalvini Giorgio": 20.0, "Scalvini": 20.0, "Kempf Marc Oliver": 18.5, "Kempf": 18.5, "Ostigard Leo": 18.0, "Ostigard": 18.0,
-    "Kalulu Pierre": 16.0, "Kalulu": 16.0, "Ndicka Evan": 15.5, "Ndicka": 15.5, "Gila Mario": 14.5, "Gila": 14.5,
-    "Yan Couto": 16.0, "Molina Nahuel": 16.0, "Molina N.": 16.0, "Dragusin Radu": 15.0, "Dragusin": 15.0,
-    "Spinazzola Leonardo": 14.0, "Spinazzola": 14.0, "Chalobah Trevoh": 13.5, "Chalobah": 13.5, "Miranda Juan": 12.5, "Miranda": 12.5,
-    "Dodò": 12.0, "Dodo": 12.0, "Mina Yerry": 11.0, "Mina": 11.0, "Doekhi Danilho": 10.5, "Doekhi": 10.5,
-    "Vojvoda Mergim": 10.0, "Vojvoda": 10.0, "Kaiki Bruno": 8.0, "Kaiki": 8.0, "Rensch Devyne": 8.0, "Rensch": 8.0,
-    "Heggem Torbjorn": 7.0, "Heggem": 7.0, "Ahanor Honest": 7.0, "Ahanor": 7.0, "Ziolkowski Jan": 1.0, "Ziolkowski": 1.0,
-    "Paz Nico": 87.75, "Nico Paz": 87.75, "McTominay Scott": 68.94, "McTominay": 68.94, "Orsolini Riccardo": 58.0, "Orsolini": 58.0,
-    "Calhanoglu Hakan": 68.81, "Calhanoglu": 68.81, "De Bruyne Kevin": 46.0, "De Bruyne": 46.0, "Rabiot Adrien": 44.0, "Rabiot": 44.0,
-    "Da Cunha Lucas": 32.0, "Da Cunha": 32.0, "Barella Nicolo'": 33.0, "Barella": 33.0, "Atta Arthur": 30.0, "Atta": 30.0,
-    "Baturina Martin": 29.0, "Baturina": 29.0, "Politano Matteo": 28.0, "Politano": 28.0, "Zielinski Piotr": 26.0, "Zielinski": 26.0,
-    "Ederson Dos Santos": 26.0, "Ederson": 26.0, "McKennie Weston": 25.0, "McKennie": 25.0, "Mastantuono Franco": 24.0, "Mastantuono": 24.0,
-    "Vlasic Nikola": 24.0, "Vlasic": 24.0, "Moreira Diego": 22.0, "Diego Moreira": 22.0, "Gaetano Gianluca": 21.0, "Gaetano": 21.0,
-    "Saelemaekers Alexis": 20.0, "Saelemaekers": 20.0, "Rowe Jonathan": 20.0, "Rowe": 20.0, "Sucic Petar": 19.0, "Sucic": 19.0,
-    "Thorstvedt Kristian": 19.0, "Thorstvedt": 19.0, "Casadei Cesare": 18.0, "Casadei": 18.0, "Zaniolo Nicolo'": 19.0, "Zaniolo": 19.0,
-    "Perrone Maximo": 14.0, "Perrone": 14.0, "Manu Koné": 15.0, "Koné M.": 15.0, "Frattesi Davide": 17.0, "Frattesi": 17.0,
-    "Locatelli Manuel": 12.0, "Locatelli": 12.0, "Lobotka Stanislav": 10.0, "Lobotka": 10.0, "Diouf Andy": 11.0, "Diouf": 11.0,
-    "Adzic Vasilije": 8.0, "Adzic": 8.0, "Busio Gianluca": 8.0, "Busio": 8.0, "El Azzouzi Anouar": 2.0, "El Azzouzi A.": 2.0, "Lahdo Adrian": 2.0,
-    "Martinez Lautaro": 129.36, "Lautaro Martinez": 129.36, "Martinez L.": 129.36, "Malen Donyell": 113.9, "Malen": 113.9,
-    "Thuram Marcus": 116.02, "Thuram": 116.02, "Ramos Gonçalo": 102.37, "Ramos G.": 102.37, "Gonçalo Ramos": 102.37,
-    "Hojlund Rasmus": 83.25, "Hojlund": 83.25, "Kolo Muani Randal": 109.48, "Kolo Muani": 109.48, "Kean Moise": 84.44, "Kean": 84.44,
-    "Yildiz Kenan": 82.0, "Yildiz": 82.0, "Pulisic Christian": 62.45, "Pulisic": 62.45, "Douvikas Anastasios": 72.0, "Douvikas": 72.0,
-    "Scamacca Gianluca": 66.0, "Scamacca": 66.0, "Dybala Paulo": 62.0, "Dybala": 62.0, "Leão Rafael": 70.0, "Leao": 70.0,
-    "Krstovic Nikola": 48.0, "Krstovic": 48.0, "Dovbyk Artem": 52.0, "Dovbyk": 52.0, "Nkunku Christopher": 55.85, "Nkunku": 55.85,
-    "Simeone Giovanni": 39.0, "Simeone": 39.0, "Davis Keinan": 34.0, "Davis K.": 34.0, "Berardi Domenico": 45.0, "Berardi": 45.0,
-    "Gudmundsson Albert": 40.0, "Gudmundsson": 40.0, "Castro Santiago": 34.0, "Castro": 34.0, "Piccoli Roberto": 25.0, "Piccoli": 25.0,
-    "Noslin Tijjani": 25.0, "Noslin": 25.0, "Raspadori Giacomo": 24.0, "Raspadori": 24.0, "Pellegrino Mateo": 22.0, "Pellegrino": 22.0,
-    "Touré El Bilal": 18.0, "Tourè E.": 18.0, "Cutrone Patrick": 21.0, "Cutrone": 21.0, "Akor Adams": 20.0, "Adams A.": 20.0,
-    "Esposito Francesco Pio": 14.0, "Esposito F.P.": 14.0, "Bonny Ange-Yoan": 12.0, "Bonny": 12.0, "Kevin Carlos": 11.0, "Carlos K.": 11.0
+    "Malen Donyell": 141.20, "Malen": 141.20,
+    "Martinez Lautaro": 132.29, "Lautaro Martinez": 132.29, "Martinez L.": 132.29,
+    "Hojlund Rasmus": 125.13, "Hojlund": 125.13,
+    "Kean Moise": 124.26, "Kean": 124.26,
+    "Ramos Goncalo Matias": 104.96, "Ramos G.": 104.96, "Gonçalo Ramos": 104.96,
+    "Yildiz Kenan": 102.07, "Yildiz": 102.07,
+    "Thuram Marcus": 101.75, "Thuram": 101.75,
+    "Paz Nico": 95.02, "Nico Paz": 95.02,
+    "Kolo Muani Randal": 93.91, "Kolo Muani": 93.91,
+    "Pulisic Christian": 72.81, "Pulisic": 72.81,
+    "Calhanoglu Hakan": 72.98, "Calhanoglu": 72.98,
+    "Scamacca Gianluca": 69.55, "Scamacca": 69.55,
+    "McTominay Scott": 69.12, "McTominay": 69.12,
+    "Orsolini Riccardo": 64.56, "Orsolini": 64.56,
+    "Dimarco Federico": 64.05, "Dimarco": 64.05,
+    "Douvikas Tasos": 62.16, "Douvikas": 62.16,
+    "Mora Carvalho Rodrigo": 59.08, "Mora Carvalho": 59.08,
+    "Davis Keinan": 54.63, "Davis K.": 54.63, "Davis": 54.63,
+    "Jones Curtis": 53.92, "Jones": 53.92,
+    "Dovbyk Artem": 53.68, "Dovbyk": 53.68,
+    "De Ketelaere Charles": 51.38, "De Ketelaere": 51.38,
+    "Krstovic Nikola": 51.03, "Krstovic": 51.03,
+    "Alajbegovic Kerim-Sam": 50.14, "Alajbegovic": 50.14,
+    "Simeone Giovanni": 48.83, "Simeone": 48.83,
+    "Svilar Mile": 48.17, "Svilar": 48.17,
+    "Esposito FP Francesco Pio": 47.28, "Esposito FP": 47.28, "Esposito F.P.": 47.28,
+    "Dybala Paulo": 47.09, "Dybala": 47.09,
+    "Lukaku Romelu": 44.67, "Lukaku": 44.67,
+    "Atta Arthur": 43.99, "Atta": 43.99,
+    "Da Silva Moreira Diego": 42.95, "Moreira Diego": 42.95, "Diego Moreira": 42.95,
+    "De Bruyne Kevin": 42.92, "De Bruyne": 42.92,
+    "Baturina Martin": 42.62, "Baturina": 42.62,
+    "Meret Alex": 41.66, "Meret": 41.66,
+    "Gudmundsson Albert": 41.63, "Gudmundsson": 41.63,
+    "Berardi Domenico": 40.87, "Berardi": 40.87,
+    "Da Cunha Lucas": 39.67, "Da Cunha": 39.67,
+    "Zaccagni Mattia": 39.29, "Zaccagni": 39.29,
+    "Raspadori Giacomo": 38.21, "Raspadori": 38.21,
+    "Vlasic Nikola": 37.74, "Vlasic": 37.74,
+    "Zaniolo Nicolò": 37.46, "Zaniolo": 37.46,
+    "Mastantuono Franco": 37.27, "Mastantuono": 37.27,
+    "Castro Santiago": 36.82, "Castro": 36.82,
+    "Wesley França Lima": 36.67, "Wesley": 36.67, "Wesley França": 36.67,
+    "Maignan Mike": 36.08, "Maignan": 36.08,
+    "Barella Nicolò": 35.50, "Barella": 35.50,
+    "Santos Alisson": 34.98, "Santos": 34.98,
+    "Carnesecchi Marco": 34.95, "Carnesecchi": 34.95,
+    "Rabiot Adrien": 34.59, "Rabiot": 34.59,
+    "Conceicao Fernandes Francisco": 34.33, "Conceicao": 34.33,
+    "Vicario Guglielmo": 34.19, "Vicario": 34.19,
+    "Pinamonti Andrea": 33.50, "Pinamonti": 33.50,
+    "Rowe Jonathan": 33.12, "Rowe": 33.12,
+    "Leao Rafael": 33.07, "Leao": 33.07, "Leão Rafael": 33.07,
+    "Martinez Josep": 32.69, "Martinez Jo.": 32.69, "Martinez J": 32.69,
+    "Butez Jean": 31.21, "Butez": 31.21,
+    "Diao Assane": 30.93, "Diao": 30.93,
+    "McKennie Weston": 30.46, "McKennie": 30.46,
+    "Di Lorenzo Giovanni": 30.29, "Di Lorenzo": 30.29,
+    "Molina Nahuel": 29.88, "Molina": 29.88, "Molina N.": 29.88,
+    "Bremer Gleison": 29.69, "Bremer": 29.69,
+    "Lauriente Armand": 29.40, "Lauriente": 29.40,
+    "Spence Djed": 28.35, "Spence": 28.35,
+    "Bastoni Alessandro": 28.02, "Bastoni": 28.02,
+    "Samardzic Lazar": 27.90, "Samardzic": 27.90,
+    "Soule Matias": 27.12, "Soule": 27.12,
+    "Ederson -": 27.00, "Ederson": 27.00, "Ederson Dos Santos": 27.00,
+    "Mancini Gianluca": 26.90, "Mancini": 26.90,
+    "Colombo Lorenzo": 26.29, "Colombo": 26.29,
+    "Banda Lameck": 26.17, "Banda": 26.17,
+    "Zielinski Piotr": 25.83, "Zielinski": 25.83,
+    "Bisseck Yann Aurel": 25.73, "Bisseck": 25.73, "Bisseck Yann": 25.73,
+    "Kone Manu": 25.54, "Kone M.": 25.54, "Manu Koné": 25.54,
+    "Messias Junior": 25.03, "Messias": 25.03,
+    "Thuram Khéphren": 24.90, "Thuram K": 24.90, "Khéphren Thuram": 24.90,
+    "Taylor Kenneth": 24.65, "Taylor K.": 24.65,
+    "Piccoli Roberto": 24.63, "Piccoli": 24.63,
+    "Solet Oumar": 24.22, "Solet": 24.22,
+    "Kalulu Pierre": 23.42, "Kalulu": 23.42,
+    "Modric Luka": 23.35, "Modric": 23.35,
+    "Audero Emil": 23.29, "Audero": 23.29,
+    "Akanji Manuel": 23.16, "Akanji": 23.16,
+    "Esposito S Sebastiano": 23.06, "Esposito S": 23.06,
+    "Adams Che": 22.70, "Adams": 22.70, "Adams A.": 22.70, "Akor Adams": 22.70,
+    "David Jonathan": 22.70, "David": 22.70,
+    "Cambiaso Andrea": 22.43, "Cambiaso": 22.43,
+    "Luis Henrique de Lima": 22.34, "Luis Henrique": 22.34,
+    "Politano Matteo": 22.33, "Politano": 22.33,
+    "Pavlovic Strahinja": 22.09, "Pavlovic": 22.09,
+    "Anguissa André Zambo": 21.73, "Anguissa": 21.73,
+    "Cutrone Patrick": 21.72, "Cutrone": 21.72,
+    "Nkunku Christopher": 21.66, "Nkunku": 21.66,
+    "Saelemaekers Alexis": 21.56, "Saelemaekers": 21.56,
+    "Elmas Eljif": 21.34, "Elmas": 21.34,
+    "Sucic Petar": 21.19, "Sucic": 21.19,
+    "Rodriguez Jesús": 21.06, "Rodriguez": 21.06,
+    "Perrone Maximo": 20.98, "Perrone": 20.98,
+    "Ndicka Evan": 20.79, "Ndicka": 20.79,
+    "Zapata Duvan": 20.71, "Zapata": 20.71,
+    "Bonny Ange-Yoan": 20.67, "Bonny": 20.67,
+    "Casadei Cesare": 20.61, "Casadei": 20.61,
+    "Baldanzi Tommaso": 20.20, "Baldanzi": 20.20,
+    "Pellegrini Lorenzo": 20.06, "Pellegrini": 20.06,
+    "Ekkelenkamp Jurgen": 19.82, "Ekkelenkamp": 19.82,
+    "Rrahmani Amir": 19.66, "Rrahmani": 19.66,
+    "Gila Mario": 19.36, "Gila": 19.36,
+    "Fagioli Nicolo": 19.11, "Fagioli": 19.11,
+    "Morata Alvaro": 19.11, "Morata": 19.11,
+    "Vitinha -": 18.91, "Vitinha": 18.91,
+    "Stones John": 18.69, "Stones": 18.69,
+    "Scalvini Giorgio": 18.16, "Scalvini": 18.16,
+    "Lobotka Stanislav": 17.82, "Lobotka": 17.82,
+    "Neres David Campos": 17.01, "Neres": 17.01,
+    "Thorstvedt Kristian": 17.00, "Thorstvedt": 17.00,
+    "Pasalic Mario": 16.88, "Pasalic": 16.88,
+    "Isaksen Gustav": 16.81, "Isaksen": 16.81,
+    "Bowie Kieron": 16.68, "Bowie": 16.68,
+    "Estupinan Pervis": 16.23, "Estupinan": 16.23,
+    "Montipo' Lorenzo": 15.19, "Montipo'": 15.19, "Montipo": 15.19,
+    "Lovric Sandi": 14.77, "Lovric": 14.77,
+    "Bayo Vakoun": 7.42, "Bayo": 7.42,
+    "Mazzitelli Luca": 6.87, "Mazzitelli": 6.87,
+    "Ziolkowski Jan": 5.85, "Ziolkowski": 5.85,
+    "Joao Mario Neto Lopes": 5.03, "Joao Mario": 5.03,
+    "Perin Mattia": 3.53, "Perin": 3.53,
+    "Ilic Mihajlo": 3.18, "Ilic": 3.18,
+    "Mendy Paul": 3.00, "Mendy": 3.00,
+    "Milik Arek": 1.50, "Milik": 1.50,
+    "Christensen Oliver": 1.23, "Christensen O.": 1.23,
+    "Zelezny Radoslaw": 1.20, "Zelezny": 1.20,
+    "Contini Nikita": 1.18, "Contini": 1.18,
+    "Pinsoglio Carlo": 1.16, "Pinsoglio": 1.16,
+    "Mlacic Branimir": 1.06, "Mlacic": 1.06,
+    "Cremaschi Benjamín": 1.06, "Cremaschi": 1.06
 }
 
 ROLE_TIERED_POOLS = {
@@ -1193,14 +1286,15 @@ if panic_mode:
 st.divider()
 
 # ==============================================================================
-# 8. TABS DELL'APPLICAZIONE (SUITE COMPLETA 10 TAB)
+# 8. TABS DELL'APPLICAZIONE (SUITE COMPLETA 11 TAB)
 # ==============================================================================
-tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_duel, tab_opps, tab_inspect, tab_defense, tab_export = st.tabs([
+tab_call, tab_roadmap, tab_tactics, tab_field, tab_barometer, tab_macro, tab_duel, tab_opps, tab_inspect, tab_defense, tab_export = st.tabs([
     "⚡ Assegnazione Live",
     "🗺️ Roadmap Dinamica",
     "📖 Guida Tattica 20 Squadre",
     "🏟️ Simulatore 11 Titolare",
     "🌡️ Barometro Lega (5000 cr)",
+    "📊 Macroeconomia & Trend",
     "⚔️ Testa a Testa (Duello)",
     "👥 Tracker Rivali (Pmax)",
     "🔍 Ispezione Rose",
@@ -1580,7 +1674,6 @@ with tab_tactics:
 
     col_t1, col_t2 = st.columns([1, 1])
     with col_t1:
-        # Recuperiamo il logo in base alla squadra selezionata
         logo_t = get_team_logo_url(sel_team_guide)
         st.markdown(f"### <img src='{logo_t}' width='35' style='vertical-align: middle; margin-right: 8px;'> {sel_team_guide}", unsafe_allow_html=True)
         st.markdown(f"**👔 Allenatore:** {team_data['coach']}")
@@ -1714,7 +1807,40 @@ with tab_barometer:
         )
 
 # ------------------------------------------------------------------------------
-# TAB 6: COMPARATORE LIVE "TESTA A TESTA" (DECISION DUEL)
+# TAB 6: MACROECONOMIA & TREND 2026/27
+# ------------------------------------------------------------------------------
+with tab_macro:
+    st.subheader("📊 Analisi Macroeconomica del Mercato Fanta 2026/27")
+    st.markdown("Questa sezione analizza le dinamiche d'asta reali basate su leghe a 10 squadre con 500 crediti e modificatore di difesa attivo[cite: 1].")
+    
+    st.markdown("#### 💰 Distribuzione del Budget")
+    st.markdown(
+        "- La massa monetaria totale circolante si attesta rigorosamente su 5.000 crediti in un mercato a 10 partecipanti[cite: 1].\n"
+        "- La spesa mediana per i portieri è di 35 crediti, equivalente al 7,0% del budget complessivo[cite: 1].\n"
+        "- I difensori assorbono una mediana di 95 crediti, pari al 19,0% del budget totale[cite: 1].\n"
+        "- I centrocampisti richiedono un investimento mediano di 160 crediti, che rappresenta il 32,0% del capitale[cite: 1].\n"
+        "- Gli attaccanti guidano la spesa con 210 crediti mediani, costituendo il 41,9% dell'intero budget[cite: 1]."
+    )
+    
+    st.markdown("#### 🛡️ Impatto del Modificatore di Difesa")
+    st.markdown(
+        "- Il modificatore altera strutturalmente i portafogli di investimento costringendo i manager a deviare dal modulo 3-4-3[cite: 1].\n"
+        "- L'impiego ottimizzato del modificatore inietta fino a +70,7 punti netti in un campionato[cite: 1].\n"
+        "- L'utilizzo di moduli con quattro o cinque difensori esplode, passando dal 48,8% all'81,2% del totale a causa del modificatore[cite: 1].\n"
+        "- L'adozione del 4-3-3 sale al 38,1% e quella del 4-4-2 al 36,8%, mentre il 3-4-3 collassa al 14,6%[cite: 1]."
+    )
+    
+    st.markdown("#### ⚽ Dinamiche di Prezzo per Reparto")
+    st.markdown(
+        "- Nel comparto arretrato, Federico Dimarco rappresenta un outlier assoluto con un prezzo medio di 64.05 crediti[cite: 1].\n"
+        "- Il blocco difensivo dell'Inter (Dimarco, Bastoni, Bisseck, Akanji) monopolizza la liquidità del reparto[cite: 1].\n"
+        "- A centrocampo, Hakan Calhanoglu (72.98 cr) e Scott McTominay (69.12 cr) costituiscono l'apice incontrastato[cite: 1].\n"
+        "- Il mercato degli attaccanti è caratterizzato da un'iperinflazione che assorbe il 41,9% della massa monetaria circolante[cite: 1].\n"
+        "- Un quintetto di élite offensiva, guidato da Donyell Malen (141.20) e Lautaro Martinez (132.29), supera regolarmente la soglia dei 100 crediti[cite: 1]."
+    )
+
+# ------------------------------------------------------------------------------
+# TAB 7: COMPARATORE LIVE "TESTA A TESTA" (DECISION DUEL)
 # ------------------------------------------------------------------------------
 with tab_duel:
     st.subheader("⚔️ Confronto Testa a Testa Live (Decision Duel)")
@@ -1763,7 +1889,7 @@ with tab_duel:
             st.info(f"💡 **Verdetto Economico:** I due giocatori hanno lo stesso impatto economico ({int(round(eval1['dyn_target']))} cr).")
 
 # ------------------------------------------------------------------------------
-# TAB 7: TRACKER RIVALI & MAX BID
+# TAB 8: TRACKER RIVALI & MAX BID
 # ------------------------------------------------------------------------------
 with tab_opps:
     st.subheader("👥 Quadro Generale Avversari & Potere d'Acquisto")
@@ -1784,7 +1910,7 @@ with tab_opps:
     st.dataframe(pd.DataFrame(opp_summary).sort_values(by="Max Bid Possibile (Pmax)", ascending=False), use_container_width=True)
 
 # ------------------------------------------------------------------------------
-# TAB 8: ISPEZIONE ROSE RIVALI & SVINCOLI
+# TAB 9: ISPEZIONE ROSE RIVALI & SVINCOLI
 # ------------------------------------------------------------------------------
 with tab_inspect:
     st.subheader("🔍 Ispezione Dettagliata Rosa Rivale & Gestione Svincoli")
@@ -1885,7 +2011,7 @@ with tab_inspect:
             st.info(f"Nessun giocatore attualmente presente nella rosa di {selected_drop_team}.")
 
 # ------------------------------------------------------------------------------
-# TAB 9: GRIGLIA DIFESA & PORTIERI
+# TAB 10: GRIGLIA DIFESA & PORTIERI
 # ------------------------------------------------------------------------------
 with tab_defense:
     st.subheader("🛡️ Griglia Solidità Difensiva & Clean Sheet 2026/27")
@@ -1904,7 +2030,7 @@ with tab_defense:
     st.dataframe(pd.DataFrame(grid_data), use_container_width=True)
 
 # ------------------------------------------------------------------------------
-# TAB 10: ESPORTAZIONE & REPORT FINALE
+# TAB 11: ESPORTAZIONE & REPORT FINALE
 # ------------------------------------------------------------------------------
 with tab_export:
     st.subheader("📥 Esportazione Dati Rosa & Report Finale")
