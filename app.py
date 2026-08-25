@@ -505,22 +505,22 @@ GOALKEEPER_PAIRINGS = {
 
 TEAMS_TACTICAL_DB = {
     "Atalanta": {
-        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
+        "coach": "Maurizio Sarri[cite: 2]", "formation": "4-3-3 (Palleggio & Intensità)[cite: 2]",
         "gk": "Carnesecchi (Sportiello vice)",
         "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
-        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
+        "midfield": "Ederson, Gaetano, Pašalić, Samardžić[cite: 2]",
         "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
         "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
-        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista; Ahanor scommessa difensiva a 1 credito."
+        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista. Il passaggio al 4-3-3 esalta le mezzali palleggiatrici (Samardzic, Gaetano)[cite: 2]. Scamacca rilanciato ma occhio al turnover[cite: 2]."
     },
     "Bologna": {
-        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
+        "coach": "Domenico Tedesco[cite: 2]", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)[cite: 2]",
         "gk": "Skorupski (Pessina vice)",
         "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
         "midfield": "Ferguson, Moro, Bernardeschi",
         "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
         "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
-        "advice": "Orsolini 1° slot centrocampo; Rowe 2°-3° slot da bonus; Heggem certezza difensiva a costi contenuti."
+        "advice": "Tedesco conferma il 4-3-3 offensivo[cite: 2]. Orsolini monopolizza i rigori e non fa coppe, ottimo a 64 cr[cite: 2]. Heggem certezza difensiva a costi contenuti."
     },
     "Cagliari": {
         "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
@@ -532,22 +532,22 @@ TEAMS_TACTICAL_DB = {
         "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
     },
     "Como": {
-        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
-        "gk": "Jean Butez (Tornqvist/Vigorito)",
+        "coach": "Cesc Fàbregas[cite: 2]", "formation": "4-2-3-1 (Possesso & Fluidità)[cite: 2]",
+        "gk": "Jean Butez (Tornqvist/Vigorito)[cite: 2]",
         "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
-        "midfield": "Da Cunha, Perrone",
-        "attack": "Nico Paz, Baturina, Douvikas (Morata vice)",
+        "midfield": "Da Cunha, Perrone, Baturina[cite: 2]",
+        "attack": "Nico Paz (Trequartista)[cite: 2], Douvikas (Morata vice)[cite: 2]",
         "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
-        "advice": "Butez primato clean sheet (19); Nico Paz e Da Cunha top centrocampo; Douvikas bomber altissima resa; Kempf e Yan Couto pilastri difesa."
+        "advice": "Butez è il portiere più efficiente del listino[cite: 2]. Nico Paz agisce da falso nove ed è un Super Top[cite: 2]. Douvikas bomber altissima resa."
     },
     "Fiorentina": {
         "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
         "gk": "David De Gea (Christensen/Lezzerini)",
         "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
-        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
-        "attack": "Gudmundsson, Moise Kean, Pellegrino",
+        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora[cite: 2]",
+        "attack": "Gudmundsson, Moise Kean, Pellegrino[cite: 2]",
         "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
-        "advice": "Atta e Mastantuono centrocampisti da bonus low cost; Gudmundsson e Kean riferimenti offensivi primari."
+        "advice": "Attenzione a Kean: valutato 124 cr, è considerato la 'Trappola Estrema' a causa dell'alto rischio di fallimento[cite: 2]. Mastantuono ottima scommessa trequartista[cite: 2]."
     },
     "Frosinone": {
         "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
@@ -568,22 +568,22 @@ TEAMS_TACTICAL_DB = {
         "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
     },
     "Inter": {
-        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
+        "coach": "Cristian Chivu[cite: 2]", "formation": "3-5-2 (Dominio Tattico)[cite: 2]",
         "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
-        "defense": "Dimarco, Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
-        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
-        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
-        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
-        "advice": "Dimarco top 1 assoluto di difesa; Calhanoglu top bonus centrocampo; coppia portieri Martinez-Provedel obbligatoria; Pio Esposito scommessa a 1-2 cr."
+        "defense": "Dimarco (Trequartista occulto)[cite: 2], Bastoni, Akanji, Bisseck, Pavard/Stones, Spence[cite: 2]",
+        "midfield": "Calhanoglu[cite: 2], Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
+        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny[cite: 2]",
+        "penalties": ["Calhanoglu (1° - 89%)[cite: 2]", "Zielinski (2°)", "Lautaro Martínez (3°)"],
+        "advice": "Dimarco è un'anomalia di mercato: produce come un top d'attacco, vale l'investimento massiccio[cite: 2]. Calhanoglu dominatore per i rigori[cite: 2]."
     },
     "Juventus": {
-        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
+        "coach": "Luciano Spalletti[cite: 2]", "formation": "4-2-3-1 (Propensione Offensiva)[cite: 2]",
         "gk": "Guglielmo Vicario (Perin vice)",
-        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
+        "defense": "Bremer, Kalulu, Cambiaso, Çelik[cite: 2]",
         "midfield": "Locatelli, Thuram / McKennie",
-        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
+        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)[cite: 2]",
         "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
-        "advice": "Bremer top difensore per modificatore; Yildiz e Kolo Muani bonus pesanti d'attacco; Alajbegović talento a 1-5 cr."
+        "advice": "Kolo Muani è il terminale di Spalletti e rigorista, fortemente sottovalutato dal mercato[cite: 2]. Bremer garantisce certezze in difesa[cite: 2]."
     },
     "Lazio": {
         "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
@@ -604,13 +604,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
     },
     "Milan": {
-        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
+        "coach": "Rúben Amorim[cite: 2]", "formation": "3-4-2-1 (Iper-Dinamico)[cite: 2]",
         "gk": "Mike Maignan (Terracciano/Torriani)",
-        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
-        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
-        "attack": "Christian Pulisic, Rafael Leão, Gonçalo Ramos (Nkunku)",
+        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi[cite: 2]",
+        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira[cite: 2]",
+        "attack": "Christian Pulisic (Trequartista), Rafael Leão, Gonçalo Ramos (Nkunku)[cite: 2]",
         "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
-        "advice": "Gonçalo Ramos centravanti ideale per Amorim (~90-100 cr); Pavlovic certezza modificatore e bonus; Diego Moreira bug listato C."
+        "advice": "Il sistema di Amorim esalta Ramos e Pulisic (trequartista atipico)[cite: 2]. Penalizzato Rafael Leao, che sconta un crollo delle quotazioni[cite: 2]."
     },
     "Monza": {
         "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
@@ -622,13 +622,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
     },
     "Napoli": {
-        "coach": "Massimiliano Allegri", "formation": "4-3-3 / 4-2-4 (Flessibile & Diretto)",
-        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
-        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
-        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
-        "attack": "Rasmus Højlund, Politano, Santos, Neres",
+        "coach": "Massimiliano Allegri[cite: 2]", "formation": "4-3-3 / Baricentro Basso[cite: 2]",
+        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)[cite: 2]",
+        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema[cite: 2]",
+        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas[cite: 2]",
+        "attack": "Rasmus Højlund, Politano, Santos, Neres[cite: 2]",
         "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
-        "advice": "McTominay 1° slot assoluto di centrocampo; Højlund bomber ideale con Allegri; Spinazzola low cost in difesa."
+        "advice": "Il pragmatismo di Allegri valorizza i difensori (Rrahmani, Di Lorenzo) ma penalizza l'attacco[cite: 2]. Hojlund a prezzi alti è un azzardo matematico letale[cite: 2]."
     },
     "Parma": {
         "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
@@ -640,13 +640,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
     },
     "Roma": {
-        "coach": "Guida Tecnica", "formation": "3-4-2-1 (Intensità & Spinta Offensiva)",
-        "gk": "Mile Svilar (Gollini/De Marzi)",
-        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley",
+        "coach": "Gian Piero Gasperini[cite: 2]", "formation": "3-4-2-1 / 3-5-2 (Intensità)[cite: 2]",
+        "gk": "Mile Svilar (Gollini/De Marzi)[cite: 2]",
+        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley (Esterni)[cite: 2]",
         "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
-        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
+        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen[cite: 2]",
         "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
-        "advice": "Svilar top 1 portiere (18 clean sheet); Malen top bomber d'attacco; Wesley e Molina esterni difensivi ad altissima fantamedia."
+        "advice": "La difesa a tre di Gasperini trasforma Mancini e Wesley in incursori offensivi: acquisti obbligati per il modificatore[cite: 2]. Malen è il Super Top dell'attacco[cite: 2]."
     },
     "Sassuolo": {
         "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
@@ -1688,7 +1688,7 @@ with tab_tactics:
 
     with col_t2:
         st.markdown("### 🎯 Gerarchia Rigoristi & Tiratori")
-        for r_idx, r_name in enumerate(team_data['penalties']):
+        for r_idx, r_name in enumerate(team_data.get('penalties', [])):
             st.markdown(f"- **{r_name}**")
         
         st.markdown("### 💡 Consigli d'Asta & Scommesse")
@@ -1813,33 +1813,45 @@ with tab_barometer:
 # TAB 6: MACROECONOMIA & TREND 2026/27
 # ------------------------------------------------------------------------------
 with tab_macro:
-    st.subheader("📊 Analisi Macroeconomica del Mercato Fanta 2026/27")
-    st.markdown("Questa sezione analizza le dinamiche d'asta reali basate su leghe a 10 squadre con 500 crediti e modificatore di difesa attivo[cite: 1].")
+    st.subheader("📊 Analisi Macroeconomica e Tattica (Stagione 2026/27)")
+    st.markdown("Questa sezione analizza le inefficienze del mercato e le tattiche ottimali basate sul modello a rischio calcolato per leghe a 10 squadre con 500 crediti[cite: 2].")
     
-    st.markdown("#### 💰 Distribuzione del Budget")
+    st.markdown("#### 💰 Modello Comportamentale vs. Rischio Calcolato")
     st.markdown(
-        "- La massa monetaria totale circolante si attesta rigorosamente su 5.000 crediti in un mercato a 10 partecipanti[cite: 1].\n"
-        "- La spesa mediana per i portieri è di 35 crediti, equivalente al 7,0% del budget complessivo[cite: 1].\n"
-        "- I difensori assorbono una mediana di 95 crediti, pari al 19,0% del budget totale[cite: 1].\n"
-        "- I centrocampisti richiedono un investimento mediano di 160 crediti, che rappresenta il 32,0% del capitale[cite: 1].\n"
-        "- Gli attaccanti guidano la spesa con 210 crediti mediani, costituendo il 41,9% dell'intero budget[cite: 1]."
+        "- I fantallenatori tendono a sovrappesare l'attacco, spendendo il 41.9% del budget (circa 210 cr) per un reparto che ha un tasso di conferma di appena il 33%[cite: 2].\n"
+        "- Il centrocampo è il reparto più prevedibile (62% di conferma)[cite: 2].\n"
+        "- Il modello a rischio suggerisce di investire fino al 40-43% del budget per i centrocampisti[cite: 2].\n"
+        "- La difesa garantisce un tasso di conferma del 54%[cite: 2].\n"
+        "- Si raccomanda di aumentare la spesa difensiva fino al 27-28%[cite: 2].\n"
+        "- Nelle leghe con il Trequartista, questo singolo ruolo assorbe il 16.1% del budget (prezzo medio 17.6 cr)[cite: 2].\n"
+        "- L'introduzione del Trequartista contrae l'investimento per gli attaccanti al 33.5%[cite: 2]."
     )
     
-    st.markdown("#### 🛡️ Impatto del Modificatore di Difesa")
+    st.markdown("#### 🧤 L'Hype Premium in Porta e le Scommesse")
     st.markdown(
-        "- Il modificatore altera strutturalmente i portafogli di investimento costringendo i manager a deviare dal modulo 3-4-3[cite: 1].\n"
-        "- L'impiego ottimizzato del modificatore inietta fino a +70,7 punti netti in un campionato[cite: 1].\n"
-        "- L'utilizzo di moduli con quattro o cinque difensori esplode, passando dal 48,8% all'81,2% del totale a causa del modificatore[cite: 1].\n"
-        "- L'adozione del 4-3-3 sale al 38,1% e quella del 4-4-2 al 36,8%, mentre il 3-4-3 collassa al 14,6%[cite: 1]."
+        "- Mile Svilar è spinto da un 'hype premium' a 48,17 cr, ben oltre il limite algoritmico del 5%[cite: 2].\n"
+        "- Jean Butez (Como) si rivela la scelta finanziariamente più oculata[cite: 2].\n"
+        "- Butez porta in dote 19 clean sheet storici ed è pagato solo 31.21 cr[cite: 2].\n"
+        "- Il ballottaggio tra Meret e Milinkovic-Savic nel Napoli impone l'acquisto di entrambi, drenando ulteriore liquidità[cite: 2]."
     )
     
-    st.markdown("#### ⚽ Dinamiche di Prezzo per Reparto")
+    st.markdown("#### 🛡️ Modificatore di Difesa e Nuove Tattiche")
     st.markdown(
-        "- Nel comparto arretrato, Federico Dimarco rappresenta un outlier assoluto con un prezzo medio di 64.05 crediti[cite: 1].\n"
-        "- Il blocco difensivo dell'Inter (Dimarco, Bastoni, Bisseck, Akanji) monopolizza la liquidità del reparto[cite: 1].\n"
-        "- A centrocampo, Hakan Calhanoglu (72.98 cr) e Scott McTominay (69.12 cr) costituiscono l'apice incontrastato[cite: 1].\n"
-        "- Il mercato degli attaccanti è caratterizzato da un'iperinflazione che assorbe il 41,9% della massa monetaria circolante[cite: 1].\n"
-        "- Un quintetto di élite offensiva, guidato da Donyell Malen (141.20) e Lautaro Martinez (132.29), supera regolarmente la soglia dei 100 crediti[cite: 1]."
+        "- L'Anomalia Dimarco: valutato 64,05 cr, agisce da trequartista occulto nel 3-5-2 di Chivu[cite: 2].\n"
+        "- Dimarco merita l'investimento massiccio in virtù di un limite reale di 174 cr[cite: 2].\n"
+        "- L'Effetto Gasperini a Roma trasforma Mancini e Wesley in esterni d'assalto, rendendoli asset prioritari per il modificatore[cite: 2].\n"
+        "- Nel Milan, il paradigma Amorim esalta Pavlovic come braccetto nel 3-4-2-1[cite: 2].\n"
+        "- Rafael Leao subisce un crollo di valutazione a soli 33,07 cr sotto la guida di Amorim[cite: 2].\n"
+        "- L'utilizzo di moduli a 4 o 5 difensori passa dal 48.8% all'81.2% nelle leghe con modificatore[cite: 2]."
+    )
+    
+    st.markdown("#### ⚽ Dinamiche di Prezzo e Trappole in Attacco")
+    st.markdown(
+        "- Donyell Malen (141.20 cr) e Lautaro Martinez (132.29 cr) dominano le valutazioni, superando la soglia dei 100 crediti[cite: 2].\n"
+        "- Hojlund (125.13 cr) è penalizzato dal modulo difensivo di Allegri ed è considerato una trappola letale[cite: 2].\n"
+        "- Kean (124.26 cr) ha un rischio di fallimento estremo ed è over-priced rispetto ai suoi limiti algoritmici[cite: 2].\n"
+        "- Kolo Muani a 93.91 cr è fortemente sottovalutato[cite: 2].\n"
+        "- Kolo Muani vanta 97 gol in carriera ed è il terminale designato nel modulo di Spalletti[cite: 2]."
     )
 
 # ------------------------------------------------------------------------------
