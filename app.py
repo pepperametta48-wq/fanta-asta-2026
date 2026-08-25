@@ -116,7 +116,13 @@ SAVE_FILE = "fanta_auction_save.json"
 TOTAL_BUDGET = 500
 SLOTS = {'P': 3, 'D': 8, 'C': 8, 'A': 6}
 TOTAL_SLOTS = sum(SLOTS.values())
-BASE_DEPT_BUDGET = {'P': 35, 'D': 95, 'C': 155, 'A': 215}
+
+# Definizione Strategie Avanzate
+STRATEGIES = {
+    "📊 Equilibrata (Mediana di Mercato)": {'P': 35, 'D': 95, 'C': 160, 'A': 210},
+    "🧠 Rischio Calcolato (Centrocampo Dominante)": {'P': 30, 'D': 135, 'C': 210, 'A': 125},
+    "⚔️ Attacco Pesante (Stars & Scrubs)": {'P': 35, 'D': 75, 'C': 150, 'A': 240}
+}
 
 BASELINE_DEPT_CURVES = {
     'P': [20, 3, 1],
@@ -160,9 +166,6 @@ def get_team_logo_url(team_name):
     team_id = SERIE_A_LOGOS.get(team_name, "505")
     return f"https://media.api-sports.io/football/teams/{team_id}.png"
 
-# ==============================================================================
-# 2.5 DIZIONARI TATTICI AGGIORNATI CON PREZZI MEDI DEL MERCATO REALE
-# ==============================================================================
 DOC_TARGETS = {
     "Malen Donyell": 141.20, "Malen": 141.20,
     "Martinez Lautaro": 132.29, "Lautaro Martinez": 132.29, "Martinez L.": 132.29,
@@ -790,7 +793,10 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     
     other_slots_needed = tot_slots_left - dept_slots_left
     max_dept_can_have = max(dept_slots_left, eff_tot_budget - other_slots_needed)
-    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (BASE_DEPT_BUDGET[role] - dept_spent) - locked_budget_dept))
+    
+    # Preleviamo il budget base aggiornato dalla strategia d'asta scelta
+    current_dept_base_budget = st.session_state.base_dept_budget[role]
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, (current_dept_base_budget - dept_spent) - locked_budget_dept))
     
     total_unfilled_baseline = sum(sum(BASELINE_DEPT_CURVES[r][len([p for p in my_roster if p['role'] == r]):]) for r in SLOTS)
     scale_factor = eff_tot_budget / max(1, total_unfilled_baseline)
@@ -803,7 +809,9 @@ def calculate_dynamic_player_evaluation(player_row, my_roster):
     dyn_max_bid = int(round(dyn_target * margin))
     dyn_max_bid = max(dyn_target, min(eff_tot_budget - (tot_slots_left - 1), min(dyn_max_bid, max_single_in_dept)))
 
-    panic_active = tot_budget_left <= 190 and len([p for p in my_roster if p['role'] == 'A']) == 0
+    # Panic Button calcolato proporzionalmente alla strategia scelta
+    panic_threshold = st.session_state.base_dept_budget['A'] * 0.9
+    panic_active = tot_budget_left <= panic_threshold and len([p for p in my_roster if p['role'] == 'A']) == 0
     if panic_active and role != 'A':
         dyn_target = 1
         dyn_max_bid = 1
@@ -852,7 +860,9 @@ def calculate_dynamic_targets_for_slots(role, my_roster):
 
     other_slots_needed = tot_slots_left - dept_slots_left
     max_dept_can_have = max(dept_slots_left, tot_budget_left - other_slots_needed)
-    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, BASE_DEPT_BUDGET[role] - dept_spent))
+    
+    current_dept_base_budget = st.session_state.base_dept_budget[role]
+    effective_dept_budget = min(max_dept_can_have, max(dept_slots_left, current_dept_base_budget - dept_spent))
 
     distributable_budget = max(dept_slots_left - locked_slots_dept, effective_dept_budget - locked_budget_dept)
     distributable_slots = max(0, dept_slots_left - locked_slots_dept)
@@ -952,8 +962,9 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     slots_total = SLOTS[role_code]
     bought_list = [p for p in st.session_state.get('my_roster', []) if p['role'] == role_code]
     
+    current_dept_base = st.session_state.base_dept_budget[role_code]
     st.markdown(f"### {dept_title}")
-    st.caption(f"Spesi: **{get_dept_spent(role_code)} cr** / {BASE_DEPT_BUDGET[role_code]} cr | Slot Completati: **{len(bought_list)} / {slots_total}**")
+    st.caption(f"Spesi: **{get_dept_spent(role_code)} cr** / {current_dept_base} cr | Slot Completati: **{len(bought_list)} / {slots_total}**")
     
     allocated_in_roadmap = set(p['name'] for p in st.session_state.get('my_roster', []))
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.get('my_roster', []))
@@ -1145,6 +1156,12 @@ if 'quick_bid_val' not in st.session_state:
 if 'budget_adjustments' not in st.session_state:
     st.session_state.budget_adjustments = saved_data.get("budget_adjustments", 0) if saved_data else 0
 
+if 'selected_strategy' not in st.session_state:
+    st.session_state.selected_strategy = saved_data.get("selected_strategy", "📊 Equilibrata (Mediana di Mercato)") if saved_data else "📊 Equilibrata (Mediana di Mercato)"
+
+if 'base_dept_budget' not in st.session_state:
+    st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
+
 def save_state_to_disk():
     state_data = {
         "my_roster": st.session_state.get("my_roster", []),
@@ -1154,6 +1171,7 @@ def save_state_to_disk():
         "purchased_registry": st.session_state.get("purchased_registry", {}),
         "history": st.session_state.get("history", []),
         "budget_adjustments": st.session_state.get("budget_adjustments", 0),
+        "selected_strategy": st.session_state.get("selected_strategy", "📊 Equilibrata (Mediana di Mercato)"),
         "last_saved": datetime.now().strftime("%H:%M:%S")
     }
     try:
@@ -1166,6 +1184,13 @@ def save_state_to_disk():
 # 6. SIDEBAR: STATO, GESTIONE & NOTIZIE
 # ==============================================================================
 st.sidebar.title("🎛️ Pannello di Controllo")
+
+st.sidebar.markdown("**⚙️ Strategia d'Asta**")
+selected_strat = st.sidebar.selectbox("Imposta Allocazione Budget:", options=list(STRATEGIES.keys()), index=list(STRATEGIES.keys()).index(st.session_state.selected_strategy))
+if selected_strat != st.session_state.selected_strategy:
+    st.session_state.selected_strategy = selected_strat
+    st.session_state.base_dept_budget = STRATEGIES[selected_strat]
+    st.rerun()
 
 current_stage = st.sidebar.selectbox(
     "Fase d'Asta Attuale:",
@@ -1186,7 +1211,7 @@ st.sidebar.divider()
 st.sidebar.markdown("**📊 Avanzamento Spesa Reparti:**")
 for r_code, r_name in [('P', '🧤 Portieri'), ('D', '🛡️ Difensori'), ('C', '⚙️ Centrocampisti'), ('A', '⚽ Attaccanti')]:
     sp = get_dept_spent(r_code)
-    cap = BASE_DEPT_BUDGET[r_code]
+    cap = st.session_state.base_dept_budget[r_code]
     ratio = min(1.0, sp / cap) if cap > 0 else 0.0
     st.sidebar.caption(f"{r_name}: **{sp} / {cap} cr**")
     st.sidebar.progress(ratio)
@@ -1277,13 +1302,14 @@ m2.metric("Slot Mancanti", f"{tot_slots_needed} / 25")
 m3.metric("Offerta Max Sicura (Pmax)", f"{p_max_safe} cr")
 m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)):.1f} cr")
 
-panic_mode = tot_budget_left <= 190 and get_dept_count('A') == 0
+panic_threshold = st.session_state.base_dept_budget['A'] * 0.9
+panic_mode = tot_budget_left <= panic_threshold and get_dept_count('A') == 0
 
 if panic_mode:
     st.error(
-        "🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n\n"
-        "Hai raggiunto la **soglia critica del 38% del budget** (≤ 190 cr) senza aver acquistato alcun attaccante titolare. "
-        "Per garantirti i fondi necessari all'acquisto dei bomber, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!"
+        f"🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n\n"
+        f"Hai raggiunto la **soglia critica di budget** (≤ {panic_threshold} cr) senza aver acquistato alcun attaccante titolare. "
+        "Per garantirti i fondi necessari all'acquisto dei bomber previsti dalla tua strategia, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!"
     )
 
 st.divider()
@@ -1578,6 +1604,9 @@ with tab_call:
 with tab_roadmap:
     st.subheader("🗺️ Roadmap & Strategia Ricalcolata con Re-Tiering Dinamico")
     
+    st.info(f"Hai impostato la strategia **{st.session_state.selected_strategy}** dalla barra laterale. "
+            f"Il sistema sta allocando i tuoi crediti e ricalcolando i target di conseguenza.")
+    
     with st.expander("⭐ Personalizza i Miei Top di Reparto (Lock-in Strategy)", expanded=False):
         st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
         
@@ -1657,15 +1686,15 @@ with tab_roadmap:
         st.divider()
 
     if selected_cat in ["Panoramica Completa", "🛡️ Difensori (D)"]:
-        render_role_card_grid('D', "🛡️ Difensori (Pilastro Modificatore - Budget: 95 cr)", num_cols=4)
+        render_role_card_grid('D', f"🛡️ Difensori (Pilastro Modificatore - Budget Base: {st.session_state.base_dept_budget['D']} cr)", num_cols=4)
         st.divider()
 
     if selected_cat in ["Panoramica Completa", "⚙️ Centrocampisti (C)"]:
-        render_role_card_grid('C', "⚙️ Centrocampisti (Motore dei Bonus - Budget: 155 cr)", num_cols=4)
+        render_role_card_grid('C', f"⚙️ Centrocampisti (Motore dei Bonus - Budget Base: {st.session_state.base_dept_budget['C']} cr)", num_cols=4)
         st.divider()
 
     if selected_cat in ["Panoramica Completa", "⚽ Attaccanti (A)"]:
-        render_role_card_grid('A', "⚽ Attaccanti (Finalizzatori - Budget: 215 cr)", num_cols=3)
+        render_role_card_grid('A', f"⚽ Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
 # ------------------------------------------------------------------------------
 # TAB 3: GUIDA TATTICA DELLE 20 SQUADRE
