@@ -1580,7 +1580,8 @@ with tab_tactics:
 
     col_t1, col_t2 = st.columns([1, 1])
     with col_t1:
-        st.markdown(f"### 🛡️ {sel_team_guide}")
+        logo_t = get_team_logo_url(sel_team_guide)
+        st.markdown(f"### <img src='{logo_t}' width='35' style='vertical-align: middle; margin-right: 8px;'> {sel_team_guide}", unsafe_allow_html=True)
         st.markdown(f"**👔 Allenatore:** {team_data['coach']}")
         st.markdown(f"**📐 Modulo Tattico:** {team_data['formation']}")
         st.markdown(f"**🧤 Gerarchia Porta:** {team_data['gk']}")
