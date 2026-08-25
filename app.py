@@ -1456,7 +1456,7 @@ with tab_call:
         if len(recs) >= 4:
             break
             
-  if recs:
+    if recs:
         recs = sorted(recs, key=lambda x: x['is_custom'], reverse=True)
         
         rec_cols = st.columns(min(4, len(recs)))
