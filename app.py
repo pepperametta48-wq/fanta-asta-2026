@@ -1800,7 +1800,6 @@ with tab_inspect:
             st.markdown("**Attaccanti (A)**")
             for pl in inspect_opp['roster']['A']:
                 st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
-
     st.markdown("---")
     with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
         st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati o penalizzati automaticamente in base alla regola scelta.")
