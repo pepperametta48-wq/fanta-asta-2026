@@ -14,72 +14,121 @@ from datetime import datetime
 st.set_page_config(
     page_title="FantaAsta 2026/27 Pro Master Suite",
     layout="wide",
-    page_icon="⚽",
     initial_sidebar_state="expanded"
 )
 
+# Iniezione CSS Avanzato (Glassmorphism, Inter Font, Pill Buttons)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Inter', sans-serif;
     }
     
+    /* Sfondo Antracite Profondo */
     .stApp {
-        background: radial-gradient(circle at 15% 15%, #0f172a 0%, #0b0f19 55%, #050811 100%);
-        color: #f8fafc;
+        background-color: #0B0F19;
+        color: #F8FAFC;
     }
     
+    /* Metriche in stile Glassmorphism */
     div[data-testid="stMetric"] {
-        background: rgba(30, 41, 59, 0.45);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        padding: 16px 20px;
-        border-radius: 14px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(12px);
+        background: rgba(22, 27, 38, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 20px 24px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
     }
     div[data-testid="stMetricLabel"] {
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        color: #94a3b8 !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #64748B !important;
     }
     div[data-testid="stMetricValue"] {
-        font-size: 26px !important;
-        font-weight: 800 !important;
-        color: #f8fafc !important;
+        font-size: 34px !important;
+        font-weight: 900 !important;
+        color: #F8FAFC !important;
     }
     
-    /* Stile Moderno per le Tab */
+    /* Stile Moderno Bottoni (Pillola & Hover Violetto) */
+    div[data-testid="stButton"] button {
+        border-radius: 50px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #F8FAFC !important;
+        font-weight: 600 !important;
+        padding: 10px 24px !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stButton"] button:hover {
+        background: #8B5CF6 !important;
+        border-color: #8B5CF6 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3) !important;
+    }
+    div[data-testid="stButton"] button[kind="primary"] {
+        background: #8B5CF6 !important;
+        border-color: #8B5CF6 !important;
+    }
+    
+    /* Stile Tab: Gerarchia e Pillole */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: rgba(15, 23, 42, 0.65);
-        padding: 6px;
-        border-radius: 14px;
-        border: 1px solid rgba(148, 163, 184, 0.12);
-        flex-wrap: wrap; /* Adatta le tab su schermi piccoli */
+        background-color: transparent;
+        gap: 12px;
+        border: none;
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 10px;
-        padding: 8px 18px;
+        background: rgba(22, 27, 38, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 50px;
+        padding: 8px 22px;
         font-weight: 600;
-        color: #94a3b8;
+        color: #94A3B8;
         transition: all 0.2s ease;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #3b82f6 !important;
+        background-color: #8B5CF6 !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        border-color: #8B5CF6 !important;
+        box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
     }
 
+    /* Glass Cards per Roadmap e Consigliati */
+    .glass-card {
+        background: rgba(22, 27, 38, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 20px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        height: 100%;
+        color: #F8FAFC;
+        transition: transform 0.2s ease;
+    }
+    .glass-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .glass-card-accent {
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+    }
+    .glass-card-mini-text {
+        font-size: 13px;
+        color: #94A3B8;
+        margin-top: 10px;
+    }
+
+    /* Simulatore Campo */
     .pitch-container {
-        background: linear-gradient(to bottom, #15803d 0%, #166534 50%, #15803d 100%);
-        background-size: 100% 40px;
-        border: 3px solid #f8fafc;
-        border-radius: 18px;
+        background: #161B26;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
         padding: 24px 16px;
         position: relative;
-        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0,0,0,0.4);
         margin-bottom: 20px;
     }
     .pitch-row {
@@ -89,30 +138,33 @@ st.markdown("""
         margin: 18px 0;
     }
     .player-disc {
-        background: rgba(15, 23, 42, 0.85);
-        border: 2px solid #60a5fa;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         color: #ffffff;
-        border-radius: 14px;
-        padding: 8px 14px;
+        border-radius: 16px;
+        padding: 10px 16px;
         text-align: center;
         min-width: 120px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         backdrop-filter: blur(6px);
     }
     .player-disc-empty {
-        background: rgba(30, 41, 59, 0.5);
-        border: 2px dashed #94a3b8;
-        color: #cbd5e1;
-        border-radius: 14px;
-        padding: 8px 14px;
+        background: transparent;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        color: #64748B;
+        border-radius: 16px;
+        padding: 10px 16px;
         text-align: center;
         min-width: 120px;
+    }
+    
+    hr {
+        border-color: rgba(255,255,255,0.05);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. COSTANTI DI GIOCO & BENCHMARK FANTALAB (10 SQUADRE / 500 CR)
+# 2. COSTANTI DI GIOCO & DATI
 # ==============================================================================
 SAVE_FILE = "fanta_auction_save.json"
 TOTAL_BUDGET = 500
@@ -120,9 +172,9 @@ SLOTS = {'P': 3, 'D': 8, 'C': 8, 'A': 6}
 TOTAL_SLOTS = sum(SLOTS.values())
 
 STRATEGIES = {
-    "📊 Equilibrata (Mediana di Mercato)": {'P': 35, 'D': 95, 'C': 160, 'A': 210},
-    "🧠 Rischio Calcolato (Centrocampo Dominante)": {'P': 30, 'D': 135, 'C': 210, 'A': 125},
-    "⚔️ Attacco Pesante (Stars & Scrubs)": {'P': 35, 'D': 75, 'C': 150, 'A': 240}
+    "Equilibrata (Mediana di Mercato)": {'P': 35, 'D': 95, 'C': 160, 'A': 210},
+    "Rischio Calcolato (Centrocampo Dominante)": {'P': 30, 'D': 135, 'C': 210, 'A': 125},
+    "Attacco Pesante (Stars & Scrubs)": {'P': 35, 'D': 75, 'C': 150, 'A': 240}
 }
 
 BASELINE_DEPT_CURVES = {
@@ -512,234 +564,26 @@ GOALKEEPER_PAIRINGS = {
     ]
 }
 
-TEAMS_TACTICAL_DB = {
-    "Atalanta": {
-        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
-        "gk": "Carnesecchi (Sportiello vice)",
-        "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
-        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
-        "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
-        "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
-        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista. Il passaggio al 4-3-3 esalta le mezzali palleggiatrici (Samardzic, Gaetano). Scamacca rilanciato ma occhio al turnover."
-    },
-    "Bologna": {
-        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
-        "gk": "Skorupski (Pessina vice)",
-        "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
-        "midfield": "Ferguson, Moro, Bernardeschi",
-        "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
-        "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
-        "advice": "Tedesco conferma il 4-3-3 offensivo. Orsolini monopolizza i rigori e non fa coppe, ottimo a 64 cr. Heggem certezza difensiva a costi contenuti."
-    },
-    "Cagliari": {
-        "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
-        "gk": "Caprile (Sherri/Radunovic)",
-        "defense": "Yerry Mina, Obert, Rodríguez, Zé Pedro",
-        "midfield": "Adopo, Fazzini, Winks",
-        "attack": "Daniel Maldini, Sebastiano Esposito, Kevin Carlos (Mendy vice)",
-        "penalties": ["Mina (1°)", "Kevin Carlos (2°)", "Daniel Maldini (3°)"],
-        "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
-    },
-    "Como": {
-        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
-        "gk": "Jean Butez (Tornqvist/Vigorito)",
-        "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
-        "midfield": "Da Cunha, Perrone, Baturina",
-        "attack": "Nico Paz (Trequartista), Douvikas (Morata vice)",
-        "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
-        "advice": "Butez è il portiere più efficiente del listino. Nico Paz agisce da falso nove ed è un Super Top. Douvikas bomber altissima resa."
-    },
-    "Fiorentina": {
-        "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
-        "gk": "David De Gea (Christensen/Lezzerini)",
-        "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
-        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
-        "attack": "Gudmundsson, Moise Kean, Pellegrino",
-        "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
-        "advice": "Attenzione a Kean: valutato 124 cr, è considerato la 'Trappola Estrema' a causa dell'alto rischio di fallimento. Mastantuono ottima scommessa trequartista."
-    },
-    "Frosinone": {
-        "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
-        "gk": "Palmisani / Desplanches",
-        "defense": "Monterisi, Bracaglia, Akpoguma, Oyono",
-        "midfield": "Calò, Schmid, Grillitsch, El Azzouzi",
-        "attack": "Raimondo, Ghedjemis, Zerbin",
-        "penalties": ["Calò (1°)", "Schmid (2°)"],
-        "advice": "Calò rigorista economico a centrocampo; El Azzouzi slot a 1 credito per copertura; Bracaglia difensore low cost."
-    },
-    "Genoa": {
-        "coach": "Daniele De Rossi", "formation": "3-5-2 / 4-3-3 (Flessibile)",
-        "gk": "Justin Bijlow (Stolz vice)",
-        "defense": "Ostigard, Vásquez, Marcandalli / Mitaj",
-        "midfield": "Frendrup, Ellertsson, Ethan-Meichtry, Baldanzi/Traoré",
-        "attack": "Lorenzo Colombo, Vitinha",
-        "penalties": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
-        "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
-    },
-    "Inter": {
-        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
-        "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
-        "defense": "Dimarco (Trequartista occulto), Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
-        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
-        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
-        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
-        "advice": "Dimarco è un'anomalia di mercato: produce come un top d'attacco, vale l'investimento massiccio. Calhanoglu dominatore per i rigori."
-    },
-    "Juventus": {
-        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
-        "gk": "Guglielmo Vicario (Perin vice)",
-        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
-        "midfield": "Locatelli, Thuram / McKennie",
-        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
-        "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
-        "advice": "Kolo Muani è il terminale di Spalletti e rigorista, fortemente sottovalutato dal mercato. Bremer garantisce certezze in difesa."
-    },
-    "Lazio": {
-        "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
-        "gk": "Christos Mandas (Motta vice)",
-        "defense": "Marusic, Doekhi, Romagnoli, Provstgaard / Pedraza",
-        "midfield": "Rovella, Kenneth Taylor, Davide Frattesi",
-        "attack": "Zaccagni, Isaksen, Noslin (Ratkov / Dia)",
-        "penalties": ["Zaccagni (1°)", "Taylor K. (2°)", "Cataldi (3°)"],
-        "advice": "Frattesi centrocampista incursore alla Milinkovic; Doekhi difensore goleador da piazzato; Noslin scommessa attacco."
-    },
-    "Lecce": {
-        "coach": "Staff Tecnico", "formation": "4-3-3 (Contenimento & Ripartenza)",
-        "gk": "Wladimiro Falcone (Bleve/Penev)",
-        "defense": "Tiago Gabriel, Gallo, Baschirotto",
-        "midfield": "Berisha, Gandelman, Helgason",
-        "attack": "Banda, Stulić / Geubbels, Pierotti",
-        "penalties": ["Stulić (1°)", "Geubbels (2°)", "Berisha (3°)"],
-        "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
-    },
-    "Milan": {
-        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
-        "gk": "Mike Maignan (Terracciano/Torriani)",
-        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
-        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
-        "attack": "Christian Pulisic (Trequartista), Rafael Leão, Gonçalo Ramos (Nkunku)",
-        "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
-        "advice": "Il sistema di Amorim esalta Ramos e Pulisic (trequartista atipico). Penalizzato Rafael Leao, che sconta un crollo delle quotazioni."
-    },
-    "Monza": {
-        "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
-        "gk": "Demba Thiam (Pizzignacco)",
-        "defense": "Andrea Carboni, Delli Carri, Birindelli, Mangas",
-        "midfield": "Matteo Pessina, Colpani, Akinsanmiro",
-        "attack": "Patrick Cutrone, Dany Mota, Petagna",
-        "penalties": ["Pessina (1°)", "Cutrone (2°)", "Petagna (3°)"],
-        "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
-    },
-    "Napoli": {
-        "coach": "Massimiliano Allegri", "formation": "4-3-3 / Baricentro Basso",
-        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
-        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
-        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
-        "attack": "Rasmus Højlund, Politano, Santos, Neres",
-        "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
-        "advice": "Il pragmatismo di Allegri valorizza i difensori (Rrahmani, Di Lorenzo) ma penalizza l'attacco. Hojlund a prezzi alti è un azzardo matematico letale."
-    },
-    "Parma": {
-        "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
-        "gk": "Daffara / Corvi",
-        "defense": "Delprato, Valeri, Troilo, Britschgi",
-        "midfield": "Adrián Bernabé, Mandela Keita, Sorensen, Almqvist",
-        "attack": "El Bilal Touré, Luka Romero, Frigan",
-        "penalties": ["Bernabé (1°)", "Touré E. (2°)", "Valeri (3°)"],
-        "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
-    },
-    "Roma": {
-        "coach": "Gian Piero Gasperini", "formation": "3-4-2-1 / 3-5-2 (Intensità)",
-        "gk": "Mile Svilar (Gollini/De Marzi)",
-        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley (Esterni)",
-        "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
-        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
-        "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
-        "advice": "La difesa a tre di Gasperini trasforma Mancini e Wesley in incursori offensivi: acquisti obbligati per il modificatore. Malen è il Super Top dell'attacco."
-    },
-    "Sassuolo": {
-        "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
-        "gk": "Arijanet Murić / Stefano Turati",
-        "defense": "Sebastian Walukiewicz, Jay Idzes, Obrador",
-        "midfield": "Kristian Thorstvedt, Ismaël Koné, Vasilije Adžić",
-        "attack": "Domenico Berardi, Armand Laurienté, Andrea Pinamonti, Bowie",
-        "penalties": ["Berardi (1°)", "Pinamonti (2°)", "Laurienté (3°)"],
-        "advice": "Adžić gemma a centrocampo (1-5 cr); Berardi e Pinamonti certezze per rigori e gol."
-    },
-    "Torino": {
-        "coach": "Ignazio Abate", "formation": "4-2-3-1 (Verticale & Organizzato)",
-        "gk": "Alberto Paleari / Franco Perri",
-        "defense": "Saul Coco, Marcus Pedersen",
-        "midfield": "Nikola Vlašić, Cesare Casadei, Cacciamani",
-        "attack": "Giovanni Simeone, Che Adams, Duván Zapata",
-        "penalties": ["Vlašić (1°)", "Simeone (2°)", "Casadei (3°)"],
-        "advice": "Vlašić centrocampista rigorista da 6-8 gol; Paleari/Perri porta low cost; Simeone 3°-4° slot attacco."
-    },
-    "Udinese": {
-        "coach": "Staff Tecnico", "formation": "3-5-2 (Fisico & Diretto)",
-        "gk": "Maduka Okoye (Padelli/Piana)",
-        "defense": "Oumar Solet, Christian Kabasele, Thomas Kristensen, Mergim Vojvoda, Hassane Kamara",
-        "midfield": "Jesper Karlström, Jurgen Ekkelenkamp, Nicolò Zaniolo",
-        "attack": "Keinan Davis, Adam Buksa, Gueye",
-        "penalties": ["Davis (1°)", "Solet (2°)", "Zaniolo (3°)"],
-        "advice": "Solet difensore da bonus di prima fascia; Vojvoda costanza da modificatore; Zaniolo jolly offensivo listato centrocampista."
-    },
-    "Venezia": {
-        "coach": "Giovanni Stroppa", "formation": "3-5-2 (Ritmo & Organizzazione)",
-        "gk": "Filip Stanković (Grandi/Pozzi)",
-        "defense": "Ridgeciano Haps, Correia, Jay Idzes",
-        "midfield": "Gianluca Busio, Mikael Ellertsson, John Yeboah",
-        "attack": "Akor Adams, Albion Rrahmani, Lauberbach",
-        "penalties": ["Adams A. (1°)", "Rrahmani A. (2°)", "Yeboah (3°)"],
-        "advice": "Busio regista inamovibile e tiratore low cost; Akor Adams scommessa 3ª punta ad alto potenziale realizzativo."
-    }
-}
-
 INJURY_LIST = {
-    "Hien": {"team": "Atalanta", "infortunio": "Lesione del tendine prossimale del muscolo semimembranoso (post-intervento)", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
-    "Sulemana K.": {"team": "Atalanta", "infortunio": "Lesione di 2° grado del legamento collaterale mediale (ginocchio sx)", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
-    "Kristensen T.": {"team": "Atalanta", "infortunio": "Trauma distorsivo alla caviglia", "rientro": "Da valutare (Day-to-day)", "status": "🟡 In dubbio (Breve)"},
-    "El Azzouzi O.": {"team": "Bologna", "infortunio": "Lesione del bicipite femorale della coscia sx", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
-    "Casale": {"team": "Bologna", "infortunio": "Fastidio muscolare alla gamba (lavoro differenziato)", "rientro": "Da valutare a breve termine", "status": "🟡 In dubbio (Breve)"},
-    "Idrissi R.": {"team": "Cagliari", "infortunio": "Ricostruzione del legamento crociato anteriore (fase di recupero)", "rientro": "Fine Ottobre", "status": "🔴 Lungodegente"},
-    "Trepy": {"team": "Cagliari", "infortunio": "Conseguenze sistemiche da principio di annegamento", "rientro": "Da valutare (Lungo termine)", "status": "🔴 Lungodegente (Svincolo consigliato)"},
-    "Addai": {"team": "Como", "infortunio": "Rottura totale del tendine d'Achille", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
-    "Parisi": {"team": "Fiorentina", "infortunio": "Ricostruzione del legamento crociato del ginocchio (LCA)", "rientro": "Novembre", "status": "🔴 Lungodegente"},
-    "Yildiz": {"team": "Juventus", "infortunio": "Trauma al piede sinistro (Possibile intervento chirurgico)", "rientro": "Circa 3 mesi", "status": "🔴 Lungodegente"},
-    "Yildiz Kenan": {"team": "Juventus", "infortunio": "Trauma al piede sinistro (Possibile intervento chirurgico)", "rientro": "Circa 3 mesi", "status": "🔴 Lungodegente"},
-    "Cataldi": {"team": "Lazio", "infortunio": "Ernia bilaterale dello sportivo (Post-intervento chirurgico)", "rientro": "Inizio Ottobre", "status": "🟠 Medio Termine"},
-    "Dele-Bashiru": {"team": "Lazio", "infortunio": "Lesione/Affaticamento muscolare alla gamba", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Marusic": {"team": "Lazio", "infortunio": "Trauma muscolare indiretto alla coscia", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Pellegrini Lu.": {"team": "Lazio", "infortunio": "Noie fisiche", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Patric": {"team": "Lazio", "infortunio": "Problema fisico generico", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Pulisic Christian": {"team": "Milan", "infortunio": "Edema osseo e microfrattura al perone", "rientro": "Da valutare (fase di consolidamento)", "status": "🟠 Medio Termine"},
-    "Pulisic": {"team": "Milan", "infortunio": "Edema osseo e microfrattura al perone", "rientro": "Da valutare (fase di consolidamento)", "status": "🟠 Medio Termine"},
-    "Gimenez": {"team": "Milan", "infortunio": "Distorsione acuta alla caviglia", "rientro": "Da valutare post 2ª giornata", "status": "🟡 In dubbio (Breve)"},
-    "Pessina": {"team": "Monza", "infortunio": "Lussazione traumatica della rotula del ginocchio dx", "rientro": "Inizio Novembre", "status": "🔴 Lungodegente"},
-    "Ciurria": {"team": "Monza", "infortunio": "Noie fisiche", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Colombo L.": {"team": "Monza", "infortunio": "Acciaccato / Noie fisiche", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Colombo Lorenzo": {"team": "Monza", "infortunio": "Acciaccato / Noie fisiche", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Tourè I.": {"team": "Monza", "infortunio": "Fastidio articolare", "rientro": "Assente sicuro", "status": "🔴 Indisponibile"},
-    "Buongiorno": {"team": "Napoli", "infortunio": "Post-operatorio menisco del ginocchio dx", "rientro": "Metà Novembre", "status": "🔴 Lungodegente"},
-    "Marianucci": {"team": "Napoli", "infortunio": "Lesione di alto grado del collaterale mediale (LCA)", "rientro": "Oltre 2 mesi", "status": "🔴 Lungodegente"},
-    "Nicolussi Caviglia": {"team": "Parma", "infortunio": "Intervento chirurgico per lesione miotendinea (coscia dx)", "rientro": "Novembre", "status": "🔴 Lungodegente"},
-    "Rensch": {"team": "Roma", "infortunio": "Risentimento muscolare al flessore sx", "rientro": "Da valutare (breve termine)", "status": "🟡 In dubbio (Breve)"},
-    "Konè I.": {"team": "Sassuolo", "infortunio": "Sintesi chirurgica per rottura tibia e perone", "rientro": "Dicembre", "status": "🔴 Lungodegente"},
-    "Pieragnolo": {"team": "Sassuolo", "infortunio": "Post-operatorio rottura LCA (gamba dx)", "rientro": "Ottobre", "status": "🔴 Lungodegente"},
-    "Candè": {"team": "Sassuolo", "infortunio": "Post-operatorio rottura LCA (ginocchio dx)", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
-    "Berardi": {"team": "Sassuolo", "infortunio": "Distorsione acuta alla caviglia dx", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
-    "Berardi Domenico": {"team": "Sassuolo", "infortunio": "Distorsione acuta alla caviglia dx", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
-    "Boloca": {"team": "Sassuolo", "infortunio": "Problema articolare al ginocchio", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
-    "Walukiewicz": {"team": "Sassuolo", "infortunio": "Forte trauma contusivo alla gamba dx", "rientro": "Da valutare", "status": "🟡 In dubbio"},
-    "Zaniolo": {"team": "Udinese", "infortunio": "Lesione del muscolo bicipite femorale (coscia dx)", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
-    "Zaniolo Nicolò": {"team": "Udinese", "infortunio": "Lesione del muscolo bicipite femorale (coscia dx)", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
-    "Zanoli": {"team": "Udinese", "infortunio": "Post-operatorio rottura LCA (ginocchio dx)", "rientro": "Ottobre", "status": "🔴 Lungodegente"},
-    "Chakvetadze": {"team": "Udinese", "infortunio": "Frattura composta del terzo metatarso (piede ds.)", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
-    "Palma": {"team": "Udinese", "infortunio": "Problema muscolare all'adduttore (coscia dx)", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
-    "Kabasele": {"team": "Udinese", "infortunio": "Squalifica per 1 turno", "rientro": "Disponibile dalla prossima", "status": "🔴 Squalificato"},
-    "Sverko": {"team": "Venezia", "infortunio": "Intervento chirurgico per persistente problema all'anca", "rientro": "Fine Ottobre", "status": "🔴 Lungodegente"},
-    "Adorante": {"team": "Venezia", "infortunio": "Intervento chirurgico alla colonna vertebrale", "rientro": "Ottobre / Inizio Novembre", "status": "🔴 Lungodegente"},
-    "Moreno M.": {"team": "Venezia", "infortunio": "Noie fisiche", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"}
+    "Hien": {"team": "Atalanta", "infortunio": "Lesione del tendine prossimale del muscolo semimembranoso", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
+    "Sulemana K.": {"team": "Atalanta", "infortunio": "Lesione di 2° grado del legamento collaterale mediale", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
+    "Kristensen T.": {"team": "Atalanta", "infortunio": "Trauma distorsivo alla caviglia", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "El Azzouzi O.": {"team": "Bologna", "infortunio": "Lesione del bicipite femorale", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Casale": {"team": "Bologna", "infortunio": "Fastidio muscolare", "rientro": "A breve", "status": "🟡 In dubbio"},
+    "Idrissi R.": {"team": "Cagliari", "infortunio": "Ricostruzione LCA", "rientro": "Fine Ottobre", "status": "🔴 Lungodegente"},
+    "Addai": {"team": "Como", "infortunio": "Rottura tendine d'Achille", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Parisi": {"team": "Fiorentina", "infortunio": "Ricostruzione LCA", "rientro": "Novembre", "status": "🔴 Lungodegente"},
+    "Yildiz Kenan": {"team": "Juventus", "infortunio": "Trauma al piede sx", "rientro": "Circa 3 mesi", "status": "🔴 Lungodegente"},
+    "Cataldi": {"team": "Lazio", "infortunio": "Ernia bilaterale", "rientro": "Inizio Ottobre", "status": "🟠 Medio Termine"},
+    "Pulisic Christian": {"team": "Milan", "infortunio": "Edema osseo e microfrattura al perone", "rientro": "Da valutare", "status": "🟠 Medio Termine"},
+    "Pessina": {"team": "Monza", "infortunio": "Lussazione traumatica rotula dx", "rientro": "Inizio Novembre", "status": "🔴 Lungodegente"},
+    "Buongiorno": {"team": "Napoli", "infortunio": "Post-operatorio menisco dx", "rientro": "Metà Novembre", "status": "🔴 Lungodegente"},
+    "Nicolussi Caviglia": {"team": "Parma", "infortunio": "Lesione miotendinea", "rientro": "Novembre", "status": "🔴 Lungodegente"},
+    "Rensch": {"team": "Roma", "infortunio": "Risentimento flessore", "rientro": "A breve", "status": "🟡 In dubbio"},
+    "Konè I.": {"team": "Sassuolo", "infortunio": "Rottura tibia e perone", "rientro": "Dicembre", "status": "🔴 Lungodegente"},
+    "Berardi Domenico": {"team": "Sassuolo", "infortunio": "Distorsione caviglia dx", "rientro": "Inizio Settembre", "status": "🟡 In dubbio"},
+    "Zaniolo Nicolò": {"team": "Udinese", "infortunio": "Lesione bicipite femorale", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Kabasele": {"team": "Udinese", "infortunio": "Squalifica", "rientro": "1 Turno", "status": "🔴 Squalificato"}
 }
 
 # ==============================================================================
@@ -960,7 +804,7 @@ def get_dynamic_slot_candidates(role_code, slot_target_budget, purchased_registr
                     return {
                         "chosen_name": cust_name,
                         "chosen_team": str(r_row['Squadra']),
-                        "chosen_role": "🎯 Mio Top Selezionato",
+                        "chosen_role": "Mio Top Selezionato",
                         "base_target": base_t,
                         "dyn_target": dyn_t,
                         "dyn_max_bid": dyn_m,
@@ -1018,7 +862,6 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
     
     current_dept_base = st.session_state.base_dept_budget[role_code]
     st.markdown(f"### {dept_title}")
-    st.caption(f"Spesi: **{get_dept_spent(role_code)} cr** / {current_dept_base} cr | Slot Completati: **{len(bought_list)} / {slots_total}**")
     
     allocated_in_roadmap = set(p['name'] for p in st.session_state.get('my_roster', []))
     dyn_targets_remaining = calculate_dynamic_targets_for_slots(role_code, st.session_state.get('my_roster', []))
@@ -1040,10 +883,10 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                     p_bought = bought_list[global_slot_idx]
                     logo_img = f"<img src='{get_team_logo_url(p_bought['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
                     card_html = (
-                        "<div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>"
+                        "<div class='glass-card'>"
                         f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_bought['name']}</b></div>"
-                        f"✅ <b>Acquistato:</b> <code>{p_bought['price']} cr</code><br>"
-                        "📌 <i>Ruolo:</i> In Rosa"
+                        f"<span style='color:#10B981;'>✓ Acquistato:</span> <b>{p_bought['price']} cr</b><br>"
+                        "<div class='glass-card-mini-text'>In Rosa</div>"
                         "</div>"
                     )
                     st.markdown(card_html, unsafe_allow_html=True)
@@ -1053,32 +896,35 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
                     
                     slot_res = get_dynamic_slot_candidates(role_code, t_budget, st.session_state.get('purchased_registry', {}), allocated_in_roadmap, custom_user_targets_list=user_custom_picks, rejected_players=rejected_list)
                     logo_img = f"<img src='{get_team_logo_url(slot_res['chosen_team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    
+                    is_custom = slot_res['chosen_name'] in user_custom_picks
+                    accent_class = " glass-card-accent" if is_custom else ""
+                    
                     card_html = (
-                        "<div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>"
+                        f"<div class='glass-card{accent_class}'>"
                         f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {slot_res['chosen_name']}</b></div>"
-                        f"🎯 <b>Target:</b> <code>{slot_res['dyn_target']} cr</code> | 🛑 <b>Max:</b> <code>{slot_res['dyn_max_bid']} cr</code><br>"
-                        f"📌 <i>Ruolo:</i> <b>{slot_res['chosen_role']}</b><br><br>"
-                        f"<small>🔄 <i>Piani B:</i> {slot_res['alts_str']}</small>"
+                        f"Target: <b>{slot_res['dyn_target']} cr</b> | Max: <b>{slot_res['dyn_max_bid']} cr</b><br>"
+                        f"<div class='glass-card-mini-text'>Ruolo: {slot_res['chosen_role']}</div>"
+                        f"<div class='glass-card-mini-text'>Piani B: {slot_res['alts_str']}</div>"
                         "</div>"
                     )
                     st.markdown(card_html, unsafe_allow_html=True)
                     
-                    st.markdown("<div style='margin-top: 5px;'>", unsafe_allow_html=True)
+                    st.markdown("<div style='margin-top: 8px;'>", unsafe_allow_html=True)
                     bc1, bc2 = st.columns(2)
-                    is_custom = slot_res['chosen_name'] in user_custom_picks
                     
                     if slot_res['chosen_name'] != "Scommessa / Copertura":
                         if is_custom:
-                            if bc1.button("🔓 Sblocca", key=f"unlock_{role_code}_{global_slot_idx}", use_container_width=True):
+                            if bc1.button("Sblocca", key=f"unlock_{role_code}_{global_slot_idx}", use_container_width=True):
                                 st.session_state.custom_user_targets[role_code].remove(slot_res['chosen_name'])
                                 save_state_to_disk()
                                 st.rerun()
                         else:
-                            if bc1.button("🔒 Blocca", key=f"lock_{role_code}_{global_slot_idx}", use_container_width=True):
+                            if bc1.button("Blocca", key=f"lock_{role_code}_{global_slot_idx}", use_container_width=True):
                                 st.session_state.custom_user_targets[role_code].append(slot_res['chosen_name'])
                                 save_state_to_disk()
                                 st.rerun()
-                            if bc2.button("🔄 Cambia", key=f"change_{role_code}_{global_slot_idx}", use_container_width=True):
+                            if bc2.button("Cambia", key=f"change_{role_code}_{global_slot_idx}", use_container_width=True):
                                 if 'rejected_players' not in st.session_state:
                                     st.session_state.rejected_players = []
                                 st.session_state.rejected_players.append(slot_res['chosen_name'])
@@ -1235,7 +1081,7 @@ if 'budget_adjustments' not in st.session_state:
     st.session_state.budget_adjustments = saved_data.get("budget_adjustments", 0) if saved_data else 0
 
 if 'selected_strategy' not in st.session_state:
-    st.session_state.selected_strategy = saved_data.get("selected_strategy", "📊 Equilibrata (Mediana di Mercato)") if saved_data else "📊 Equilibrata (Mediana di Mercato)"
+    st.session_state.selected_strategy = saved_data.get("selected_strategy", "Equilibrata (Mediana di Mercato)") if saved_data else "Equilibrata (Mediana di Mercato)"
 
 if 'base_dept_budget' not in st.session_state:
     st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
@@ -1252,7 +1098,7 @@ def save_state_to_disk():
         "purchased_registry": st.session_state.get("purchased_registry", {}),
         "history": st.session_state.get("history", []),
         "budget_adjustments": st.session_state.get("budget_adjustments", 0),
-        "selected_strategy": st.session_state.get("selected_strategy", "📊 Equilibrata (Mediana di Mercato)"),
+        "selected_strategy": st.session_state.get("selected_strategy", "Equilibrata (Mediana di Mercato)"),
         "rejected_players": st.session_state.get("rejected_players", []),
         "last_saved": datetime.now().strftime("%H:%M:%S")
     }
@@ -1263,11 +1109,11 @@ def save_state_to_disk():
         pass
 
 # ==============================================================================
-# 6. SIDEBAR: STATO, GESTIONE & NOTIZIE
+# 6. SIDEBAR: STATO E GESTIONE
 # ==============================================================================
-st.sidebar.title("🎛️ Pannello di Controllo")
+st.sidebar.title("Pannello di Controllo")
 
-st.sidebar.markdown("**⚙️ Strategia d'Asta**")
+st.sidebar.markdown("**Strategia d'Asta**")
 selected_strat = st.sidebar.selectbox("Imposta Allocazione Budget:", options=list(STRATEGIES.keys()), index=list(STRATEGIES.keys()).index(st.session_state.selected_strategy))
 if selected_strat != st.session_state.selected_strategy:
     st.session_state.selected_strategy = selected_strat
@@ -1276,8 +1122,11 @@ if selected_strat != st.session_state.selected_strategy:
 
 current_stage = st.sidebar.selectbox(
     "Fase d'Asta Attuale:",
-    ["🧤 Portieri", "🛡️ Difensori", "⚙️ Centrocampisti", "⚽ Attaccanti", "🔄 Fase Mista / Libera"]
+    ["Portieri", "Difensori", "Centrocampisti", "Attaccanti", "Fase Libera"]
 )
+
+# Rimappa il filtro per i calcoli logici
+role_filter_map = {"Portieri": "P", "Difensori": "D", "Centrocampisti": "C", "Attaccanti": "A", "Fase Libera": None}
 
 tot_spent = sum(p['price'] for p in st.session_state.my_roster)
 tot_budget_left = TOTAL_BUDGET - tot_spent + st.session_state.get('budget_adjustments', 0)
@@ -1290,16 +1139,16 @@ st.sidebar.markdown(f"**Slot Mancanti:** `{tot_slots_needed} / 25`")
 st.sidebar.markdown(f"**Pmax Assoluto:** `{p_max_safe} cr`")
 
 st.sidebar.divider()
-st.sidebar.markdown("**📊 Avanzamento Spesa Reparti:**")
-for r_code, r_name in [('P', '🧤 Portieri'), ('D', '🛡️ Difensori'), ('C', '⚙️ Centrocampisti'), ('A', '⚽ Attaccanti')]:
+st.sidebar.markdown("**Avanzamento Spesa Reparti:**")
+for r_code, r_name in [('P', 'Portieri'), ('D', 'Difensori'), ('C', 'Centrocampisti'), ('A', 'Attaccanti')]:
     sp = get_dept_spent(r_code)
     cap = st.session_state.base_dept_budget[r_code]
     ratio = min(1.0, sp / cap) if cap > 0 else 0.0
-    st.sidebar.caption(f"{r_name}: **{sp} / {cap} cr**")
+    st.sidebar.markdown(f"<span style='color:#94A3B8; font-size:13px;'>{r_name}: {sp}/{cap} cr</span>", unsafe_allow_html=True)
     st.sidebar.progress(ratio)
 
 st.sidebar.divider()
-st.sidebar.markdown("**🔒 Lock-in Strategy (Slot Bloccati)**")
+st.sidebar.markdown("**Lock-in Strategy (Slot Bloccati)**")
 lock_in_active = st.sidebar.toggle("Congela crediti per i Top", value=st.session_state.get('lock_in_active', False))
 st.session_state.lock_in_active = lock_in_active
 
@@ -1316,15 +1165,15 @@ if lock_in_active:
                     locked_cr += bt
                     locked_sl += 1
     
-    st.sidebar.info(f"❄️ **Congelati:** `{locked_cr} cr` per `{locked_sl}` slot\n\n💰 **Cassa Libera Reale:** `{tot_budget_left - locked_cr} cr`")
+    st.sidebar.info(f"Congelati: `{locked_cr} cr` per `{locked_sl}` slot\n\nCassa Libera Reale: `{tot_budget_left - locked_cr} cr`")
 
 st.sidebar.divider()
 col_sb1, col_sb2 = st.sidebar.columns(2)
-if col_sb1.button("💾 Salva", use_container_width=True):
+if col_sb1.button("Salva", use_container_width=True):
     save_state_to_disk()
-    st.sidebar.success("Stato salvato!")
+    st.sidebar.success("Salvato!")
 
-if col_sb2.button("↩️ Undo", use_container_width=True, help="Annulla l'ultima assegnazione"):
+if col_sb2.button("Undo", use_container_width=True):
     if st.session_state.history:
         last_action = st.session_state.history.pop()
         b_name = last_action['buyer']
@@ -1352,77 +1201,66 @@ if col_sb2.button("↩️ Undo", use_container_width=True, help="Annulla l'ultim
             del st.session_state.purchased_registry[p_name]
 
         save_state_to_disk()
-        st.sidebar.warning(f"Annullata l'ultima operazione per {p_name}!")
         st.rerun()
 
-with st.sidebar.expander("📰 Live News & Calciomercato (RSS Feed)"):
-    try:
-        feed = feedparser.parse("https://www.gazzetta.it/rss/calcio.xml")
-        for entry in feed.entries[:5]:
-            st.markdown(f"• **[{entry.title}]({entry.link})**")
-    except Exception:
-        st.caption("Feed notizie non disponibile offline.")
-
-with st.sidebar.expander("🏥 Infermeria & Squalificati"):
+with st.sidebar.expander("Infermeria & Squalificati"):
     for p_name, p_data in INJURY_LIST.items():
         logo_inj = get_team_logo_url(p_data['team'])
-        st.markdown(f"<img src='{logo_inj}' width='18' style='vertical-align: middle; margin-right: 5px;'> **{p_name}**", unsafe_allow_html=True)
-        st.caption(f"{p_data['status']} | **Rientro:** {p_data['rientro']}\n\n*Motivo:* {p_data['infortunio']}")
+        st.markdown(f"<img src='{logo_inj}' width='16' style='vertical-align: middle; margin-right: 5px;'> **{p_name}**", unsafe_allow_html=True)
+        st.markdown(f"<span style='font-size:12px; color:#94A3B8;'>{p_data['status']} | {p_data['rientro']}</span>", unsafe_allow_html=True)
         st.markdown("<hr style='margin: 5px 0px;'>", unsafe_allow_html=True)
 
-if st.sidebar.button("🗑️ Reset Completo Asta"):
+if st.sidebar.button("Reset Completo Asta"):
     if os.path.exists(SAVE_FILE):
-        try:
-            os.remove(SAVE_FILE)
-        except Exception:
-            pass
+        try: os.remove(SAVE_FILE)
+        except Exception: pass
     st.session_state.clear()
     st.rerun()
 
 # ==============================================================================
 # 7. HEADER & METRICHE GENERALI
 # ==============================================================================
-st.title("⚽ FantaAsta 2026/27 Pro Master Suite")
-st.caption(f"Fase Attiva: **{current_stage}** | Modificatore Difesa: **Attivo** | Motore Dinamico: **Real-Time Active**")
+st.title("FantaAsta 2026/27 Pro Master Suite")
+st.markdown(f"<span style='color:#94A3B8;'>Fase Attiva: <b>{current_stage}</b> | Modificatore Difesa: <b>Attivo</b></span>", unsafe_allow_html=True)
+st.write("")
 
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Budget Rimanente", f"{tot_budget_left} cr", f"-{tot_spent} spesi")
 m2.metric("Slot Mancanti", f"{tot_slots_needed} / 25")
-m3.metric("Offerta Max Sicura (Pmax)", f"{p_max_safe} cr")
-m4.metric("Media/Slot Rimanente", f"{(tot_budget_left / max(1, tot_slots_needed)):.1f} cr")
+m3.metric("Offerta Max Sicura", f"{p_max_safe} cr")
+m4.metric("Media/Slot", f"{(tot_budget_left / max(1, tot_slots_needed)):.1f} cr")
 
 panic_threshold = st.session_state.base_dept_budget['A'] * 0.9
 panic_mode = tot_budget_left <= panic_threshold and get_dept_count('A') == 0
 
 if panic_mode:
     st.error(
-        f"🚨 **PANIC BUTTON ATTIVO - MODALITÀ DIFESA DEL BUDGET!** 🚨\n\n"
-        f"Hai raggiunto la **soglia critica di budget** (≤ {panic_threshold} cr) senza aver acquistato alcun attaccante titolare. "
-        "Per garantirti i fondi necessari all'acquisto dei bomber previsti dalla tua strategia, il sistema ha **forzato il tetto d'asta massimo a 1 credito** per tutti i restanti giocatori di movimento (P, D, C). Smetti di rilanciare!"
+        f"**PANIC BUTTON ATTIVO**\n\n"
+        f"Hai raggiunto la soglia critica di budget (≤ {panic_threshold} cr) senza aver acquistato alcun attaccante titolare. "
+        "Per garantirti i fondi necessari all'acquisto dei bomber previsti dalla tua strategia, il sistema ha forzato il tetto d'asta massimo a 1 credito per tutti i restanti giocatori di movimento. Smetti di rilanciare!"
     )
 
-st.divider()
+st.write("")
 
 # ==============================================================================
 # 8. MACRO-AREE E NAVIGAZIONE (DASHBOARD MODERNA)
 # ==============================================================================
 macro_tabs = st.tabs([
-    "🔴 1. ASTA LIVE & STRATEGIA",
-    "📊 2. TATTICA & STUDIO",
-    "👥 3. LEGA & AVVERSARI",
-    "⚙️ 4. DATI & EXPORT"
+    "Asta Live & Strategia",
+    "Tattica & Studio",
+    "Lega & Avversari",
+    "Dati & Export"
 ])
 
 # ------------------------------------------------------------------------------
 # MACRO AREA 1: ASTA LIVE & STRATEGIA
 # ------------------------------------------------------------------------------
 with macro_tabs[0]:
-    t_live, t_road, t_duel = st.tabs(["⚡ Assegnazione Live", "🗺️ Roadmap Dinamica", "⚔️ Testa a Testa (Duello)"])
+    t_live, t_road, t_duel = st.tabs(["Assegnazione Live", "Roadmap Dinamica", "Testa a Testa (Duello)"])
     
     with t_live:
-        st.subheader(f"Chiamata & Analisi Istantanea Giocatore ({current_stage})")
+        st.subheader(f"Chiamata & Analisi Istantanea ({current_stage})")
         
-        role_filter_map = {"🧤 Portieri": "P", "🛡️ Difensori": "D", "⚙️ Centrocampisti": "C", "⚽ Attaccanti": "A"}
         active_role = role_filter_map.get(current_stage, None)
         
         if active_role:
@@ -1477,20 +1315,20 @@ with macro_tabs[0]:
         with col_p4:
             st.write("")
             st.write("")
-            btn_confirm = st.button("Conferma Assegnazione", use_container_width=True)
+            btn_confirm = st.button("Conferma Assegnazione", use_container_width=True, type="primary")
 
-        st.markdown("**⚡ Rilancio Rapido Keypad:**")
+        st.markdown("<span style='color:#94A3B8; font-size:14px; font-weight:500;'>Rilancio Rapido Keypad:</span>", unsafe_allow_html=True)
         kp1, kp2, kp3, kp4 = st.columns(4)
-        if kp1.button("➕ 1 cr", use_container_width=True):
+        if kp1.button("+ 1 cr", use_container_width=True):
             st.session_state.quick_bid_val = min(p_max_safe, bid_price + 1)
             st.rerun()
-        if kp2.button("➕ 5 cr", use_container_width=True):
+        if kp2.button("+ 5 cr", use_container_width=True):
             st.session_state.quick_bid_val = min(p_max_safe, bid_price + 5)
             st.rerun()
-        if kp3.button("➕ 10 cr", use_container_width=True):
+        if kp3.button("+ 10 cr", use_container_width=True):
             st.session_state.quick_bid_val = min(p_max_safe, bid_price + 10)
             st.rerun()
-        if kp4.button("🔥 All-in Pmax", use_container_width=True):
+        if kp4.button("All-in Pmax", use_container_width=True):
             st.session_state.quick_bid_val = p_max_safe
             st.rerun()
 
@@ -1499,41 +1337,40 @@ with macro_tabs[0]:
             inj_key = next((k for k in INJURY_LIST.keys() if k.lower() in sel_player.lower() or sel_player.lower() in k.lower()), None)
             if inj_key:
                 inj_data = INJURY_LIST[inj_key]
-                st.error(f"🏥 **ALLERTA INFORTUNIO/SQUALIFICA:** {sel_player} soffre di **{inj_data['infortunio'].lower()}**. \n\n⏳ **Rientro stimato:** {inj_data['rientro']} ({inj_data['status']})")
+                st.error(f"**ALLERTA INFORTUNIO/SQUALIFICA:** {sel_player} soffre di {inj_data['infortunio'].lower()}. \n\nRientro stimato: {inj_data['rientro']} ({inj_data['status']})")
 
-            st.markdown("#### 🔍 Valutazione Tattica Adattata alla tua Cassa & Rosa")
-            
+            st.write("")
             c_eval1, c_eval2, c_eval3, c_eval4 = st.columns(4)
             c_eval1.metric("Squadra & Ruolo", f"{player_team} ({player_role})", f"Qt: {player_qta} | FVM: {player_fvm}")
             
             delta_val = int(round(dyn_target - base_target))
             target_delta_str = f"{delta_val:+d} cr vs listino" if delta_val != 0 else "In linea con target"
-            c_eval2.metric("Target Adattato alla Cassa", f"{int(round(dyn_target))} cr", target_delta_str)
-            c_eval3.metric("Stop-Loss Dinamica", f"{int(round(dyn_max_bid))} cr", "Tetto massimo di sicurezza")
+            c_eval2.metric("Target Adattato", f"{int(round(dyn_target))} cr", target_delta_str)
+            c_eval3.metric("Stop-Loss Dinamica", f"{int(round(dyn_max_bid))} cr", "Tetto massimo")
             c_eval4.metric(f"Cassa Reparto ({player_role})", f"{eval_data['dept_budget_left']} cr", f"{eval_data['dept_slots_left']} slot liberi")
 
             live_stats = get_live_player_stats(sel_player, player_team)
             if live_stats:
-                st.markdown("##### 📈 Statistiche Avanzate & Scouting (API-Football)")
+                st.markdown("<br><span style='color:#94A3B8; font-size:15px; font-weight:600;'>Statistiche Avanzate & Scouting</span>", unsafe_allow_html=True)
                 
                 logo_url = get_team_logo_url(player_team)
                 photo_url = live_stats.get('photo', '')
-                status_txt = '🔴 Infortunato' if live_stats.get('is_injured') else '🟢 Disponibile'
+                status_txt = 'Infortunato' if live_stats.get('is_injured') else 'Disponibile'
                 
                 html_block = (
                     '<div style="display:flex; align-items:center; gap: 15px; margin-bottom: 15px;">'
-                    f'<img src="{photo_url}" width="60" style="border-radius:50%; border: 2px solid #3b82f6;">'
+                    f'<img src="{photo_url}" width="60" style="border-radius:50%; border: 2px solid #8B5CF6;">'
                     f'<img src="{logo_url}" width="40">'
-                    f'<h4 style="margin:0;">Status Fisico: {status_txt}</h4>'
+                    f'<h4 style="margin:0; font-weight:600;">Status: {status_txt}</h4>'
                     '</div>'
                 )
                 st.markdown(html_block, unsafe_allow_html=True)
                 
                 st_col1, st_col2, st_col3, st_col4 = st.columns(4)
                 st_col1.metric("Pres. / Minuti", f"{live_stats['appearances']} ({live_stats['minutes']} min)")
-                st_col2.metric("Gol / Assist", f"⚽ {live_stats['goals']} | 🎯 {live_stats['assists']}")
-                st_col3.metric("Tiri a Partita", f"🎯 {live_stats['shots_per_game']}")
-                st_col4.metric("Cartellini", f"🟨 {live_stats['yellow_cards']} | 🟥 {live_stats['red_cards']}")
+                st_col2.metric("Gol / Assist", f"{live_stats['goals']} / {live_stats['assists']}")
+                st_col3.metric("Tiri a Partita", f"{live_stats['shots_per_game']}")
+                st_col4.metric("Cartellini (G/R)", f"{live_stats['yellow_cards']} / {live_stats['red_cards']}")
 
             threat_opps = []
             for ok, ov in st.session_state.opponents.items():
@@ -1546,21 +1383,21 @@ with macro_tabs[0]:
             threat_opps.sort(key=lambda x: x[1], reverse=True)
             if threat_opps:
                 top_threat = threat_opps[0]
-                st.info(f"🎯 **AI Opponent Predictor:** L'avversario più pericoloso su **{sel_player}** è **{top_threat[0]}** (Pmax: `{top_threat[1]} cr`, ha ancora `{top_threat[2]}` slot {player_role} liberi).")
+                st.info(f"**AI Predictor:** L'avversario più pericoloso su {sel_player} è **{top_threat[0]}** (Pmax: `{top_threat[1]} cr`, {top_threat[2]} slot liberi).")
 
             pen_info = PENALTY_TAKERS.get(player_team, [])
             is_penalty = [p for p in pen_info if sel_player.lower() in p.lower()]
-            pen_str = f"⚽ Rigorista: {is_penalty[0]}" if is_penalty else "Nessun rigore primario"
-            st.caption(f"📌 **Status Piazzati:** {pen_str}")
+            pen_str = f"Rigorista: {is_penalty[0]}" if is_penalty else "Nessun rigore primario"
+            st.caption(f"Status Piazzati: {pen_str}")
 
             if eval_data["is_full"]:
-                st.error(f"🚫 **REPARTO {player_role} COMPLETO:** Hai già riempito tutti gli slot previsti per questo ruolo!")
+                st.error(f"Reparto {player_role} completo.")
             elif bid_price <= dyn_target:
-                st.success(f"🟢 **OTTIMO PREZZO:** {bid_price} cr è perfettamente in target per la tua cassa. Rilancia!")
+                st.success(f"{bid_price} cr è in target. Rilancia.")
             elif bid_price <= dyn_max_bid:
-                st.warning(f"🟡 **IN SICUREZZA:** {bid_price} cr è accettabile (Stop-Loss: {dyn_max_bid} cr).")
+                st.warning(f"{bid_price} cr è accettabile (Stop-Loss: {dyn_max_bid} cr).")
             else:
-                st.error(f"🔴 **STOP RILANCIO (Limite {dyn_max_bid} cr):** Il prezzo supera la stop-loss. Lascialo all'avversario!")
+                st.error(f"Stop rilancio. Limite di {dyn_max_bid} cr superato.")
 
         if btn_confirm and sel_player != "Nessun dato":
             if dest_buyer_name == "La Mia Squadra":
@@ -1577,10 +1414,9 @@ with macro_tabs[0]:
                         'buyer': "La Mia Squadra", 'name': sel_player, 'team': player_team, 'role': player_role, 'price': bid_price
                     })
                     save_state_to_disk()
-                    st.success(f"{sel_player} acquistato a {bid_price} cr!")
                     st.rerun()
                 else:
-                    st.error(f"Reparto {player_role} già completato!")
+                    st.error(f"Reparto {player_role} completo!")
             else:
                 target_opp_key = next((k for k, v in st.session_state.opponents.items() if v['name'] == dest_buyer_name), None)
                 if target_opp_key:
@@ -1602,12 +1438,11 @@ with macro_tabs[0]:
                         'buyer': dest_buyer_name, 'name': sel_player, 'team': player_team, 'role': player_role, 'price': bid_price
                     })
                     save_state_to_disk()
-                    st.info(f"{sel_player} assegnato a {dest_buyer_name} per {bid_price} cr.")
                     st.rerun()
 
         # Consigliati dalla Roadmap
-        st.markdown("---")
-        st.markdown("### 💡 I tuoi prossimi obiettivi (Roadmap)")
+        st.write("")
+        st.subheader("Obiettivi Suggeriti")
         
         roles_to_check = [active_role] if active_role else ['P', 'D', 'C', 'A']
         recs = []
@@ -1638,14 +1473,14 @@ with macro_tabs[0]:
                         slot_res = get_dynamic_slot_candidates(r, t_budget, purchased_reg, temp_allocated, custom_user_targets_list=user_custom_picks, rejected_players=rejected_list)
                         
                         if slot_res['chosen_name'] != "Scommessa / Copertura":
-                            is_custom = slot_res['chosen_role'] == "🎯 Mio Top Selezionato"
-                            card_style = "🤖 Consigliato"
+                            is_custom = slot_res['chosen_name'] in user_custom_picks
+                            card_style = "Consigliato"
                             
                             if is_custom:
                                 if r == 'P' and slot_res['chosen_name'] in [k[0] for k in GOALIE_HIERARCHY.get(st.session_state.get('selected_keeper_club', 'Inter'), [])] and slot_res['chosen_name'] not in st.session_state.get('custom_user_targets', {}).get('P', []):
-                                    card_style = f"🧱 Blocco {st.session_state.get('selected_keeper_club', 'Inter')}"
+                                    card_style = f"Blocco {st.session_state.get('selected_keeper_club', 'Inter')}"
                                 else:
-                                    card_style = "🎯 Tuo Top"
+                                    card_style = "Tuo Top"
 
                             recs.append({
                                 'name': slot_res['chosen_name'],
@@ -1667,52 +1502,53 @@ with macro_tabs[0]:
             for i, rec in enumerate(recs[:4]):
                 with rec_cols[i]:
                     logo_img = f"<img src='{get_team_logo_url(rec['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    accent_class = " glass-card-accent" if rec['is_custom'] else ""
+                    
                     card_html = (
-                        "<div style='padding: 12px; border: 1px solid #6366f1; border-radius: 8px; background: rgba(99, 102, 241, 0.1); margin-bottom: 10px;'>"
+                        f"<div class='glass-card{accent_class}'>"
                         f"<div style='margin-bottom: 8px;'>{logo_img}<b>{rec['role']} | {rec['name']}</b></div>"
-                        f"<small>{rec['card_style']}</small><br>"
-                        f"🎯 Target: <code>{rec['target']} cr</code><br>"
-                        f"🛑 Max: <code>{rec['max']} cr</code>"
+                        f"<span style='font-size:12px; color:#94A3B8;'>{rec['card_style']}</span><br><br>"
+                        f"Target: <b>{rec['target']} cr</b><br>"
+                        f"Max: <b>{rec['max']} cr</b>"
                         "</div>"
                     )
                     st.markdown(card_html, unsafe_allow_html=True)
                     
-                    if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
+                    st.write("")
+                    if st.button(f"Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                         st.session_state.target_call_player = rec['name']
                         st.rerun()
                     
                     bc1, bc2 = st.columns(2)
                     if rec['is_custom']:
-                        if bc1.button("🔓 Sblocca", key=f"unlock_rec_{rec['name']}_{i}", use_container_width=True):
+                        if bc1.button("Sblocca", key=f"unlock_rec_{rec['name']}_{i}", use_container_width=True):
                             st.session_state.custom_user_targets[rec['role']].remove(rec['name'])
                             save_state_to_disk()
                             st.rerun()
                     else:
-                        if bc1.button("🔒 Blocca", key=f"lock_rec_{rec['name']}_{i}", use_container_width=True):
+                        if bc1.button("Blocca", key=f"lock_rec_{rec['name']}_{i}", use_container_width=True):
                             st.session_state.custom_user_targets[rec['role']].append(rec['name'])
                             save_state_to_disk()
                             st.rerun()
-                        if bc2.button("🔄 Cambia", key=f"change_rec_{rec['name']}_{i}", use_container_width=True):
+                        if bc2.button("Cambia", key=f"change_rec_{rec['name']}_{i}", use_container_width=True):
                             st.session_state.rejected_players.append(rec['name'])
                             save_state_to_disk()
                             st.rerun()
         else:
-            st.caption("Nessun giocatore primario consigliato per questo filtro. Sei a posto con i titolari, punta su scommesse a 1 cr!")
+            st.caption("Nessun giocatore primario consigliato. Sei a posto con i titolari, punta su scommesse a 1 cr!")
 
     with t_road:
         col_rm1, col_rm2 = st.columns([3, 1])
         with col_rm1:
-            st.subheader("🗺️ Roadmap & Strategia Ricalcolata")
-            st.info(f"Strategia attiva: **{st.session_state.selected_strategy}**.")
+            st.subheader("Roadmap Dinamica")
+            st.caption(f"Strategia attiva: {st.session_state.selected_strategy}")
         with col_rm2:
-            if st.button("🔄 Ripristina Scartati", use_container_width=True, help="Azzera la memoria dei giocatori scartati con il tasto 'Cambia'"):
+            if st.button("Ripristina Scartati", use_container_width=True):
                 st.session_state.rejected_players = []
                 save_state_to_disk()
                 st.rerun()
                 
-        with st.expander("⭐ Personalizza i Miei Top di Reparto (Lock-in Strategy)", expanded=False):
-            st.caption("Seleziona uno o più giocatori ideali che intendi prendere: la Roadmap si riorganizzerà istantaneamente calibrando tutti gli altri slot in funzione della spesa per i tuoi prescelti.")
-            
+        with st.expander("Personalizza i tuoi Top di Reparto", expanded=False):
             c_tp, c_td, c_tc, c_ta = st.columns(4)
             with c_tp:
                 p_names = listone_df[listone_df['R'] == 'P']['Nome'].dropna().tolist()
@@ -1733,12 +1569,12 @@ with macro_tabs[0]:
 
         selected_cat = st.selectbox(
             "Seleziona Categoria da Visualizzare:",
-            ["Panoramica Completa", "🧤 Portieri (P)", "🛡️ Difensori (D)", "⚙️ Centrocampisti (C)", "⚽ Attaccanti (A)"]
+            ["Panoramica Completa", "Portieri (P)", "Difensori (D)", "Centrocampisti (C)", "Attaccanti (A)"]
         )
 
-        if selected_cat in ["Panoramica Completa", "🧤 Portieri (P)"]:
+        if selected_cat in ["Panoramica Completa", "Portieri (P)"]:
             k_club = st.session_state.selected_keeper_club
-            st.markdown(f"### 🧤 Portieri (Blocco Base: **{k_club}**)")
+            st.markdown(f"### Portieri (Blocco Base: **{k_club}**)")
             
             k_list = GOALIE_HIERARCHY.get(k_club, [])
             p_bought = [p for p in st.session_state.my_roster if p['role'] == 'P']
@@ -1759,17 +1595,24 @@ with macro_tabs[0]:
                         lost_co_price = b_price
 
             if co_starter_lost:
-                st.warning(f"🚨 **Allerta Vice Mancante:** {lost_co_name} è stato acquistato da **{lost_co_buyer}** a `{lost_co_price} cr`! Sfrutta gli **Incroci di Calendario Casa/Fuori** per completare la porta.")
+                st.warning(f"Vice Mancante: {lost_co_name} acquistato da {lost_co_buyer} a {lost_co_price} cr. Sfrutta gli incroci di calendario.")
                 
-                st.markdown("#### 📅 Migliori Incroci di Calendario Casa/Fuori:")
+                st.markdown("##### Migliori Incroci:")
                 suggested_pairings = GOALKEEPER_PAIRINGS.get(k_club, GOALKEEPER_PAIRINGS['Inter'])
                 
                 pair_cols = st.columns(min(3, len(suggested_pairings)))
                 for p_idx, pair_info in enumerate(suggested_pairings[:3]):
                     with pair_cols[p_idx]:
-                        card_text = f"**{pair_info['club']}: {pair_info['starter']}**\n\n🎯 **Target:** `{pair_info['target']} cr` | 🛑 **Max:** `{pair_info['max']} cr`\n\n📊 *Incrocio:* {pair_info['diff']}\n\n💡 *Motivazione:* {pair_info['reason']}"
-                        st.info(card_text)
-                st.markdown("---")
+                        logo_p = get_team_logo_url(pair_info['club'])
+                        card_text = (
+                            "<div class='glass-card'>"
+                            f"<div style='margin-bottom: 8px;'><img src='{logo_p}' width='20' style='vertical-align: middle;'> <b>{pair_info['club']}: {pair_info['starter']}</b></div>"
+                            f"Target: <b>{pair_info['target']} cr</b> | Max: <b>{pair_info['max']} cr</b><br>"
+                            f"<span style='font-size:13px; color:#94A3B8;'>{pair_info['diff']}</span>"
+                            "</div>"
+                        )
+                        st.markdown(card_text, unsafe_allow_html=True)
+                st.write("")
 
             kp_cols = st.columns(3)
             for idx, (k_col, k_info) in enumerate(zip(kp_cols, k_list)):
@@ -1779,10 +1622,10 @@ with macro_tabs[0]:
                         p_b = p_bought[idx]
                         logo_img = f"<img src='{get_team_logo_url(p_b['team'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
                         card_html = (
-                            "<div style='padding: 14px; border: 1px solid #16a34a; border-radius: 10px; background: rgba(22, 163, 74, 0.15); height: 100%;'>"
+                            "<div class='glass-card'>"
                             f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {p_b['name']}</b></div>"
-                            f"✅ <b>Acquistato:</b> <code>{p_b['price']} cr</code><br>"
-                            "📌 <i>Ruolo:</i> Titolare in Rosa"
+                            f"<span style='color:#10B981;'>✓ Acquistato:</span> <b>{p_b['price']} cr</b><br>"
+                            "<div class='glass-card-mini-text'>In Rosa</div>"
                             "</div>"
                         )
                         st.markdown(card_html, unsafe_allow_html=True)
@@ -1791,39 +1634,38 @@ with macro_tabs[0]:
                             top_pair = GOALKEEPER_PAIRINGS.get(k_club, GOALKEEPER_PAIRINGS['Inter'])[0]
                             logo_img = f"<img src='{get_team_logo_url(top_pair['club'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
                             card_html = (
-                                "<div style='padding: 14px; border: 1px solid #eab308; border-radius: 10px; background: rgba(234, 179, 8, 0.15); height: 100%;'>"
+                                "<div class='glass-card glass-card-accent'>"
                                 f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {top_pair['starter']}</b></div>"
-                                f"⚠️ <i>Incrocio Calendario Consigliato</i><br><br>"
-                                f"🎯 <b>Target:</b> <code>{top_pair['target']} cr</code> | 🛑 <b>Max:</b> <code>{top_pair['max']} cr</code><br>"
-                                f"📌 <i>Ruolo:</i> <b>Alternanza con {p_bought[0]['name']}</b>"
+                                f"Target: <b>{top_pair['target']} cr</b> | Max: <b>{top_pair['max']} cr</b><br>"
+                                f"<div class='glass-card-mini-text'>Alternanza con {p_bought[0]['name']}</div>"
                                 "</div>"
                             )
                             st.markdown(card_html, unsafe_allow_html=True)
                         else:
                             logo_img = f"<img src='{get_team_logo_url(k_club)}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
                             card_html = (
-                                "<div style='padding: 14px; border: 1px solid #3b82f6; border-radius: 10px; background: rgba(59, 130, 246, 0.1); height: 100%;'>"
+                                "<div class='glass-card'>"
                                 f"<div style='margin-bottom: 10px;'>{logo_img}<b>{slot_label}: {k_info[0]}</b></div>"
-                                f"🎯 <b>Target:</b> <code>{k_info[1]} cr</code> | 🛑 <b>Max:</b> <code>{k_info[2]} cr</code><br>"
-                                f"📌 <i>Ruolo:</i> <b>Copertura Blocco {k_club}</b>"
+                                f"Target: <b>{k_info[1]} cr</b> | Max: <b>{k_info[2]} cr</b><br>"
+                                f"<div class='glass-card-mini-text'>Copertura Blocco {k_club}</div>"
                                 "</div>"
                             )
                             st.markdown(card_html, unsafe_allow_html=True)
-            st.divider()
+            st.write("")
 
-        if selected_cat in ["Panoramica Completa", "🛡️ Difensori (D)"]:
-            render_role_card_grid('D', f"🛡️ Difensori (Pilastro Modificatore - Budget Base: {st.session_state.base_dept_budget['D']} cr)", num_cols=4)
-            st.divider()
+        if selected_cat in ["Panoramica Completa", "Difensori (D)"]:
+            render_role_card_grid('D', f"Difensori (Modificatore - Budget Base: {st.session_state.base_dept_budget['D']} cr)", num_cols=4)
+            st.write("")
 
-        if selected_cat in ["Panoramica Completa", "⚙️ Centrocampisti (C)"]:
-            render_role_card_grid('C', f"⚙️ Centrocampisti (Motore dei Bonus - Budget Base: {st.session_state.base_dept_budget['C']} cr)", num_cols=4)
-            st.divider()
+        if selected_cat in ["Panoramica Completa", "Centrocampisti (C)"]:
+            render_role_card_grid('C', f"Centrocampisti (Bonus - Budget Base: {st.session_state.base_dept_budget['C']} cr)", num_cols=4)
+            st.write("")
 
-        if selected_cat in ["Panoramica Completa", "⚽ Attaccanti (A)"]:
-            render_role_card_grid('A', f"⚽ Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
+        if selected_cat in ["Panoramica Completa", "Attaccanti (A)"]:
+            render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
     with t_duel:
-        st.subheader("⚔️ Confronto Testa a Testa Live (Decision Duel)")
+        st.subheader("Confronto Testa a Testa")
         
         all_player_names = sorted(list(listone_df['Nome'].dropna().unique()))
         
@@ -1843,72 +1685,69 @@ with macro_tabs[0]:
             col_card1, col_card2 = st.columns(2)
             with col_card1:
                 logo1 = get_team_logo_url(row1['Squadra'])
-                st.markdown(f"### <img src='{logo1}' width='32' style='vertical-align: middle;'> {p_name_1}", unsafe_allow_html=True)
-                st.markdown(f"**Squadra & Ruolo:** {row1['Squadra']} ({row1['R']})")
-                st.markdown(f"**Target Adattato:** `{int(round(eval1['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval1['dyn_max_bid']))} cr`")
-                st.markdown(f"**Quotazione Listone:** {row1['Qt.A']} | **FVM:** {row1['FVM']}")
+                st.markdown(f"### <img src='{logo1}' width='28' style='vertical-align: middle;'> {p_name_1}", unsafe_allow_html=True)
+                st.write(f"Squadra: {row1['Squadra']} ({row1['R']})")
+                st.write(f"Target Adattato: **{int(round(eval1['dyn_target']))} cr** | Max: **{int(round(eval1['dyn_max_bid']))} cr**")
                 pen1 = [p for p in PENALTY_TAKERS.get(row1['Squadra'], []) if p_name_1.lower() in p.lower()]
-                st.markdown(f"**Status Rigori:** {pen1[0] if pen1 else 'Nessuno'}")
+                st.caption(f"Status Rigori: {pen1[0] if pen1 else 'Nessuno'}")
                 
             with col_card2:
                 logo2 = get_team_logo_url(row2['Squadra'])
-                st.markdown(f"### <img src='{logo2}' width='32' style='vertical-align: middle;'> {p_name_2}", unsafe_allow_html=True)
-                st.markdown(f"**Squadra & Ruolo:** {row2['Squadra']} ({row2['R']})")
-                st.markdown(f"**Target Adattato:** `{int(round(eval2['dyn_target']))} cr` | **Stop-Loss:** `{int(round(eval2['dyn_max_bid']))} cr`")
-                st.markdown(f"**Quotazione Listone:** {row2['Qt.A']} | **FVM:** {row2['FVM']}")
+                st.markdown(f"### <img src='{logo2}' width='28' style='vertical-align: middle;'> {p_name_2}", unsafe_allow_html=True)
+                st.write(f"Squadra: {row2['Squadra']} ({row2['R']})")
+                st.write(f"Target Adattato: **{int(round(eval2['dyn_target']))} cr** | Max: **{int(round(eval2['dyn_max_bid']))} cr**")
                 pen2 = [p for p in PENALTY_TAKERS.get(row2['Squadra'], []) if p_name_2.lower() in p.lower()]
-                st.markdown(f"**Status Rigori:** {pen2[0] if pen2 else 'Nessuno'}")
+                st.caption(f"Status Rigori: {pen2[0] if pen2 else 'Nessuno'}")
 
             st.divider()
             diff_cr = int(round(eval1['dyn_target'] - eval2['dyn_target']))
             if diff_cr > 0:
-                st.info(f"💡 **Verdetto Economico:** {p_name_1} richiede **+{diff_cr} cr** rispetto a {p_name_2}. Scegli {p_name_2} se vuoi preservare budget per l'attacco.")
+                st.info(f"**Verdetto:** {p_name_1} richiede **+{diff_cr} cr** rispetto a {p_name_2}. Scegli {p_name_2} per risparmiare.")
             elif diff_cr < 0:
-                st.info(f"💡 **Verdetto Economico:** {p_name_2} richiede **+{abs(diff_cr)} cr** rispetto a {p_name_1}. Scegli {p_name_1} per risparmiare.")
+                st.info(f"**Verdetto:** {p_name_2} richiede **+{abs(diff_cr)} cr** rispetto a {p_name_1}. Scegli {p_name_1} per risparmiare.")
             else:
-                st.info(f"💡 **Verdetto Economico:** I due giocatori hanno lo stesso impatto economico ({int(round(eval1['dyn_target']))} cr).")
+                st.info(f"**Verdetto:** Stesso impatto economico ({int(round(eval1['dyn_target']))} cr).")
 
 # ------------------------------------------------------------------------------
 # MACRO AREA 2: TATTICA & STUDIO
 # ------------------------------------------------------------------------------
 with macro_tabs[1]:
-    t_guide, t_syn, t_sim = st.tabs(["📖 Guida Tattica 20 Squadre", "🧩 Sinergie & Abbinamenti", "🏟️ Simulatore 11 Titolare"])
+    t_guide, t_syn, t_sim = st.tabs(["Guida Tattica Squadre", "Sinergie & Abbinamenti", "Simulatore 11 Titolare"])
     
     with t_guide:
-        st.subheader("📖 Guida Tattica Integrale delle 20 Squadre di Serie A 2026/2027")
-        sel_team_guide = st.selectbox("Seleziona Club da Consultare:", options=sorted(list(TEAMS_TACTICAL_DB.keys())))
+        st.subheader("Guida Tattica Integrale")
+        sel_team_guide = st.selectbox("Seleziona Club:", options=sorted(list(TEAMS_TACTICAL_DB.keys())))
         team_data = TEAMS_TACTICAL_DB[sel_team_guide]
 
         col_t1, col_t2 = st.columns([1, 1])
         with col_t1:
             logo_t = get_team_logo_url(sel_team_guide)
             st.markdown(f"### <img src='{logo_t}' width='35' style='vertical-align: middle; margin-right: 8px;'> {sel_team_guide}", unsafe_allow_html=True)
-            st.markdown(f"**👔 Allenatore:** {team_data['coach']}")
-            st.markdown(f"**📐 Modulo Tattico:** {team_data['formation']}")
-            st.markdown(f"**🧤 Gerarchia Porta:** {team_data['gk']}")
-            st.markdown(f"**🛡️ Linea Difensiva:** {team_data['defense']}")
-            st.markdown(f"**⚙️ Centrocampo:** {team_data['midfield']}")
-            st.markdown(f"**⚽ Reparto Offensivo:** {team_data['attack']}")
+            st.write(f"**Allenatore:** {team_data['coach']}")
+            st.write(f"**Modulo Tattico:** {team_data['formation']}")
+            st.write(f"**Gerarchia Porta:** {team_data['gk']}")
+            st.write(f"**Difesa:** {team_data['defense']}")
+            st.write(f"**Centrocampo:** {team_data['midfield']}")
+            st.write(f"**Attacco:** {team_data['attack']}")
 
         with col_t2:
-            st.markdown("### 🎯 Gerarchia Rigoristi & Tiratori")
+            st.markdown("#### Gerarchia Rigoristi")
             for r_idx, r_name in enumerate(team_data.get('penalties', [])):
-                st.markdown(f"- **{r_name}**")
+                st.write(f"- {r_name}")
             
-            st.markdown("### 💡 Consigli d'Asta & Scommesse")
+            st.write("")
             st.info(team_data['advice'])
 
     with t_syn:
-        st.subheader("🧩 Sinergie & Abbinamenti Perfetti 2026/27")
-        st.markdown("L'ottimizzazione del capitale si traduce nella massimizzazione del rendimento sistemico tramite lo studio scientifico degli abbinamenti di calendario e delle griglie di alternanza[cite: 5].")
+        st.subheader("Sinergie & Abbinamenti Perfetti 2026/27")
+        st.caption("Ottimizza il capitale studiando gli incroci di calendario.[cite: 5]")
         
-        # Selettore Slide Orizzontale (Sostituisce il terzo livello di Tabs)
-        analisi_sel = st.radio("Seleziona Analisi:", ["🧤 Griglia Portieri", "⚽ Coppie & Terzetti Attacco", "✨ Sinergie Simmetriche"], horizontal=True)
-        st.markdown("---")
+        # Selettore orizzontale a bottoni
+        analisi_sel = st.radio("Seleziona Analisi:", ["Griglia Portieri", "Coppie & Terzetti Attacco", "Sinergie Simmetriche"], horizontal=True)
+        st.write("")
         
-        if analisi_sel == "🧤 Griglia Portieri":
-            st.markdown("#### 1. Abbinamenti per Portieri Top (3° Slot)")
-            st.markdown("I portieri di prima fascia richiedono un esborso tra i 31 e i 48 crediti[cite: 5]. La dottrina impone l'acquisto del secondo portiere per mitigare i rischi, e di un terzo slot per l'alternanza[cite: 5].")
+        if analisi_sel == "Griglia Portieri":
+            st.markdown("#### Abbinamenti per Portieri Top (3° Slot)")
             portieri_top = [
                 {"Portiere Top": "Mile Svilar (48.17 cr)", "Squadra": "Roma", "Migliori Abbinamenti": "Bologna (95), Monza (93), Venezia (92), Genoa (89)", "Analisi": "L'indice 95 con il Bologna rappresenta la massima efficienza statistica per le trasferte proibitive della Roma[cite: 5]."},
                 {"Portiere Top": "Alex Meret (41.66 cr)", "Squadra": "Napoli", "Migliori Abbinamenti": "Lecce (93), Torino (93), Frosinone (91), Fiorentina (89)", "Analisi": "Il pragmatismo di Allegri tutela Meret. Accoppiarlo a Falcone o Mascardi/Perri fornisce un paracadute eccellente a costo marginale[cite: 5]."},
@@ -1920,25 +1759,17 @@ with macro_tabs[1]:
             ]
             st.dataframe(pd.DataFrame(portieri_top), use_container_width=True)
             
-            st.markdown("#### 2. Coppie Low Cost (Massimizzare l'Elasticità Finanziaria)")
+            st.markdown("#### Coppie Low Cost (Massimizzare Elasticità)")
             low_cost_p = [
                 {"Coppia": "Genoa - Lecce", "Indice": 93, "Portieri": "Bijlow - Falcone", "Analisi": "La miglior combinazione economica assoluta, libera 15-20 crediti rispetto alla media[cite: 5]."},
                 {"Coppia": "Genoa - Frosinone", "Indice": 92, "Portieri": "Bijlow - Palmisani / Desplanches", "Analisi": "Ottima resa statistica, ma il dualismo nel Frosinone richiede l'acquisto dell'intero blocco ciociaro[cite: 5]."},
                 {"Coppia": "Parma - Genoa", "Indice": 91, "Portieri": "Corvi/Daffara - Bijlow", "Analisi": "Il ballottaggio parmense richiede l'acquisto di almeno 3 portieri in rosa[cite: 5]."},
-                {"Coppia": "Bologna - Venezia", "Indice": 91, "Portieri": "Skorupski - Stankovic", "Analisi": "Leggermente più costosa per l'entusiasmo attorno a Stankovic e alla solidità del Bologna di Tedesco[cite: 5]."},
-                {"Coppia": "Sassuolo - Venezia", "Indice": 91, "Portieri": "Muric - Stankovic", "Analisi": "Portieri che eccellono nell'impostazione dal basso, costo molto contenuto[cite: 5]."}
+                {"Coppia": "Bologna - Venezia", "Indice": 91, "Portieri": "Skorupski - Stankovic", "Analisi": "Leggermente più costosa per l'entusiasmo attorno a Stankovic e alla solidità del Bologna di Tedesco[cite: 5]."}
             ]
             st.dataframe(pd.DataFrame(low_cost_p), use_container_width=True)
-
-            st.markdown("#### 3. Terzetti Ottimali (Indice 99-100)")
-            st.markdown("- **Indice 100:** Genoa - Udinese - Lecce (Santo Graal del risparmio)[cite: 5].")
-            st.markdown("- **Indice 100:** Atalanta - Sassuolo - Venezia (Top coadiuvato da provinciali solide)[cite: 5].")
-            st.markdown("- **Indice 100:** Atalanta - Fiorentina - Monza (Opzione di lusso ad alto costo)[cite: 5].")
-            st.markdown("- **Indice 99:** Parma - Torino - Monza (Ottima ma soggetta a ballottaggi a Parma)[cite: 5].")
             
-        elif analisi_sel == "⚽ Coppie & Terzetti Attacco":
-            st.markdown("#### 1. Le 5 Coppie Primarie in Attacco")
-            st.markdown("L'attacco assorbe il 41,9% dei crediti: puntare su sinergie con indice >92 assicura una continuità di bonus eccezionale[cite: 5].")
+        elif analisi_sel == "Coppie & Terzetti Attacco":
+            st.markdown("#### Le 5 Coppie Primarie in Attacco")
             att_pairs = [
                 {"Coppia": "Atalanta - Sassuolo (95)", "Interpreti": "Scamacca / Raspadori + Berardi / Laurienté", "Analisi": "Costo stimato 110 cr. Il turnover di Sarri post-Champions viene mitigato dalle ali del Sassuolo (Berardi/Laurienté) che non fa coppe[cite: 5]."},
                 {"Coppia": "Inter - Bologna (95)", "Interpreti": "Thuram / Lautaro + Dovbyk / Orsolini", "Analisi": "Affiancare Thuram a Dovbyk genera un tandem formidabile da ~155 cr, schierando sempre un terminale contro difese deboli[cite: 5]."},
@@ -1948,27 +1779,24 @@ with macro_tabs[1]:
             ]
             st.dataframe(pd.DataFrame(att_pairs), use_container_width=True)
             
-            st.markdown("#### 2. La Costruzione a Moduli Variabili: I Terzetti in Attacco")
-            st.markdown("- **Frosinone - Genoa - Lecce (Indice 99):** Raimondo + Colombo/Vitinha + Krstovic. Costo ~84 cr. Lascia 125 cr per un Super Top come Lautaro o Malen[cite: 5].")
-            st.markdown("- **Cagliari - Lazio - Lecce (Indice 99):** Zaccagni + Krstovic + scommesse Cagliari. Frammentario, consigliato per leghe a 12-14 partecipanti[cite: 5].")
-            st.markdown("- **Parma - Genoa - Monza (Indice 99):** Touré + Cutrone/Mota + Colombo. Costo ~70 cr. Ideale per formazioni 4-2-3-1 con focus sul centrocampo[cite: 5].")
-            st.markdown("- **Roma - Venezia - Torino (Indice 95):** Malen/Castro + Rrahmani/Yeboah + Simeone. Costo 200-210 cr. Tridente eterogeneo che allinea perfettamente gli impegni casalinghi[cite: 5].")
+            st.markdown("#### Terzetti in Attacco")
+            st.write("- **Frosinone - Genoa - Lecce (Indice 99):** Raimondo + Colombo/Vitinha + Krstovic. Costo ~84 cr. Lascia 125 cr per un Super Top[cite: 5].")
+            st.write("- **Parma - Genoa - Monza (Indice 99):** Touré + Cutrone/Mota + Colombo. Costo ~70 cr. Ideale per formazioni 4-2-3-1[cite: 5].")
 
         else:
-            st.markdown("#### Le Sinergie Simmetriche Attacco-Porta")
-            st.markdown("Il livello ultimo di sofisticazione strategica: l'indice di abbinamento combacia sia per il reparto difensivo che offensivo[cite: 5].")
+            st.markdown("#### Sinergie Simmetriche Attacco-Porta")
             st.info("**1. Blocco Atalanta - Sassuolo (Indice 95 per Porta e Attacco)**[cite: 5]")
-            st.markdown("- **Spesa Stimata:** ~195 crediti (39% del budget totale)[cite: 5].\n- **Portieri:** Carnesecchi + Muric (~55 cr)[cite: 5].\n- **Attaccanti:** Scamacca + Berardi + Laurienté (~139.82 cr)[cite: 5].\n- **Vantaggio:** Blinda il portiere per il modificatore di difesa e fissa due slot d'attacco inamovibili, tutelandosi col Sassuolo durante il turnover Champions imposto da Sarri[cite: 5].")
+            st.write("- **Spesa Stimata:** ~195 crediti (39% del budget totale)[cite: 5].\n- **Portieri:** Carnesecchi + Muric (~55 cr)[cite: 5].\n- **Attaccanti:** Scamacca + Berardi + Laurienté (~139.82 cr)[cite: 5].")
             
             st.info("**2. Blocco Inter - Bologna (Indice 95 per Porta e Attacco)**[cite: 5]")
-            st.markdown("- **Spesa Stimata:** ~258 crediti (51.6% del budget totale)[cite: 5].\n- **Portieri:** Martinez + Skorupski (~55 cr)[cite: 5].\n- **Attaccanti:** Thuram + Orsolini + Castro (~203.13 cr)[cite: 5].\n- **Vantaggio:** Martinez copre la retroguardia di Chivu, mentre Thuram porta gol e Orsolini domina i rigori al Dall'Ara. La perfetta specularità copre le trasferte insidiose dell'Inter[cite: 5].")
+            st.write("- **Spesa Stimata:** ~258 crediti (51.6% del budget totale)[cite: 5].\n- **Portieri:** Martinez + Skorupski (~55 cr)[cite: 5].\n- **Attaccanti:** Thuram + Orsolini + Castro (~203.13 cr)[cite: 5].")
 
     with t_sim:
-        st.subheader("🏟️ Lavagna Tattica 11 Titolare")
+        st.subheader("Simulatore 11 Titolare")
         
         col_f_opt, col_f_metrics = st.columns([1, 2])
         with col_f_opt:
-            formation_pref = st.radio("Modulo Titolare:", ["4-3-3 (Modificatore Difesa)", "3-4-3 (Tridente Offensivo)"])
+            formation_pref = st.radio("Modulo Titolare:", ["4-3-3 (Modificatore)", "3-4-3 (Tridente)"])
         
         p_my = [p for p in st.session_state.my_roster if p['role'] == 'P']
         d_my = sorted([p for p in st.session_state.my_roster if p['role'] == 'D'], key=lambda x: x['price'], reverse=True)
@@ -1992,11 +1820,11 @@ with macro_tabs[1]:
             expected_points = 66.0 + (len(starters_d)*0.5) + (len(starters_c)*0.8) + (len(starters_a)*1.8)
             if "4-3-3" in formation_pref and len(starters_d) >= 4:
                 expected_points += 3.0
-            m_t2.metric("Punteggio Atteso Base", f"{expected_points:.1f} pt", "Target podio ≥ 72.5 pt")
-            mod_status = "🟢 Attivo (+3/+6 pt)" if ("4-3-3" in formation_pref and len(starters_d) >= 4) else "⚪ Non attivo"
+            m_t2.metric("Punteggio Atteso Base", f"{expected_points:.1f} pt")
+            mod_status = "Attivo (+3/+6 pt)" if ("4-3-3" in formation_pref and len(starters_d) >= 4) else "Non attivo"
             m_t3.metric("Status Modificatore", mod_status)
 
-        st.markdown("---")
+        st.write("")
         
         st.markdown('<div class="pitch-container">', unsafe_allow_html=True)
         
@@ -2004,39 +1832,39 @@ with macro_tabs[1]:
         for i in range(req_a):
             if i < len(starters_a):
                 p = starters_a[i]
-                logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
-                st.markdown(f'<div class="player-disc">{logo}⚽ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
+                logo = f"<img src='{get_team_logo_url(p['team'])}' width='22' style='margin-bottom: 4px;'><br>"
+                st.markdown(f'<div class="player-disc">{logo}<b>{p["name"]}</b><br><small style="color:#94A3B8;">{p["price"]} cr</small></div>', unsafe_allow_html=True)
             else:
-                st.markdown(f'<div class="player-disc-empty">⚽ Attaccante {i+1}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="player-disc-empty">Attaccante {i+1}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
         for i in range(req_c):
             if i < len(starters_c):
                 p = starters_c[i]
-                logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
-                st.markdown(f'<div class="player-disc">{logo}⚙️ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
+                logo = f"<img src='{get_team_logo_url(p['team'])}' width='22' style='margin-bottom: 4px;'><br>"
+                st.markdown(f'<div class="player-disc">{logo}<b>{p["name"]}</b><br><small style="color:#94A3B8;">{p["price"]} cr</small></div>', unsafe_allow_html=True)
             else:
-                st.markdown(f'<div class="player-disc-empty">⚙️ Centrocampista {i+1}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="player-disc-empty">Centrocampista {i+1}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
         for i in range(req_d):
             if i < len(starters_d):
                 p = starters_d[i]
-                logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
-                st.markdown(f'<div class="player-disc">{logo}🛡️ <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
+                logo = f"<img src='{get_team_logo_url(p['team'])}' width='22' style='margin-bottom: 4px;'><br>"
+                st.markdown(f'<div class="player-disc">{logo}<b>{p["name"]}</b><br><small style="color:#94A3B8;">{p["price"]} cr</small></div>', unsafe_allow_html=True)
             else:
-                st.markdown(f'<div class="player-disc-empty">🛡️ Difensore {i+1}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="player-disc-empty">Difensore {i+1}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="pitch-row">', unsafe_allow_html=True)
         if starters_p:
             p = starters_p[0]
-            logo = f"<img src='{get_team_logo_url(p['team'])}' width='24' style='margin-bottom: 4px;'><br>"
-            st.markdown(f'<div class="player-disc">{logo}🧤 <b>{p["name"]}</b><br><small>{p["price"]} cr</small></div>', unsafe_allow_html=True)
+            logo = f"<img src='{get_team_logo_url(p['team'])}' width='22' style='margin-bottom: 4px;'><br>"
+            st.markdown(f'<div class="player-disc">{logo}<b>{p["name"]}</b><br><small style="color:#94A3B8;">{p["price"]} cr</small></div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="player-disc-empty">🧤 Portiere</div>', unsafe_allow_html=True)
+            st.markdown('<div class="player-disc-empty">Portiere</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
@@ -2045,10 +1873,10 @@ with macro_tabs[1]:
 # MACRO AREA 3: LEGA E AVVERSARI
 # ------------------------------------------------------------------------------
 with macro_tabs[2]:
-    t_insp, t_track, t_baro = st.tabs(["🔍 Ispezione Rose & Svincoli", "👥 Tracker Rivali (Pmax)", "🌡️ Barometro Lega"])
+    t_insp, t_track, t_baro = st.tabs(["Ispezione Rose & Svincoli", "Tracker Rivali (Pmax)", "Barometro Lega"])
     
     with t_insp:
-        st.subheader("🔍 Ispezione Dettagliata Rosa Rivale & Gestione Svincoli")
+        st.subheader("Ispezione Dettagliata Rosa Rivale & Gestione Svincoli")
         opp_names_list = [v['name'] for v in st.session_state.opponents.values()]
         selected_inspect_name = st.selectbox("Seleziona Squadra Rivale da Ispezionare:", options=opp_names_list)
         
@@ -2060,7 +1888,7 @@ with macro_tabs[2]:
             p_max_opp = inspect_opp['budget'] - (inspect_opp['slots_left'] - 1) if inspect_opp['slots_left'] > 0 else 0
             c_i3.metric("Offerta Max (Pmax)", f"{p_max_opp} cr")
             
-            st.markdown("#### Giocatori Acquistati")
+            st.write("")
             col_rp, col_rd, col_rc, col_ra = st.columns(4)
             with col_rp:
                 st.markdown("**Portieri (P)**")
@@ -2080,8 +1908,8 @@ with macro_tabs[2]:
                     st.markdown(f"<img src='{get_team_logo_url(pl['team'])}' width='16' style='vertical-align: middle; margin-right: 4px;'> {pl['name']} - **{pl['price']} cr**", unsafe_allow_html=True)
 
         st.markdown("---")
-        with st.expander("🔄 Mercato di Riparazione (Svincoli & Penali)", expanded=False):
-            st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati o penalizzati automaticamente in base alla regola scelta.")
+        with st.expander("Mercato di Riparazione (Svincoli & Penali)", expanded=False):
+            st.caption("Gestisci gli svincoli per la tua squadra o per gli avversari. I crediti verranno ricalcolati automaticamente.")
             
             teams_list = ["La Mia Squadra"] + [v['name'] for v in st.session_state.opponents.values()]
             selected_drop_team = st.selectbox("Seleziona Squadra:", options=teams_list)
@@ -2102,16 +1930,16 @@ with macro_tabs[2]:
                 dropped_p = next(p for p in team_roster if p['name'] == sel_drop_player)
                 orig_price = dropped_p['price']
                 
-                st.write(f"💵 Prezzo di acquisto originale: **{orig_price} cr**")
+                st.write(f"Prezzo di acquisto originale: **{orig_price} cr**")
 
                 drop_mode = st.radio("Regola di Recupero Crediti:", 
-                                     ["Recupero 100% (Intero Prezzo)", "Recupero 50% (Metà Prezzo)", "Recupero 1 Credito", "Personalizzato"])
+                                     ["Recupero 100% (Intero Prezzo)", "Recupero 50% (Metà Prezzo)", "Recupero 1 Credito", "Personalizzato"], horizontal=True)
                 
                 custom_refund = 0
                 if "Personalizzato" in drop_mode:
                     custom_refund = st.number_input("Crediti da rimborsare:", min_value=0, max_value=orig_price, value=0)
 
-                if st.button(f"✂️ Conferma Svincolo di {sel_drop_player}", type="primary"):
+                if st.button(f"Conferma Svincolo di {sel_drop_player}", type="primary"):
                     if "100%" in drop_mode:
                         refund = orig_price
                     elif "50%" in drop_mode:
@@ -2140,13 +1968,13 @@ with macro_tabs[2]:
                     })
 
                     save_state_to_disk()
-                    st.success(f"✅ Svincolo eseguito! {selected_drop_team} ha recuperato {refund} cr. Il PMax globale è stato ricalcolato.")
+                    st.success("Svincolo eseguito!")
                     st.rerun()
             else:
                 st.info(f"Nessun giocatore attualmente presente nella rosa di {selected_drop_team}.")
 
     with t_track:
-        st.subheader("👥 Quadro Generale Avversari & Potere d'Acquisto")
+        st.subheader("Quadro Generale Avversari & Potere d'Acquisto")
         opp_summary = []
         for k, v in st.session_state.opponents.items():
             p_max = v['budget'] - (v['slots_left'] - 1) if v['slots_left'] > 0 else 0
@@ -2164,7 +1992,7 @@ with macro_tabs[2]:
         st.dataframe(pd.DataFrame(opp_summary).sort_values(by="Max Bid Possibile (Pmax)", ascending=False), use_container_width=True)
 
     with t_baro:
-        st.subheader("🌡️ Barometro Inflazione & Liquidità Lega (5.000 Crediti Totali)")
+        st.subheader("Barometro Inflazione & Liquidità Lega")
         
         total_league_budget = 5000
         my_sp = sum(p['price'] for p in st.session_state.my_roster)
@@ -2181,63 +2009,40 @@ with macro_tabs[2]:
         b3.metric("Media Crediti / Slot Lega", f"{avg_cr_slot:.1f} cr")
         
         deflation_on = avg_cr_slot < 10.0
-        b4.metric("Fase di Mercato", "🔴 Crollo Prezzi (Deflazione)" if deflation_on else "🟢 Fase Calda / Top Player")
+        b4.metric("Fase di Mercato", "🔴 Deflazione" if deflation_on else "🟢 Fase Calda")
 
         st.markdown("---")
         if deflation_on:
-            st.error(
-                "🚨 **ALLERTA DEFLAZIONE ATTIVA:** La cassa media della lega è scesa sotto i 10 crediti per slot! "
-                "I rivali non hanno più liquidità per contendersi i giocatori. Ora puoi aggiudicarti tutti i tuoi 4°/5° slot d'attacco e centrocampo a **prezzo di saldo o a 1 credito**!"
-            )
+            st.error("ALLERTA DEFLAZIONE: I rivali non hanno più liquidità. Ora puoi aggiudicarti tutti i tuoi 4°/5° slot a prezzo di saldo!")
         else:
-            st.info(
-                "📊 **MERCATO IN EQUILIBRIO:** C'è ancora liquidità per i primi slot. Mantieni la disciplina sui tetti Stop-Loss e fai sfogare i rivali sui giocatori non prioritari."
-            )
+            st.info("MERCATO IN EQUILIBRIO: Mantieni la disciplina sui tetti Stop-Loss e fai sfogare i rivali sui giocatori non prioritari.")
 
 # ------------------------------------------------------------------------------
 # MACRO AREA 4: DATI & EXPORT
 # ------------------------------------------------------------------------------
 with macro_tabs[3]:
-    t_macro, t_exp = st.tabs(["📊 Macroeconomia & Trend", "📥 Esportazione & Report Finale"])
+    t_macro, t_exp = st.tabs(["Macroeconomia & Trend", "Esportazione & Report Finale"])
     
     with t_macro:
-        st.subheader("📊 Analisi Macroeconomica e Tattica (Stagione 2026/27)")
+        st.subheader("Analisi Macroeconomica e Tattica (Stagione 2026/27)")
         
-        st.markdown("#### 💰 Modello Comportamentale vs. Rischio Calcolato")
-        st.markdown(
-            "- I fantallenatori tendono a sovrappesare l'attacco, spendendo il 41.9% del budget (circa 210 cr) per un reparto che ha un tasso di conferma di appena il 33%[cite: 2].\n"
-            "- Il centrocampo è il reparto più prevedibile (62% di conferma)[cite: 2].\n"
-            "- Il modello a rischio suggerisce di investire fino al 40-43% del budget per i centrocampisti[cite: 2].\n"
-            "- La difesa garantisce un tasso di conferma del 54%[cite: 2].\n"
-            "- Nelle leghe con il Trequartista, questo singolo ruolo assorbe il 16.1% del budget (prezzo medio 17.6 cr)[cite: 2]."
-        )
+        st.markdown("#### Modello Comportamentale vs. Rischio Calcolato")
+        st.write("- I fantallenatori tendono a sovrappesare l'attacco, spendendo il 41.9% del budget per un reparto che ha un tasso di conferma di appena il 33%[cite: 2].")
+        st.write("- Il centrocampo è il reparto più prevedibile (62% di conferma)[cite: 2].")
+        st.write("- Il modello a rischio suggerisce di investire fino al 40-43% del budget per i centrocampisti[cite: 2].")
+        st.write("- Nelle leghe con il Trequartista, questo ruolo assorbe il 16.1% del budget[cite: 2].")
         
-        st.markdown("#### 🧤 L'Hype Premium in Porta e le Scommesse")
-        st.markdown(
-            "- Mile Svilar è spinto da un 'hype premium' a 48,17 cr, ben oltre il limite algoritmico del 5%[cite: 2].\n"
-            "- Jean Butez (Como) si rivela la scelta finanziariamente più oculata[cite: 2].\n"
-            "- Butez porta in dote 19 clean sheet storici ed è pagato solo 31.21 cr[cite: 2]."
-        )
+        st.markdown("#### Modificatore di Difesa e Nuove Tattiche")
+        st.write("- L'Anomalia Dimarco: valutato 64,05 cr, agisce da trequartista occulto nel 3-5-2 di Chivu[cite: 2].")
+        st.write("- L'Effetto Gasperini a Roma trasforma Mancini e Wesley in esterni d'assalto[cite: 2].")
+        st.write("- Nel Milan, il paradigma Amorim esalta Pavlovic come braccetto nel 3-4-2-1[cite: 2].")
         
-        st.markdown("#### 🛡️ Modificatore di Difesa e Nuove Tattiche")
-        st.markdown(
-            "- L'Anomalia Dimarco: valutato 64,05 cr, agisce da trequartista occulto nel 3-5-2 di Chivu[cite: 2].\n"
-            "- Dimarco merita l'investimento massiccio in virtù di un limite reale di 174 cr[cite: 2].\n"
-            "- L'Effetto Gasperini a Roma trasforma Mancini e Wesley in esterni d'assalto, rendendoli asset prioritari per il modificatore[cite: 2].\n"
-            "- Nel Milan, il paradigma Amorim esalta Pavlovic come braccetto nel 3-4-2-1[cite: 2].\n"
-            "- L'utilizzo di moduli a 4 o 5 difensori passa dal 48.8% all'81.2% nelle leghe con modificatore[cite: 2]."
-        )
-        
-        st.markdown("#### ⚽ Dinamiche di Prezzo e Trappole in Attacco")
-        st.markdown(
-            "- Donyell Malen (141.20 cr) e Lautaro Martinez (132.29 cr) dominano le valutazioni, superando la soglia dei 100 crediti[cite: 2].\n"
-            "- Hojlund (125.13 cr) è penalizzato dal modulo difensivo di Allegri ed è considerato una trappola letale[cite: 2].\n"
-            "- Kean (124.26 cr) ha un rischio di fallimento estremo ed è over-priced rispetto ai suoi limiti algoritmici[cite: 2].\n"
-            "- Kolo Muani a 93.91 cr è fortemente sottovalutato[cite: 2]."
-        )
+        st.markdown("#### Trappole in Attacco")
+        st.write("- Hojlund (125.13 cr) è penalizzato dal modulo difensivo di Allegri ed è considerato una trappola letale[cite: 2].")
+        st.write("- Kean (124.26 cr) ha un rischio di fallimento estremo ed è over-priced rispetto ai suoi limiti algoritmici[cite: 2].")
 
     with t_exp:
-        st.subheader("📥 Esportazione Dati Rosa & Report Finale")
+        st.subheader("Esportazione Dati Rosa")
         
         output_excel = io.BytesIO()
         with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
@@ -2261,11 +2066,12 @@ with macro_tabs[3]:
         col_ex1, col_ex2 = st.columns(2)
         with col_ex1:
             st.download_button(
-                label="📊 Scarica Report Completo Asta (Excel)",
+                label="Scarica Report (Excel)",
                 data=output_excel.getvalue(),
                 file_name=f"FantaAsta_2026_27_Report_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True
+                use_container_width=True,
+                type="primary"
             )
 
         with col_ex2:
@@ -2278,7 +2084,7 @@ with macro_tabs[3]:
             }, ensure_ascii=False, indent=2)
             
             st.download_button(
-                label="💾 Scarica Backup JSON Asta",
+                label="Scarica Backup (JSON)",
                 data=json_backup_str,
                 file_name="fanta_auction_backup.json",
                 mime="application/json",
