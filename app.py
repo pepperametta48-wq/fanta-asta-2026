@@ -507,22 +507,22 @@ GOALKEEPER_PAIRINGS = {
 
 TEAMS_TACTICAL_DB = {
     "Atalanta": {
-        "coach": "Maurizio Sarri[cite: 2]", "formation": "4-3-3 (Palleggio & Intensità)[cite: 2]",
+        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
         "gk": "Carnesecchi (Sportiello vice)",
         "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
-        "midfield": "Ederson, Gaetano, Pašalić, Samardžić[cite: 2]",
+        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
         "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
         "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
-        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista. Il passaggio al 4-3-3 esalta le mezzali palleggiatrici (Samardzic, Gaetano)[cite: 2]. Scamacca rilanciato ma occhio al turnover[cite: 2]."
+        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista. Il passaggio al 4-3-3 esalta le mezzali palleggiatrici (Samardzic, Gaetano). Scamacca rilanciato ma occhio al turnover."
     },
     "Bologna": {
-        "coach": "Domenico Tedesco[cite: 2]", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)[cite: 2]",
+        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
         "gk": "Skorupski (Pessina vice)",
         "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
         "midfield": "Ferguson, Moro, Bernardeschi",
         "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
         "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
-        "advice": "Tedesco conferma il 4-3-3 offensivo[cite: 2]. Orsolini monopolizza i rigori e non fa coppe, ottimo a 64 cr[cite: 2]. Heggem certezza difensiva a costi contenuti."
+        "advice": "Tedesco conferma il 4-3-3 offensivo. Orsolini monopolizza i rigori e non fa coppe, ottimo a 64 cr. Heggem certezza difensiva a costi contenuti."
     },
     "Cagliari": {
         "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
@@ -534,22 +534,22 @@ TEAMS_TACTICAL_DB = {
         "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
     },
     "Como": {
-        "coach": "Cesc Fàbregas[cite: 2]", "formation": "4-2-3-1 (Possesso & Fluidità)[cite: 2]",
-        "gk": "Jean Butez (Tornqvist/Vigorito)[cite: 2]",
+        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
+        "gk": "Jean Butez (Tornqvist/Vigorito)",
         "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
-        "midfield": "Da Cunha, Perrone, Baturina[cite: 2]",
-        "attack": "Nico Paz (Trequartista)[cite: 2], Douvikas (Morata vice)[cite: 2]",
+        "midfield": "Da Cunha, Perrone, Baturina",
+        "attack": "Nico Paz (Trequartista), Douvikas (Morata vice)",
         "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
-        "advice": "Butez è il portiere più efficiente del listino[cite: 2]. Nico Paz agisce da falso nove ed è un Super Top[cite: 2]. Douvikas bomber altissima resa."
+        "advice": "Butez è il portiere più efficiente del listino. Nico Paz agisce da falso nove ed è un Super Top. Douvikas bomber altissima resa."
     },
     "Fiorentina": {
         "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
         "gk": "David De Gea (Christensen/Lezzerini)",
         "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
-        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora[cite: 2]",
-        "attack": "Gudmundsson, Moise Kean, Pellegrino[cite: 2]",
+        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
+        "attack": "Gudmundsson, Moise Kean, Pellegrino",
         "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
-        "advice": "Attenzione a Kean: valutato 124 cr, è considerato la 'Trappola Estrema' a causa dell'alto rischio di fallimento[cite: 2]. Mastantuono ottima scommessa trequartista[cite: 2]."
+        "advice": "Attenzione a Kean: valutato 124 cr, è considerato la 'Trappola Estrema' a causa dell'alto rischio di fallimento. Mastantuono ottima scommessa trequartista."
     },
     "Frosinone": {
         "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
@@ -570,22 +570,22 @@ TEAMS_TACTICAL_DB = {
         "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
     },
     "Inter": {
-        "coach": "Cristian Chivu[cite: 2]", "formation": "3-5-2 (Dominio Tattico)[cite: 2]",
+        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
         "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
-        "defense": "Dimarco (Trequartista occulto)[cite: 2], Bastoni, Akanji, Bisseck, Pavard/Stones, Spence[cite: 2]",
-        "midfield": "Calhanoglu[cite: 2], Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
-        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny[cite: 2]",
-        "penalties": ["Calhanoglu (1° - 89%)[cite: 2]", "Zielinski (2°)", "Lautaro Martínez (3°)"],
-        "advice": "Dimarco è un'anomalia di mercato: produce come un top d'attacco, vale l'investimento massiccio[cite: 2]. Calhanoglu dominatore per i rigori[cite: 2]."
+        "defense": "Dimarco (Trequartista occulto), Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
+        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
+        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
+        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
+        "advice": "Dimarco è un'anomalia di mercato: produce come un top d'attacco, vale l'investimento massiccio. Calhanoglu dominatore per i rigori."
     },
     "Juventus": {
-        "coach": "Luciano Spalletti[cite: 2]", "formation": "4-2-3-1 (Propensione Offensiva)[cite: 2]",
+        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
         "gk": "Guglielmo Vicario (Perin vice)",
-        "defense": "Bremer, Kalulu, Cambiaso, Çelik[cite: 2]",
+        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
         "midfield": "Locatelli, Thuram / McKennie",
-        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)[cite: 2]",
+        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
         "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
-        "advice": "Kolo Muani è il terminale di Spalletti e rigorista, fortemente sottovalutato dal mercato[cite: 2]. Bremer garantisce certezze in difesa[cite: 2]."
+        "advice": "Kolo Muani è il terminale di Spalletti e rigorista, fortemente sottovalutato dal mercato. Bremer garantisce certezze in difesa."
     },
     "Lazio": {
         "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
@@ -606,13 +606,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
     },
     "Milan": {
-        "coach": "Rúben Amorim[cite: 2]", "formation": "3-4-2-1 (Iper-Dinamico)[cite: 2]",
+        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
         "gk": "Mike Maignan (Terracciano/Torriani)",
-        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi[cite: 2]",
-        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira[cite: 2]",
-        "attack": "Christian Pulisic (Trequartista), Rafael Leão, Gonçalo Ramos (Nkunku)[cite: 2]",
+        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
+        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
+        "attack": "Christian Pulisic (Trequartista), Rafael Leão, Gonçalo Ramos (Nkunku)",
         "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
-        "advice": "Il sistema di Amorim esalta Ramos e Pulisic (trequartista atipico)[cite: 2]. Penalizzato Rafael Leao, che sconta un crollo delle quotazioni[cite: 2]."
+        "advice": "Il sistema di Amorim esalta Ramos e Pulisic (trequartista atipico). Penalizzato Rafael Leao, che sconta un crollo delle quotazioni."
     },
     "Monza": {
         "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
@@ -624,13 +624,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
     },
     "Napoli": {
-        "coach": "Massimiliano Allegri[cite: 2]", "formation": "4-3-3 / Baricentro Basso[cite: 2]",
-        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)[cite: 2]",
-        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema[cite: 2]",
-        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas[cite: 2]",
-        "attack": "Rasmus Højlund, Politano, Santos, Neres[cite: 2]",
+        "coach": "Massimiliano Allegri", "formation": "4-3-3 / Baricentro Basso",
+        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
+        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
+        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
+        "attack": "Rasmus Højlund, Politano, Santos, Neres",
         "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
-        "advice": "Il pragmatismo di Allegri valorizza i difensori (Rrahmani, Di Lorenzo) ma penalizza l'attacco[cite: 2]. Hojlund a prezzi alti è un azzardo matematico letale[cite: 2]."
+        "advice": "Il pragmatismo di Allegri valorizza i difensori (Rrahmani, Di Lorenzo) ma penalizza l'attacco. Hojlund a prezzi alti è un azzardo matematico letale."
     },
     "Parma": {
         "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
@@ -642,13 +642,13 @@ TEAMS_TACTICAL_DB = {
         "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
     },
     "Roma": {
-        "coach": "Gian Piero Gasperini[cite: 2]", "formation": "3-4-2-1 / 3-5-2 (Intensità)[cite: 2]",
-        "gk": "Mile Svilar (Gollini/De Marzi)[cite: 2]",
-        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley (Esterni)[cite: 2]",
+        "coach": "Gian Piero Gasperini", "formation": "3-4-2-1 / 3-5-2 (Intensità)",
+        "gk": "Mile Svilar (Gollini/De Marzi)",
+        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley (Esterni)",
         "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
-        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen[cite: 2]",
+        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
         "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
-        "advice": "La difesa a tre di Gasperini trasforma Mancini e Wesley in incursori offensivi: acquisti obbligati per il modificatore[cite: 2]. Malen è il Super Top dell'attacco[cite: 2]."
+        "advice": "La difesa a tre di Gasperini trasforma Mancini e Wesley in incursori offensivi: acquisti obbligati per il modificatore. Malen è il Super Top dell'attacco."
     },
     "Sassuolo": {
         "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
@@ -686,6 +686,53 @@ TEAMS_TACTICAL_DB = {
         "penalties": ["Adams A. (1°)", "Rrahmani A. (2°)", "Yeboah (3°)"],
         "advice": "Busio regista inamovibile e tiratore low cost; Akor Adams scommessa 3ª punta ad alto potenziale realizzativo."
     }
+}
+
+INJURY_LIST = {
+    "Hien": {"team": "Atalanta", "infortunio": "Lesione del tendine prossimale del muscolo semimembranoso (post-intervento)[cite: 4]", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
+    "Sulemana K.": {"team": "Atalanta", "infortunio": "Lesione di 2° grado del legamento collaterale mediale (ginocchio sx)[cite: 4]", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
+    "Kristensen T.": {"team": "Atalanta", "infortunio": "Trauma distorsivo alla caviglia[cite: 4]", "rientro": "Da valutare (Day-to-day)", "status": "🟡 In dubbio (Breve)"},
+    "El Azzouzi O.": {"team": "Bologna", "infortunio": "Lesione del bicipite femorale della coscia sx[cite: 4]", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
+    "Casale": {"team": "Bologna", "infortunio": "Fastidio muscolare alla gamba (lavoro differenziato)[cite: 4]", "rientro": "Da valutare a breve termine", "status": "🟡 In dubbio (Breve)"},
+    "Idrissi R.": {"team": "Cagliari", "infortunio": "Ricostruzione del legamento crociato anteriore (fase di recupero)[cite: 4]", "rientro": "Fine Ottobre", "status": "🔴 Lungodegente"},
+    "Trepy": {"team": "Cagliari", "infortunio": "Conseguenze sistemiche da principio di annegamento[cite: 4]", "rientro": "Da valutare (Lungo termine)", "status": "🔴 Lungodegente (Svincolo consigliato)"},
+    "Addai": {"team": "Como", "infortunio": "Rottura totale del tendine d'Achille[cite: 4]", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
+    "Parisi": {"team": "Fiorentina", "infortunio": "Ricostruzione del legamento crociato del ginocchio (LCA)[cite: 4]", "rientro": "Novembre", "status": "🔴 Lungodegente"},
+    "Yildiz": {"team": "Juventus", "infortunio": "Trauma al piede sinistro (Possibile intervento chirurgico)[cite: 4]", "rientro": "Circa 3 mesi", "status": "🔴 Lungodegente"},
+    "Yildiz Kenan": {"team": "Juventus", "infortunio": "Trauma al piede sinistro (Possibile intervento chirurgico)[cite: 4]", "rientro": "Circa 3 mesi", "status": "🔴 Lungodegente"},
+    "Cataldi": {"team": "Lazio", "infortunio": "Ernia bilaterale dello sportivo (Post-intervento chirurgico)[cite: 4]", "rientro": "Inizio Ottobre", "status": "🟠 Medio Termine"},
+    "Dele-Bashiru": {"team": "Lazio", "infortunio": "Lesione/Affaticamento muscolare alla gamba[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Marusic": {"team": "Lazio", "infortunio": "Trauma muscolare indiretto alla coscia[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Pellegrini Lu.": {"team": "Lazio", "infortunio": "Noie fisiche[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Patric": {"team": "Lazio", "infortunio": "Problema fisico generico[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Pulisic Christian": {"team": "Milan", "infortunio": "Edema osseo e microfrattura al perone[cite: 4]", "rientro": "Da valutare (fase di consolidamento)", "status": "🟠 Medio Termine"},
+    "Pulisic": {"team": "Milan", "infortunio": "Edema osseo e microfrattura al perone[cite: 4]", "rientro": "Da valutare (fase di consolidamento)", "status": "🟠 Medio Termine"},
+    "Gimenez": {"team": "Milan", "infortunio": "Distorsione acuta alla caviglia[cite: 4]", "rientro": "Da valutare post 2ª giornata", "status": "🟡 In dubbio (Breve)"},
+    "Pessina": {"team": "Monza", "infortunio": "Lussazione traumatica della rotula del ginocchio dx[cite: 4]", "rientro": "Inizio Novembre", "status": "🔴 Lungodegente"},
+    "Ciurria": {"team": "Monza", "infortunio": "Noie fisiche[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Colombo L.": {"team": "Monza", "infortunio": "Acciaccato / Noie fisiche[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Colombo Lorenzo": {"team": "Monza", "infortunio": "Acciaccato / Noie fisiche[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Tourè I.": {"team": "Monza", "infortunio": "Fastidio articolare[cite: 4]", "rientro": "Assente sicuro", "status": "🔴 Indisponibile"},
+    "Buongiorno": {"team": "Napoli", "infortunio": "Post-operatorio menisco del ginocchio dx[cite: 4]", "rientro": "Metà Novembre", "status": "🔴 Lungodegente"},
+    "Marianucci": {"team": "Napoli", "infortunio": "Lesione di alto grado del collaterale mediale (LCA)[cite: 4]", "rientro": "Oltre 2 mesi", "status": "🔴 Lungodegente"},
+    "Nicolussi Caviglia": {"team": "Parma", "infortunio": "Intervento chirurgico per lesione miotendinea (coscia dx)[cite: 4]", "rientro": "Novembre", "status": "🔴 Lungodegente"},
+    "Rensch": {"team": "Roma", "infortunio": "Risentimento muscolare al flessore sx[cite: 4]", "rientro": "Da valutare (breve termine)", "status": "🟡 In dubbio (Breve)"},
+    "Konè I.": {"team": "Sassuolo", "infortunio": "Sintesi chirurgica per rottura tibia e perone[cite: 4]", "rientro": "Dicembre", "status": "🔴 Lungodegente"},
+    "Pieragnolo": {"team": "Sassuolo", "infortunio": "Post-operatorio rottura LCA (gamba dx)[cite: 4]", "rientro": "Ottobre", "status": "🔴 Lungodegente"},
+    "Candè": {"team": "Sassuolo", "infortunio": "Post-operatorio rottura LCA (ginocchio dx)[cite: 4]", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Berardi": {"team": "Sassuolo", "infortunio": "Distorsione acuta alla caviglia dx[cite: 4]", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
+    "Berardi Domenico": {"team": "Sassuolo", "infortunio": "Distorsione acuta alla caviglia dx[cite: 4]", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
+    "Boloca": {"team": "Sassuolo", "infortunio": "Problema articolare al ginocchio[cite: 4]", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Walukiewicz": {"team": "Sassuolo", "infortunio": "Forte trauma contusivo alla gamba dx[cite: 4]", "rientro": "Da valutare", "status": "🟡 In dubbio"},
+    "Zaniolo": {"team": "Udinese", "infortunio": "Lesione del muscolo bicipite femorale (coscia dx)[cite: 4]", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
+    "Zaniolo Nicolò": {"team": "Udinese", "infortunio": "Lesione del muscolo bicipite femorale (coscia dx)[cite: 4]", "rientro": "Seconda metà di Settembre", "status": "🟠 Medio Termine"},
+    "Zanoli": {"team": "Udinese", "infortunio": "Post-operatorio rottura LCA (ginocchio dx)[cite: 4]", "rientro": "Ottobre", "status": "🔴 Lungodegente"},
+    "Chakvetadze": {"team": "Udinese", "infortunio": "Frattura composta del terzo metatarso (piede ds.)[cite: 4]", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"},
+    "Palma": {"team": "Udinese", "infortunio": "Problema muscolare all'adduttore (coscia dx)[cite: 4]", "rientro": "Metà Settembre", "status": "🟠 Medio Termine"},
+    "Kabasele": {"team": "Udinese", "infortunio": "Squalifica per 1 turno[cite: 4]", "rientro": "Disponibile dalla prossima", "status": "🔴 Squalificato"},
+    "Sverko": {"team": "Venezia", "infortunio": "Intervento chirurgico per persistente problema all'anca[cite: 4]", "rientro": "Fine Ottobre", "status": "🔴 Lungodegente"},
+    "Adorante": {"team": "Venezia", "infortunio": "Intervento chirurgico alla colonna vertebrale[cite: 4]", "rientro": "Ottobre / Inizio Novembre", "status": "🔴 Lungodegente"},
+    "Moreno M.": {"team": "Venezia", "infortunio": "Noie fisiche[cite: 4]", "rientro": "Inizio Settembre", "status": "🟡 In dubbio (Breve)"}
 }
 
 # ==============================================================================
@@ -1309,6 +1356,13 @@ with st.sidebar.expander("📰 Live News & Calciomercato (RSS Feed)"):
     except Exception:
         st.caption("Feed notizie non disponibile offline.")
 
+with st.sidebar.expander("🏥 Infermeria & Squalificati"):
+    for p_name, p_data in INJURY_LIST.items():
+        logo_inj = get_team_logo_url(p_data['team'])
+        st.markdown(f"<img src='{logo_inj}' width='18' style='vertical-align: middle; margin-right: 5px;'> **{p_name}**", unsafe_allow_html=True)
+        st.caption(f"{p_data['status']} | **Rientro:** {p_data['rientro']}\n\n*Motivo:* {p_data['infortunio']}")
+        st.markdown("<hr style='margin: 5px 0px;'>", unsafe_allow_html=True)
+
 if st.sidebar.button("🗑️ Reset Completo Asta"):
     if os.path.exists(SAVE_FILE):
         try:
@@ -1438,6 +1492,12 @@ with tab_call:
         st.rerun()
 
     if player_info is not None:
+        # Controllo Infortuni Istantaneo
+        inj_key = next((k for k in INJURY_LIST.keys() if k.lower() in sel_player.lower() or sel_player.lower() in k.lower()), None)
+        if inj_key:
+            inj_data = INJURY_LIST[inj_key]
+            st.error(f"🏥 **ALLERTA INFORTUNIO/SQUALIFICA:** {sel_player} soffre di **{inj_data['infortunio'].lower()}**. \n\n⏳ **Rientro stimato:** {inj_data['rientro']} ({inj_data['status']})")
+
         st.markdown("#### 🔍 Valutazione Tattica Adattata alla tua Cassa & Rosa")
         
         c_eval1, c_eval2, c_eval3, c_eval4 = st.columns(4)
@@ -1543,7 +1603,7 @@ with tab_call:
                 st.rerun()
 
     # ---------------------------------------------------------
-    # SCHEDA CONSIGLIATI DALLA ROADMAP (AGGIORNATA CON CAMBIA/BLOCCA)
+    # SCHEDA CONSIGLIATI DALLA ROADMAP
     # ---------------------------------------------------------
     st.markdown("---")
     st.markdown("### 💡 I tuoi prossimi obiettivi (Roadmap)")
@@ -1621,7 +1681,6 @@ with tab_call:
                 )
                 st.markdown(card_html, unsafe_allow_html=True)
                 
-                # BOTTONI DI INTERAZIONE DINAMICA
                 if st.button(f"📢 Chiama", key=f"btn_call_rec_{rec['name']}_{i}", use_container_width=True):
                     st.session_state.target_call_player = rec['name']
                     st.rerun()
@@ -1758,6 +1817,7 @@ with tab_roadmap:
                         )
                         st.markdown(card_html, unsafe_allow_html=True)
         st.divider()
+
     if selected_cat in ["Panoramica Completa", "🛡️ Difensori (D)"]:
         render_role_card_grid('D', f"🛡️ Difensori (Pilastro Modificatore - Budget Base: {st.session_state.base_dept_budget['D']} cr)", num_cols=4)
         st.divider()
