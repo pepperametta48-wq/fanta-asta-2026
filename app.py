@@ -1449,7 +1449,7 @@ macro_tabs = st.tabs([
 # MACRO AREA 1: ASTA LIVE & STRATEGIA
 # ------------------------------------------------------------------------------
 with macro_tabs[0]:
-    t_live, t_road, t_duel = st.tabs(["Assegnazione Live", "Roadmap Dinamica", "Testa a Testa (Duello)"])
+    t_live, t_road, t_simul, t_duel = st.tabs(["Assegnazione Live", "Roadmap Dinamica", "Simulatore Asta", "Testa a Testa"])
     
     with t_live:
         st.subheader(f"Chiamata & Analisi Istantanea ({current_stage})")
@@ -1857,6 +1857,78 @@ with macro_tabs[0]:
         if selected_cat in ["Panoramica Completa", "Attaccanti (A)"]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
+    with t_simul:
+        st.subheader("Simulatore Asta (Training Mode)")
+        st.write("Allenati contro l'Intelligenza Artificiale. Imposta la tua offerta massima cieca e scopri se ti saresti aggiudicato il giocatore e se avresti fatto un affare o pagato troppo!")
+        
+        if 'mock_current_player' not in st.session_state:
+            st.session_state.mock_current_player = None
+        if 'mock_result' not in st.session_state:
+            st.session_state.mock_result = None
+            
+        col_s1, col_s2 = st.columns([1, 2])
+        with col_s1:
+            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+            sim_role = st.selectbox("Filtra per Ruolo da estrarre:", ["Tutti", "P", "D", "C", "A"])
+            st.write("")
+            if st.button("Estrai Giocatore", use_container_width=True, type="primary"):
+                df_sim = listone_df if sim_role == "Tutti" else listone_df[listone_df['R'] == sim_role]
+                weights = df_sim['FVM'].fillna(1) + 1
+                picked = df_sim.sample(n=1, weights=weights).iloc[0]
+                st.session_state.mock_current_player = picked.to_dict()
+                st.session_state.mock_result = None
+                st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
+                
+        with col_s2:
+            if st.session_state.mock_current_player:
+                p = st.session_state.mock_current_player
+                p_team = p.get('Squadra', '')
+                p_name = p.get('Nome', '')
+                p_role = p.get('R', '')
+                base_t, base_m = get_player_base_target(p)
+                
+                st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+                st.markdown(f"### <img src='{get_team_logo_url(p_team)}' width='30' style='vertical-align: middle;'> {p_name} ({p_role})", unsafe_allow_html=True)
+                st.caption(f"Quotazione Base: {p.get('Qt.A', 1)} | FVM: {p.get('FVM', 1)} | Target Ideale IA: {base_t} cr")
+                
+                user_max_bid = st.number_input("Imposta la tua Offerta MASSIMA (Stop-Loss):", min_value=0, max_value=500, value=base_t, step=1)
+                
+                if st.button("Batti l'Asta!", type="primary", use_container_width=True):
+                    variance = np.random.uniform(0.80, 1.25)
+                    if base_t > 80:
+                        variance = np.random.uniform(0.95, 1.35)
+                    
+                    ai_max_bid = int(round(base_t * variance))
+                    ai_max_bid = max(1, ai_max_bid)
+                    
+                    if user_max_bid > ai_max_bid:
+                        win_price = ai_max_bid + 1 if ai_max_bid > 0 else 1
+                        st.session_state.mock_result = {"winner": "Tu", "price": win_price, "ai_max": ai_max_bid, "base_t": base_t}
+                    else:
+                        win_price = user_max_bid + 1 if user_max_bid > 0 else max(1, int(ai_max_bid * 0.8))
+                        st.session_state.mock_result = {"winner": "Avversario IA", "price": win_price, "ai_max": ai_max_bid, "base_t": base_t}
+                st.markdown("</div>", unsafe_allow_html=True)
+            else:
+                st.info("Clicca su 'Estrai Giocatore' per generare un'asta simulata.")
+                
+            if st.session_state.mock_result:
+                st.write("")
+                res = st.session_state.mock_result
+                if res["winner"] == "Tu":
+                    st.success(f"🎉 **AGGIUDICATO A TE!** Hai vinto l'asta battendo il giocatore a **{res['price']} cr** (Gli avversari si sono fermati a {res['ai_max']} cr).")
+                    
+                    if res["price"] > res["base_t"] * 1.15:
+                        st.warning(f"⚠️ **ATTENZIONE:** Hai vinto l'asta, ma hai pagato il giocatore molto più del suo reale valore di mercato ({res['base_t']} cr). A lungo termine questa strategia brucia il tuo budget!")
+                    elif res["price"] <= res["base_t"] * 0.85:
+                        st.balloons()
+                        st.info(f"🔥 **AFFARE CLAMOROSO!** Ti sei assicurato il giocatore a prezzo di saldo. Hai guadagnato enorme valore rispetto alla sua valutazione reale ({res['base_t']} cr).")
+                    else:
+                        st.info("✅ Acquisto solido ed equilibrato, perfettamente in linea con i prezzi medi di mercato.")
+                else:
+                    rand_opp = np.random.randint(1, 10)
+                    st.error(f"❌ **ASTA PERSA!** L'Avversario {rand_opp} si è aggiudicato il giocatore a **{res['price']} cr** superando la tua offerta massima. L'IA era disposta a rilanciare fino a {res['ai_max']} cr.")
+
     with t_duel:
         st.subheader("Confronto Testa a Testa")
         
@@ -1933,8 +2005,8 @@ with macro_tabs[1]:
 
     with t_syn:
         st.subheader("Sinergie & Abbinamenti Perfetti 2026/27")
+        st.caption("Ottimizza il capitale studiando gli incroci di calendario.")
         
-        # Selettore orizzontale a bottoni
         analisi_sel = st.radio("Seleziona Analisi:", ["Griglia Portieri", "Coppie & Terzetti Attacco", "Sinergie Simmetriche"], horizontal=True)
         st.write("")
         
