@@ -17,7 +17,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Iniezione CSS Avanzato (Glassmorphism, Inter Font, Pill Buttons)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
@@ -564,6 +563,189 @@ GOALKEEPER_PAIRINGS = {
     ]
 }
 
+TEAMS_TACTICAL_DB = {
+    "Atalanta": {
+        "coach": "Maurizio Sarri", "formation": "4-3-3 (Palleggio & Intensità)",
+        "gk": "Carnesecchi (Sportiello vice)",
+        "defense": "Scalvini, Kristensen/Kossonou; Bellanova/Zappacosta (DX), Bernasconi/Ahanor (SX)",
+        "midfield": "Ederson, Gaetano, Pašalić, Samardžić",
+        "attack": "De Ketelaere, Sulemana, Scamacca, Krstović",
+        "penalties": ["Scamacca (1°)", "Samardžić (2°)", "De Ketelaere (3°)"],
+        "advice": "Carnesecchi per il modificatore; Gaetano centrocampista inserzionista. Il passaggio al 4-3-3 esalta le mezzali palleggiatrici (Samardzic, Gaetano). Scamacca rilanciato ma occhio al turnover."
+    },
+    "Bologna": {
+        "coach": "Domenico Tedesco", "formation": "4-3-3 (Verticalizzazione & Alto Pressing)",
+        "gk": "Skorupski (Pessina vice)",
+        "defense": "Zortea, Heggem, Helland/Vitik, Miranda",
+        "midfield": "Ferguson, Moro, Bernardeschi",
+        "attack": "Orsolini, Rowe, Dovbyk (Piccoli vice)",
+        "penalties": ["Orsolini (1°)", "Bernardeschi (2°)", "Dovbyk (3°)"],
+        "advice": "Tedesco conferma il 4-3-3 offensivo. Orsolini monopolizza i rigori e non fa coppe, ottimo a 64 cr. Heggem certezza difensiva a costi contenuti."
+    },
+    "Cagliari": {
+        "coach": "Fabio Pisacane", "formation": "4-3-2-1 (Compatto & Organizzato)",
+        "gk": "Caprile (Sherri/Radunovic)",
+        "defense": "Yerry Mina, Obert, Rodríguez, Zé Pedro",
+        "midfield": "Adopo, Fazzini, Winks",
+        "attack": "Daniel Maldini, Sebastiano Esposito, Kevin Carlos (Mendy vice)",
+        "penalties": ["Mina (1°)", "Kevin Carlos (2°)", "Daniel Maldini (3°)"],
+        "advice": "Mina pilastro modificatore (85% minutaggio); Fazzini e Maldini scommesse da bonus a centrocampo."
+    },
+    "Como": {
+        "coach": "Cesc Fàbregas", "formation": "4-2-3-1 (Possesso & Fluidità)",
+        "gk": "Jean Butez (Tornqvist/Vigorito)",
+        "defense": "Yan Couto, Kempf, Ramón/Chalobah, Kaiki/Valle",
+        "midfield": "Da Cunha, Perrone, Baturina",
+        "attack": "Nico Paz (Trequartista), Douvikas (Morata vice)",
+        "penalties": ["Da Cunha (1°)", "Douvikas (2°)", "Nico Paz (3°)"],
+        "advice": "Butez è il portiere più efficiente del listino. Nico Paz agisce da falso nove ed è un Super Top. Douvikas bomber altissima resa."
+    },
+    "Fiorentina": {
+        "coach": "Fabio Grosso", "formation": "4-3-1-2 / 4-3-3 (Valorizzazione Centrali)",
+        "gk": "David De Gea (Christensen/Lezzerini)",
+        "defense": "Dodò/Jiménez, Dragusin, Viery, Valdepeñas",
+        "midfield": "Arthur Atta, Mastantuono, Fagioli, Oulai, Mandragora",
+        "attack": "Gudmundsson, Moise Kean, Pellegrino",
+        "penalties": ["Gudmundsson (1°)", "Pellegrino (2°)", "Kean (3°)"],
+        "advice": "Attenzione a Kean: valutato 124 cr, è considerato la 'Trappola Estrema' a causa dell'alto rischio di fallimento. Mastantuono ottima scommessa trequartista."
+    },
+    "Frosinone": {
+        "coach": "Massimiliano Alvini", "formation": "4-3-3 (Verticale & Aggressivo)",
+        "gk": "Palmisani / Desplanches",
+        "defense": "Monterisi, Bracaglia, Akpoguma, Oyono",
+        "midfield": "Calò, Schmid, Grillitsch, El Azzouzi",
+        "attack": "Raimondo, Ghedjemis, Zerbin",
+        "penalties": ["Calò (1°)", "Schmid (2°)"],
+        "advice": "Calò rigorista economico a centrocampo; El Azzouzi slot a 1 credito per copertura; Bracaglia difensore low cost."
+    },
+    "Genoa": {
+        "coach": "Daniele De Rossi", "formation": "3-5-2 / 4-3-3 (Flessibile)",
+        "gk": "Justin Bijlow (Stolz vice)",
+        "defense": "Ostigard, Vásquez, Marcandalli / Mitaj",
+        "midfield": "Frendrup, Ellertsson, Ethan-Meichtry, Baldanzi/Traoré",
+        "attack": "Lorenzo Colombo, Vitinha",
+        "penalties": ["Colombo (1°)", "Vitinha (2°)", "Ostigard (3°)"],
+        "advice": "Ostigard certezza modificatore e saltatore da corner; Colombo 4° slot rigorista (allerta cambi al 65'); Ethan-Meichtry scommessa giovane."
+    },
+    "Inter": {
+        "coach": "Cristian Chivu", "formation": "3-5-2 (Dominio Tattico)",
+        "gk": "Josep Martínez (Ivan Provedel co-titolare/vice)",
+        "defense": "Dimarco (Trequartista occulto), Bastoni, Akanji, Bisseck, Pavard/Stones, Spence",
+        "midfield": "Calhanoglu, Barella, Zielinski, Frattesi, Diouf, Sucic, Jones",
+        "attack": "Lautaro Martínez, Marcus Thuram, Francesco Pio Esposito, Bonny",
+        "penalties": ["Calhanoglu (1° - 89%)", "Zielinski (2°)", "Lautaro Martínez (3°)"],
+        "advice": "Dimarco è un'anomalia di mercato: produce come un top d'attacco, vale l'investimento massiccio. Calhanoglu dominatore per i rigori."
+    },
+    "Juventus": {
+        "coach": "Luciano Spalletti", "formation": "4-2-3-1 (Propensione Offensiva)",
+        "gk": "Guglielmo Vicario (Perin vice)",
+        "defense": "Bremer, Kalulu, Cambiaso, Çelik",
+        "midfield": "Locatelli, Thuram / McKennie",
+        "attack": "Yildiz, Conceição, Alajbegović, Randal Kolo Muani (David/Boga)",
+        "penalties": ["Kolo Muani (1°)", "Yildiz (2°)", "Locatelli (3°)"],
+        "advice": "Kolo Muani è il terminale di Spalletti e rigorista, fortemente sottovalutato dal mercato. Bremer garantisce certezze in difesa."
+    },
+    "Lazio": {
+        "coach": "Gennaro Gattuso", "formation": "4-2-3-1 / 4-3-3 (Grintoso & Verticale)",
+        "gk": "Christos Mandas (Motta vice)",
+        "defense": "Marusic, Doekhi, Romagnoli, Provstgaard / Pedraza",
+        "midfield": "Rovella, Kenneth Taylor, Davide Frattesi",
+        "attack": "Zaccagni, Isaksen, Noslin (Ratkov / Dia)",
+        "penalties": ["Zaccagni (1°)", "Taylor K. (2°)", "Cataldi (3°)"],
+        "advice": "Frattesi centrocampista incursore alla Milinkovic; Doekhi difensore goleador da piazzato; Noslin scommessa attacco."
+    },
+    "Lecce": {
+        "coach": "Staff Tecnico", "formation": "4-3-3 (Contenimento & Ripartenza)",
+        "gk": "Wladimiro Falcone (Bleve/Penev)",
+        "defense": "Tiago Gabriel, Gallo, Baschirotto",
+        "midfield": "Berisha, Gandelman, Helgason",
+        "attack": "Banda, Stulić / Geubbels, Pierotti",
+        "penalties": ["Stulić (1°)", "Geubbels (2°)", "Berisha (3°)"],
+        "advice": "Falcone certezza da modificatore; Gandelman scommessa a centrocampo; Pierotti/Geubbels slot attacco a 1-2 cr."
+    },
+    "Milan": {
+        "coach": "Rúben Amorim", "formation": "3-4-2-1 (Iper-Dinamico)",
+        "gk": "Mike Maignan (Terracciano/Torriani)",
+        "defense": "Strahinja Pavlovic, Gila, Gabbia / Bartesaghi",
+        "midfield": "Rabiot, Modric, Saelemaekers, Diego Moreira",
+        "attack": "Christian Pulisic (Trequartista), Rafael Leão, Gonçalo Ramos (Nkunku)",
+        "penalties": ["Nkunku (1°)", "Pulisic (2°)", "Gonçalo Ramos (3°)"],
+        "advice": "Il sistema di Amorim esalta Ramos e Pulisic (trequartista atipico). Penalizzato Rafael Leao, che sconta un crollo delle quotazioni."
+    },
+    "Monza": {
+        "coach": "Ivan Jurić", "formation": "3-4-2-1 (Duelli & Aggressività)",
+        "gk": "Demba Thiam (Pizzignacco)",
+        "defense": "Andrea Carboni, Delli Carri, Birindelli, Mangas",
+        "midfield": "Matteo Pessina, Colpani, Akinsanmiro",
+        "attack": "Patrick Cutrone, Dany Mota, Petagna",
+        "penalties": ["Pessina (1°)", "Cutrone (2°)", "Petagna (3°)"],
+        "advice": "Pessina garanzia rigori low cost; Cutrone ultimo slot attacco da titolarità fissa; Thiam perfetto per alternanza 100% con Milano."
+    },
+    "Napoli": {
+        "coach": "Massimiliano Allegri", "formation": "4-3-3 / Baricentro Basso",
+        "gk": "Alex Meret (Vanja Milinković-Savić co-titolare)",
+        "defense": "Di Lorenzo, Olivera/Spinazzola, Rrahmani, Beukema",
+        "midfield": "Scott McTominay, Stanislav Lobotka, Kevin De Bruyne, Anguissa, Elmas",
+        "attack": "Rasmus Højlund, Politano, Santos, Neres",
+        "penalties": ["De Bruyne (1°)", "Højlund (2°)", "McTominay (3°)"],
+        "advice": "Il pragmatismo di Allegri valorizza i difensori (Rrahmani, Di Lorenzo) ma penalizza l'attacco. Hojlund a prezzi alti è un azzardo matematico letale."
+    },
+    "Parma": {
+        "coach": "Cuesta", "formation": "4-2-3-1 / 4-3-3 (Moderno & Propositivo)",
+        "gk": "Daffara / Corvi",
+        "defense": "Delprato, Valeri, Troilo, Britschgi",
+        "midfield": "Adrián Bernabé, Mandela Keita, Sorensen, Almqvist",
+        "attack": "El Bilal Touré, Luka Romero, Frigan",
+        "penalties": ["Bernabé (1°)", "Touré E. (2°)", "Valeri (3°)"],
+        "advice": "Bernabé centrocampista da bonus e regia; El Bilal Touré 4°-5° slot d'attacco ad altissimo potenziale; Valeri terzino assist."
+    },
+    "Roma": {
+        "coach": "Gian Piero Gasperini", "formation": "3-4-2-1 / 3-5-2 (Intensità)",
+        "gk": "Mile Svilar (Gollini/De Marzi)",
+        "defense": "Gianluca Mancini, Evan Ndicka, Hermoso, Rensch, Nahuel Molina / Wesley (Esterni)",
+        "midfield": "Manu Koné, Niccolò Pisilli, Bryan Cristante",
+        "attack": "Paulo Dybala, Matías Soulé / Castro, Donyell Malen",
+        "penalties": ["Malen (1°)", "Dybala (2°)", "Castro (3°)"],
+        "advice": "La difesa a tre di Gasperini trasforma Mancini e Wesley in incursori offensivi: acquisti obbligati per il modificatore. Malen è il Super Top dell'attacco."
+    },
+    "Sassuolo": {
+        "coach": "Alberto Aquilani", "formation": "4-3-3 (Propositivo)",
+        "gk": "Arijanet Murić / Stefano Turati",
+        "defense": "Sebastian Walukiewicz, Jay Idzes, Obrador",
+        "midfield": "Kristian Thorstvedt, Ismaël Koné, Vasilije Adžić",
+        "attack": "Domenico Berardi, Armand Laurienté, Andrea Pinamonti, Bowie",
+        "penalties": ["Berardi (1°)", "Pinamonti (2°)", "Laurienté (3°)"],
+        "advice": "Adžić gemma a centrocampo (1-5 cr); Berardi e Pinamonti certezze per rigori e gol."
+    },
+    "Torino": {
+        "coach": "Ignazio Abate", "formation": "4-2-3-1 (Verticale & Organizzato)",
+        "gk": "Alberto Paleari / Franco Perri",
+        "defense": "Saul Coco, Marcus Pedersen",
+        "midfield": "Nikola Vlašić, Cesare Casadei, Cacciamani",
+        "attack": "Giovanni Simeone, Che Adams, Duván Zapata",
+        "penalties": ["Vlašić (1°)", "Simeone (2°)", "Casadei (3°)"],
+        "advice": "Vlašić centrocampista rigorista da 6-8 gol; Paleari/Perri porta low cost; Simeone 3°-4° slot attacco."
+    },
+    "Udinese": {
+        "coach": "Staff Tecnico", "formation": "3-5-2 (Fisico & Diretto)",
+        "gk": "Maduka Okoye (Padelli/Piana)",
+        "defense": "Oumar Solet, Christian Kabasele, Thomas Kristensen, Mergim Vojvoda, Hassane Kamara",
+        "midfield": "Jesper Karlström, Jurgen Ekkelenkamp, Nicolò Zaniolo",
+        "attack": "Keinan Davis, Adam Buksa, Gueye",
+        "penalties": ["Davis (1°)", "Solet (2°)", "Zaniolo (3°)"],
+        "advice": "Solet difensore da bonus di prima fascia; Vojvoda costanza da modificatore; Zaniolo jolly offensivo listato centrocampista."
+    },
+    "Venezia": {
+        "coach": "Giovanni Stroppa", "formation": "3-5-2 (Ritmo & Organizzazione)",
+        "gk": "Filip Stanković (Grandi/Pozzi)",
+        "defense": "Ridgeciano Haps, Correia, Jay Idzes",
+        "midfield": "Gianluca Busio, Mikael Ellertsson, John Yeboah",
+        "attack": "Akor Adams, Albion Rrahmani, Lauberbach",
+        "penalties": ["Adams A. (1°)", "Rrahmani A. (2°)", "Yeboah (3°)"],
+        "advice": "Busio regista inamovibile e tiratore low cost; Akor Adams scommessa 3ª punta ad alto potenziale realizzativo."
+    }
+}
+
 INJURY_LIST = {
     "Hien": {"team": "Atalanta", "infortunio": "Lesione del tendine prossimale del muscolo semimembranoso", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
     "Sulemana K.": {"team": "Atalanta", "infortunio": "Lesione di 2° grado del legamento collaterale mediale", "rientro": "Inizio Ottobre", "status": "🔴 Lungodegente"},
@@ -1084,7 +1266,11 @@ if 'selected_strategy' not in st.session_state:
     st.session_state.selected_strategy = saved_data.get("selected_strategy", "Equilibrata (Mediana di Mercato)") if saved_data else "Equilibrata (Mediana di Mercato)"
 
 if 'base_dept_budget' not in st.session_state:
-    st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
+    try:
+        st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
+    except KeyError:
+        st.session_state.selected_strategy = "Equilibrata (Mediana di Mercato)"
+        st.session_state.base_dept_budget = STRATEGIES["Equilibrata (Mediana di Mercato)"]
 
 if 'rejected_players' not in st.session_state:
     st.session_state.rejected_players = saved_data.get("rejected_players", []) if saved_data else []
@@ -1115,7 +1301,6 @@ st.sidebar.title("Pannello di Controllo")
 
 st.sidebar.markdown("**Strategia d'Asta**")
 
-# Blocco di sicurezza nel caso il file di salvataggio contenga vecchi nomi (es. con emoji)
 try:
     strat_index = list(STRATEGIES.keys()).index(st.session_state.selected_strategy)
 except ValueError:
@@ -1748,7 +1933,6 @@ with macro_tabs[1]:
 
     with t_syn:
         st.subheader("Sinergie & Abbinamenti Perfetti 2026/27")
-        st.caption("Ottimizza il capitale studiando gli incroci di calendario.[cite: 5]")
         
         # Selettore orizzontale a bottoni
         analisi_sel = st.radio("Seleziona Analisi:", ["Griglia Portieri", "Coppie & Terzetti Attacco", "Sinergie Simmetriche"], horizontal=True)
@@ -1757,47 +1941,47 @@ with macro_tabs[1]:
         if analisi_sel == "Griglia Portieri":
             st.markdown("#### Abbinamenti per Portieri Top (3° Slot)")
             portieri_top = [
-                {"Portiere Top": "Mile Svilar (48.17 cr)", "Squadra": "Roma", "Migliori Abbinamenti": "Bologna (95), Monza (93), Venezia (92), Genoa (89)", "Analisi": "L'indice 95 con il Bologna rappresenta la massima efficienza statistica per le trasferte proibitive della Roma[cite: 5]."},
-                {"Portiere Top": "Alex Meret (41.66 cr)", "Squadra": "Napoli", "Migliori Abbinamenti": "Lecce (93), Torino (93), Frosinone (91), Fiorentina (89)", "Analisi": "Il pragmatismo di Allegri tutela Meret. Accoppiarlo a Falcone o Mascardi/Perri fornisce un paracadute eccellente a costo marginale[cite: 5]."},
-                {"Portiere Top": "Mike Maignan (36.08 cr)", "Squadra": "Milan", "Migliori Abbinamenti": "Fiorentina (93), Lecce (93), Parma (93), Sassuolo (92), Torino (92)", "Analisi": "L'accoppiamento con il Lecce (Falcone) è il più economico e redditizio per il sistema di Amorim[cite: 5]."},
-                {"Portiere Top": "M. Carnesecchi (34.95 cr)", "Squadra": "Atalanta", "Migliori Abbinamenti": "Sassuolo (95), Monza (92), Bologna (91), Udinese (91)", "Analisi": "L'abbinamento a 95 con il Sassuolo offre una copertura perfetta, cruciale per l'emergenza infortuni atalantina (Hien, Kristensen) sotto Sarri[cite: 5]."},
-                {"Portiere Top": "Guglielmo Vicario (34.19 cr)", "Squadra": "Juventus", "Migliori Abbinamenti": "Bologna (92), Cagliari (92), Lazio (92), Torino (92), Parma (91), Fiorentina (91)", "Analisi": "L'accoppiata con il Cagliari è ottimale per il rapporto qualità-prezzo, sfruttando la solidità casalinga di Spalletti e Pisacane[cite: 5]."},
-                {"Portiere Top": "Josep Martinez (32.69 cr)", "Squadra": "Inter", "Migliori Abbinamenti": "Bologna (95), Cagliari (93), Monza (93), Torino (92), Sassuolo (91)", "Analisi": "Affiancare il duo interista (di Chivu) a Skorupski crea un fortino quasi impenetrabile[cite: 5]."},
-                {"Portiere Top": "Jean Butez (31.21 cr)", "Squadra": "Como", "Migliori Abbinamenti": "Bologna (93), Udinese (93), Fiorentina (92), Sassuolo (92), Torino (92)", "Analisi": "L'incredibile resa del Como di Fabregas rende Butez un top assoluto, affiancabile a Okoye[cite: 5]."}
+                {"Portiere Top": "Mile Svilar (48.17 cr)", "Squadra": "Roma", "Migliori Abbinamenti": "Bologna (95), Monza (93), Venezia (92), Genoa (89)", "Analisi": "L'indice 95 con il Bologna rappresenta la massima efficienza statistica per le trasferte proibitive della Roma."},
+                {"Portiere Top": "Alex Meret (41.66 cr)", "Squadra": "Napoli", "Migliori Abbinamenti": "Lecce (93), Torino (93), Frosinone (91), Fiorentina (89)", "Analisi": "Il pragmatismo di Allegri tutela Meret. Accoppiarlo a Falcone o Mascardi/Perri fornisce un paracadute eccellente a costo marginale."},
+                {"Portiere Top": "Mike Maignan (36.08 cr)", "Squadra": "Milan", "Migliori Abbinamenti": "Fiorentina (93), Lecce (93), Parma (93), Sassuolo (92), Torino (92)", "Analisi": "L'accoppiamento con il Lecce (Falcone) è il più economico e redditizio per il sistema di Amorim."},
+                {"Portiere Top": "M. Carnesecchi (34.95 cr)", "Squadra": "Atalanta", "Migliori Abbinamenti": "Sassuolo (95), Monza (92), Bologna (91), Udinese (91)", "Analisi": "L'abbinamento a 95 con il Sassuolo offre una copertura perfetta, cruciale per l'emergenza infortuni atalantina (Hien, Kristensen) sotto Sarri."},
+                {"Portiere Top": "Guglielmo Vicario (34.19 cr)", "Squadra": "Juventus", "Migliori Abbinamenti": "Bologna (92), Cagliari (92), Lazio (92), Torino (92), Parma (91), Fiorentina (91)", "Analisi": "L'accoppiata con il Cagliari è ottimale per il rapporto qualità-prezzo, sfruttando la solidità casalinga di Spalletti e Pisacane."},
+                {"Portiere Top": "Josep Martinez (32.69 cr)", "Squadra": "Inter", "Migliori Abbinamenti": "Bologna (95), Cagliari (93), Monza (93), Torino (92), Sassuolo (91)", "Analisi": "Affiancare il duo interista (di Chivu) a Skorupski crea un fortino quasi impenetrabile."},
+                {"Portiere Top": "Jean Butez (31.21 cr)", "Squadra": "Como", "Migliori Abbinamenti": "Bologna (93), Udinese (93), Fiorentina (92), Sassuolo (92), Torino (92)", "Analisi": "L'incredibile resa del Como di Fabregas rende Butez un top assoluto, affiancabile a Okoye."}
             ]
             st.dataframe(pd.DataFrame(portieri_top), use_container_width=True)
             
             st.markdown("#### Coppie Low Cost (Massimizzare Elasticità)")
             low_cost_p = [
-                {"Coppia": "Genoa - Lecce", "Indice": 93, "Portieri": "Bijlow - Falcone", "Analisi": "La miglior combinazione economica assoluta, libera 15-20 crediti rispetto alla media[cite: 5]."},
-                {"Coppia": "Genoa - Frosinone", "Indice": 92, "Portieri": "Bijlow - Palmisani / Desplanches", "Analisi": "Ottima resa statistica, ma il dualismo nel Frosinone richiede l'acquisto dell'intero blocco ciociaro[cite: 5]."},
-                {"Coppia": "Parma - Genoa", "Indice": 91, "Portieri": "Corvi/Daffara - Bijlow", "Analisi": "Il ballottaggio parmense richiede l'acquisto di almeno 3 portieri in rosa[cite: 5]."},
-                {"Coppia": "Bologna - Venezia", "Indice": 91, "Portieri": "Skorupski - Stankovic", "Analisi": "Leggermente più costosa per l'entusiasmo attorno a Stankovic e alla solidità del Bologna di Tedesco[cite: 5]."}
+                {"Coppia": "Genoa - Lecce", "Indice": 93, "Portieri": "Bijlow - Falcone", "Analisi": "La miglior combinazione economica assoluta, libera 15-20 crediti rispetto alla media."},
+                {"Coppia": "Genoa - Frosinone", "Indice": 92, "Portieri": "Bijlow - Palmisani / Desplanches", "Analisi": "Ottima resa statistica, ma il dualismo nel Frosinone richiede l'acquisto dell'intero blocco ciociaro."},
+                {"Coppia": "Parma - Genoa", "Indice": 91, "Portieri": "Corvi/Daffara - Bijlow", "Analisi": "Il ballottaggio parmense richiede l'acquisto di almeno 3 portieri in rosa."},
+                {"Coppia": "Bologna - Venezia", "Indice": 91, "Portieri": "Skorupski - Stankovic", "Analisi": "Leggermente più costosa per l'entusiasmo attorno a Stankovic e alla solidità del Bologna di Tedesco."}
             ]
             st.dataframe(pd.DataFrame(low_cost_p), use_container_width=True)
             
         elif analisi_sel == "Coppie & Terzetti Attacco":
             st.markdown("#### Le 5 Coppie Primarie in Attacco")
             att_pairs = [
-                {"Coppia": "Atalanta - Sassuolo (95)", "Interpreti": "Scamacca / Raspadori + Berardi / Laurienté", "Analisi": "Costo stimato 110 cr. Il turnover di Sarri post-Champions viene mitigato dalle ali del Sassuolo (Berardi/Laurienté) che non fa coppe[cite: 5]."},
-                {"Coppia": "Inter - Bologna (95)", "Interpreti": "Thuram / Lautaro + Dovbyk / Orsolini", "Analisi": "Affiancare Thuram a Dovbyk genera un tandem formidabile da ~155 cr, schierando sempre un terminale contro difese deboli[cite: 5]."},
-                {"Coppia": "Como - Udinese (93)", "Interpreti": "Douvikas / Paz + Davis", "Analisi": "Douvikas e Davis costano ~116 cr combinati (23% del budget): due specialisti rigoristi perfetti per il tridente[cite: 5]."},
-                {"Coppia": "Milan - Fiorentina (93)", "Interpreti": "Ramos / Pulisic + Gudmundsson / Kean", "Analisi": "Ramos e Gudmundsson costano ~146 cr. Evita la sovrapposizione dei match più ostici[cite: 5]."},
-                {"Coppia": "Juventus - Cagliari (92)", "Interpreti": "Kolo Muani / Yildiz + Maldini / Kevin Carlos", "Analisi": "Rotazione asimmetrica: Kolo Muani è il perno centrale, le scommesse sarde a basso costo coprono i match difficili della Juve[cite: 5]."}
+                {"Coppia": "Atalanta - Sassuolo (95)", "Interpreti": "Scamacca / Raspadori + Berardi / Laurienté", "Analisi": "Costo stimato 110 cr. Il turnover di Sarri post-Champions viene mitigato dalle ali del Sassuolo (Berardi/Laurienté) che non fa coppe."},
+                {"Coppia": "Inter - Bologna (95)", "Interpreti": "Thuram / Lautaro + Dovbyk / Orsolini", "Analisi": "Affiancare Thuram a Dovbyk genera un tandem formidabile da ~155 cr, schierando sempre un terminale contro difese deboli."},
+                {"Coppia": "Como - Udinese (93)", "Interpreti": "Douvikas / Paz + Davis", "Analisi": "Douvikas e Davis costano ~116 cr combinati (23% del budget): due specialisti rigoristi perfetti per il tridente."},
+                {"Coppia": "Milan - Fiorentina (93)", "Interpreti": "Ramos / Pulisic + Gudmundsson / Kean", "Analisi": "Ramos e Gudmundsson costano ~146 cr. Evita la sovrapposizione dei match più ostici."},
+                {"Coppia": "Juventus - Cagliari (92)", "Interpreti": "Kolo Muani / Yildiz + Maldini / Kevin Carlos", "Analisi": "Rotazione asimmetrica: Kolo Muani è il perno centrale, le scommesse sarde a basso costo coprono i match difficili della Juve."}
             ]
             st.dataframe(pd.DataFrame(att_pairs), use_container_width=True)
             
             st.markdown("#### Terzetti in Attacco")
-            st.write("- **Frosinone - Genoa - Lecce (Indice 99):** Raimondo + Colombo/Vitinha + Krstovic. Costo ~84 cr. Lascia 125 cr per un Super Top[cite: 5].")
-            st.write("- **Parma - Genoa - Monza (Indice 99):** Touré + Cutrone/Mota + Colombo. Costo ~70 cr. Ideale per formazioni 4-2-3-1[cite: 5].")
+            st.write("- **Frosinone - Genoa - Lecce (Indice 99):** Raimondo + Colombo/Vitinha + Krstovic. Costo ~84 cr. Lascia 125 cr per un Super Top.")
+            st.write("- **Parma - Genoa - Monza (Indice 99):** Touré + Cutrone/Mota + Colombo. Costo ~70 cr. Ideale per formazioni 4-2-3-1.")
 
         else:
             st.markdown("#### Sinergie Simmetriche Attacco-Porta")
-            st.info("**1. Blocco Atalanta - Sassuolo (Indice 95 per Porta e Attacco)**[cite: 5]")
-            st.write("- **Spesa Stimata:** ~195 crediti (39% del budget totale)[cite: 5].\n- **Portieri:** Carnesecchi + Muric (~55 cr)[cite: 5].\n- **Attaccanti:** Scamacca + Berardi + Laurienté (~139.82 cr)[cite: 5].")
+            st.info("**1. Blocco Atalanta - Sassuolo (Indice 95 per Porta e Attacco)**")
+            st.write("- **Spesa Stimata:** ~195 crediti (39% del budget totale).\n- **Portieri:** Carnesecchi + Muric (~55 cr).\n- **Attaccanti:** Scamacca + Berardi + Laurienté (~139.82 cr).")
             
-            st.info("**2. Blocco Inter - Bologna (Indice 95 per Porta e Attacco)**[cite: 5]")
-            st.write("- **Spesa Stimata:** ~258 crediti (51.6% del budget totale)[cite: 5].\n- **Portieri:** Martinez + Skorupski (~55 cr)[cite: 5].\n- **Attaccanti:** Thuram + Orsolini + Castro (~203.13 cr)[cite: 5].")
+            st.info("**2. Blocco Inter - Bologna (Indice 95 per Porta e Attacco)**")
+            st.write("- **Spesa Stimata:** ~258 crediti (51.6% del budget totale).\n- **Portieri:** Martinez + Skorupski (~55 cr).\n- **Attaccanti:** Thuram + Orsolini + Castro (~203.13 cr).")
 
     with t_sim:
         st.subheader("Simulatore 11 Titolare")
@@ -2035,19 +2219,19 @@ with macro_tabs[3]:
         st.subheader("Analisi Macroeconomica e Tattica (Stagione 2026/27)")
         
         st.markdown("#### Modello Comportamentale vs. Rischio Calcolato")
-        st.write("- I fantallenatori tendono a sovrappesare l'attacco, spendendo il 41.9% del budget per un reparto che ha un tasso di conferma di appena il 33%[cite: 2].")
-        st.write("- Il centrocampo è il reparto più prevedibile (62% di conferma)[cite: 2].")
-        st.write("- Il modello a rischio suggerisce di investire fino al 40-43% del budget per i centrocampisti[cite: 2].")
-        st.write("- Nelle leghe con il Trequartista, questo ruolo assorbe il 16.1% del budget[cite: 2].")
+        st.write("- I fantallenatori tendono a sovrappesare l'attacco, spendendo il 41.9% del budget per un reparto che ha un tasso di conferma di appena il 33%.")
+        st.write("- Il centrocampo è il reparto più prevedibile (62% di conferma).")
+        st.write("- Il modello a rischio suggerisce di investire fino al 40-43% del budget per i centrocampisti.")
+        st.write("- Nelle leghe con il Trequartista, questo ruolo assorbe il 16.1% del budget.")
         
         st.markdown("#### Modificatore di Difesa e Nuove Tattiche")
-        st.write("- L'Anomalia Dimarco: valutato 64,05 cr, agisce da trequartista occulto nel 3-5-2 di Chivu[cite: 2].")
-        st.write("- L'Effetto Gasperini a Roma trasforma Mancini e Wesley in esterni d'assalto[cite: 2].")
-        st.write("- Nel Milan, il paradigma Amorim esalta Pavlovic come braccetto nel 3-4-2-1[cite: 2].")
+        st.write("- L'Anomalia Dimarco: valutato 64,05 cr, agisce da trequartista occulto nel 3-5-2 di Chivu.")
+        st.write("- L'Effetto Gasperini a Roma trasforma Mancini e Wesley in esterni d'assalto.")
+        st.write("- Nel Milan, il paradigma Amorim esalta Pavlovic come braccetto nel 3-4-2-1.")
         
         st.markdown("#### Trappole in Attacco")
-        st.write("- Hojlund (125.13 cr) è penalizzato dal modulo difensivo di Allegri ed è considerato una trappola letale[cite: 2].")
-        st.write("- Kean (124.26 cr) ha un rischio di fallimento estremo ed è over-priced rispetto ai suoi limiti algoritmici[cite: 2].")
+        st.write("- Hojlund (125.13 cr) è penalizzato dal modulo difensivo di Allegri ed è considerato una trappola letale.")
+        st.write("- Kean (124.26 cr) ha un rischio di fallimento estremo ed è over-priced rispetto ai suoi limiti algoritmici.")
 
     with t_exp:
         st.subheader("Esportazione Dati Rosa")
