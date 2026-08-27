@@ -1114,7 +1114,15 @@ def save_state_to_disk():
 st.sidebar.title("Pannello di Controllo")
 
 st.sidebar.markdown("**Strategia d'Asta**")
-selected_strat = st.sidebar.selectbox("Imposta Allocazione Budget:", options=list(STRATEGIES.keys()), index=list(STRATEGIES.keys()).index(st.session_state.selected_strategy))
+
+# Blocco di sicurezza nel caso il file di salvataggio contenga vecchi nomi (es. con emoji)
+try:
+    strat_index = list(STRATEGIES.keys()).index(st.session_state.selected_strategy)
+except ValueError:
+    strat_index = 0
+    st.session_state.selected_strategy = list(STRATEGIES.keys())[0]
+
+selected_strat = st.sidebar.selectbox("Imposta Allocazione Budget:", options=list(STRATEGIES.keys()), index=strat_index)
 if selected_strat != st.session_state.selected_strategy:
     st.session_state.selected_strategy = selected_strat
     st.session_state.base_dept_budget = STRATEGIES[selected_strat]
