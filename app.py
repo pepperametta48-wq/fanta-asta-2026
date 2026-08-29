@@ -1810,7 +1810,9 @@ with macro_tabs[0]:
                             save_state_to_disk()
                             st.rerun()
         else:
-            # ==========================================
+            st.caption("Nessun giocatore primario consigliato. Sei a posto con i titolari, punta su scommesse a 1 cr!")
+
+        # ==========================================
         # 🎣 SEZIONE: GIOCATORI ESCA (BLUFF)
         # ==========================================
         st.markdown("---")
@@ -1852,7 +1854,6 @@ with macro_tabs[0]:
                         st.rerun()
         else:
             st.caption("Nessuna esca disponibile ad alto costo al momento.")
-        # ==========================================
 
     with t_road:
         col_rm1, col_rm2 = st.columns([3, 1])
