@@ -2004,7 +2004,7 @@ with macro_tabs[0]:
                         gap = active[next_bidder] - current_bid
                         
                         # Logica incremento basata sul profilo
-                        prof = st.session_state.opponents[next_bidder]['profile'] if next_bidder != "Tu" else "Umano"
+                        prof = st.session_state.opponents[next_bidder].get('profile', 'Equilibrato') if next_bidder != "Tu" else "Umano"
                         if prof == "Smanioso" and gap > 15: inc = random.choice([5, 10])
                         elif gap > 20: inc = random.choice([2, 5])
                         else: inc = 1
