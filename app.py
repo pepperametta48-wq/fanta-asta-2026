@@ -2059,11 +2059,11 @@ with macro_tabs[0]:
                     else:
                         st.error("Nessun giocatore disponibile.")
                         
-           if st.session_state.sim_player:
+            if st.session_state.sim_player:
                 p = st.session_state.sim_player
                 bt, mb = get_player_base_target(p)
                 
-                # Calcolo dinamico: non farti superare lo Stop-Loss teorico, ma limitati al tuo budget reale
+                # Calcolo dinamico dello Stop-Loss basato sul PMax residuo
                 dynamic_stop_loss = min(mb, p_max_safe)
                 
                 st.markdown(f"### <img src='{get_team_logo_url(p.get('Squadra',''))}' width='30' style='vertical-align: middle;'> {p['Nome']}", unsafe_allow_html=True)
@@ -2092,7 +2092,7 @@ with macro_tabs[0]:
                         plan_next_bot_bid()
                         st.rerun()
             st.markdown("</div>", unsafe_allow_html=True)
-
+            
         with c_sim2:
             if st.session_state.sim_state == "RUNNING":
                 # Stampa storico (ultimi 8 messaggi per non sfasare l'interfaccia)
