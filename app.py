@@ -2044,8 +2044,7 @@ with macro_tabs[0]:
 
         with t_simul:
             st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
-        
-        # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
+            # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
         if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
         if 'turn_idx' not in st.session_state: st.session_state.turn_idx = 0
         if 'role_sequence' not in st.session_state: st.session_state.role_sequence = ['P', 'D', 'C', 'A']
@@ -2094,7 +2093,6 @@ with macro_tabs[0]:
             active_bots = {k: v for k, v in bidders.items() if v > curr_bid and k != curr_winner}
             
             if active_bots:
-                # Se mancano < 3 secondi e il bot esita...
                 now = time.time()
                 time_left = max(0.0, st.session_state.sim_deadline - now)
                 
@@ -2107,7 +2105,6 @@ with macro_tabs[0]:
                 elif gap > 20: inc = random.choice([2, 5])
                 else: inc = 1
                 
-                # Se è l'ultimo secondo, ritardo cortissimo (Rilancio in corner!)
                 reaction_time = random.uniform(0.5, 3.0) if time_left > 4.0 else random.uniform(0.1, 1.5)
                 st.session_state.sim_bot_next_bid = {
                     'name': next_bot, 'amount': curr_bid + inc, 'time': time.time() + reaction_time
@@ -2120,7 +2117,7 @@ with macro_tabs[0]:
             if new_bid <= p_max_safe:
                 st.session_state.sim_current_bid = new_bid
                 st.session_state.sim_current_winner = "Tu"
-                st.session_state.sim_deadline = time.time() + 10.0 # Resetta Timer a 10s
+                st.session_state.sim_deadline = time.time() + 10.0 
                 st.session_state.sim_logs.append(f"<div class='log-entry user'>👉 <b>Tu</b> rilanci a <b>{new_bid} cr</b></div>")
                 plan_next_bot_bid()
                 
@@ -2144,7 +2141,6 @@ with macro_tabs[0]:
                 else:
                     st.info(f"Tocca a **{caller_key} ({caller_prof})** chiamare.")
                     if st.button("Fai chiamare il Bot", use_container_width=True):
-                        # Il Bot sceglie il giocatore in base al suo profilo
                         picked = bot_effettua_chiamata(caller_key, current_draft_role)
                         if picked:
                             st.session_state.sim_player = picked
@@ -2173,12 +2169,11 @@ with macro_tabs[0]:
                     if st.button("🔨 Inizia Asta!", type="primary", use_container_width=True):
                         st.session_state.sim_state = "RUNNING"
                         st.session_state.sim_current_bid = 1
-                        st.session_state.sim_current_winner = caller_key # Chi chiama apre a 1 credito
+                        st.session_state.sim_current_winner = caller_key 
                         st.session_state.sim_user_folded = False
-                        st.session_state.sim_deadline = time.time() + 10.0 # Countdown 10 secondi
+                        st.session_state.sim_deadline = time.time() + 10.0 
                         st.session_state.sim_logs = [f"<div class='log-entry'>🎙️ <b>{caller_key}</b> chiama {p['Nome']} a 1 credito!</div>"]
                         
-                        # Setta limiti segreti
                         st.session_state.sim_bidders_limits = {}
                         for k, v in st.session_state.opponents.items():
                             m = calcola_limite_massimo_bot(v, p, active_fomo=True)
@@ -2205,29 +2200,24 @@ with macro_tabs[0]:
                 now = time.time()
                 time_left = max(0.0, st.session_state.sim_deadline - now)
                 
-                # 1. È arrivato il momento per un bot di rilanciare?
                 if st.session_state.sim_bot_next_bid and now >= st.session_state.sim_bot_next_bid['time']:
                     b_info = st.session_state.sim_bot_next_bid
                     st.session_state.sim_current_bid = b_info['amount']
                     st.session_state.sim_current_winner = b_info['name']
                     prof = st.session_state.opponents[b_info['name']].get('profile', '')
                     
-                    # Aggiunta Trash Talk casuale (15% di probabilità)
                     trash_msg = ""
                     if random.random() < 0.15:
                         trash_msg = f"<br><span style='font-size:12px; color:#A78BFA; font-style:italic;'>💬 \"{random.choice(BOT_TRASH_TALK)}\"</span>"
                         
                     st.session_state.sim_logs.append(f"<div class='log-entry bot'>👉 <b>{b_info['name']} ({prof})</b> rilancia a <b>{b_info['amount']} cr</b>{trash_msg}</div>")
-                    st.session_state.sim_deadline = time.time() + 10.0 # Resetta timer a 10s
+                    st.session_state.sim_deadline = time.time() + 10.0 
                     plan_next_bot_bid()
                     st.rerun()
 
-                # 2. Esitazione fine timer (bot indeciso all'ultimo secondo)
                 if time_left < 3.0 and st.session_state.sim_bot_next_bid is None:
-                    # Ricalcola: magari un bot si convince in extremis
                     if random.random() < 0.2: plan_next_bot_bid()
 
-                # 3. Chiusura Asta
                 if time_left == 0.0:
                     st.session_state.sim_state = "SOLD"
                     w = st.session_state.sim_current_winner
@@ -2236,7 +2226,6 @@ with macro_tabs[0]:
                     
                     st.session_state.sim_logs.append(f"<div class='log-entry win'>🔨 AGGIUDICATO! <b>{w}</b> si porta a casa {p['Nome']} per <b>{b} cr</b>.</div>")
                     
-                    # ASSEGNAZIONE E SCALO CREDITI
                     if w == "Tu": st.session_state.my_roster.append({'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': b})
                     elif w != "Nessuno":
                         st.session_state.opponents[w]['budget'] -= b
@@ -2248,10 +2237,9 @@ with macro_tabs[0]:
                         st.session_state.history.append({'buyer': w, 'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': b})
                         save_state_to_disk()
                         
-                    advance_turn() # Passa il turno di chiamata
+                    advance_turn() 
                     st.rerun()
                 else:
-                    # Timer Visivo (Da verde a rosso)
                     color = "#10B981" if time_left > 5.0 else ("#F59E0B" if time_left > 2.0 else "#F43F5E")
                     st.markdown(f"<h1 style='text-align:center; color:{color}; font-size:4rem;'>⏱️ {time_left:.1f}</h1>", unsafe_allow_html=True)
                     time.sleep(0.3)
