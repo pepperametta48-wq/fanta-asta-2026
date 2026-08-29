@@ -2042,8 +2042,14 @@ with macro_tabs[0]:
         if selected_cat in ["Panoramica Completa", "Attaccanti (A)"]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
-    with t_simul:
+   with t_simul:
         st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
+        
+        # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
+        if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
+        if 'turn_idx' not in st.session_state: st.session_state.turn_idx = 0
+        if 'role_sequence' not in st.session_state: st.session_state.role_sequence = ['P', 'D', 'C', 'A']
+        if 'current_role_idx' not in st.session_state: st.session_state.current_role_idx = 0
         
         # Flusso Logico Ruoli
         current_draft_role = st.session_state.role_sequence[st.session_state.current_role_idx]
