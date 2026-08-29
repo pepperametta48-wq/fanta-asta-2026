@@ -1810,7 +1810,49 @@ with macro_tabs[0]:
                             save_state_to_disk()
                             st.rerun()
         else:
-            st.caption("Nessun giocatore primario consigliato. Sei a posto con i titolari, punta su scommesse a 1 cr!")
+            # ==========================================
+        # 🎣 SEZIONE: GIOCATORI ESCA (BLUFF)
+        # ==========================================
+        st.markdown("---")
+        st.subheader("🎣 Giocatori Esca (Fai svenare i rivali)")
+        st.caption("Chiama questi top player per prosciugare i crediti degli avversari. Sono giocatori costosi che l'algoritmo sa che NON rientrano nei tuoi obiettivi bloccati.")
+        
+        # Raccogliamo i giocatori che vogliamo assolutamente
+        wanted_players = []
+        for r_code in ['P', 'D', 'C', 'A']:
+            wanted_players.extend(st.session_state.custom_user_targets.get(r_code, []))
+            
+        # Filtriamo il listone: prendiamo chi NON è stato comprato e NON è tra i nostri target, ordinato per FVM (i più costosi)
+        df_esca = listone_df[
+            (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())) & 
+            (~listone_df['Nome'].isin(wanted_players))
+        ].sort_values(by='FVM', ascending=False).head(4)
+        
+        if not df_esca.empty:
+            esca_cols = st.columns(len(df_esca))
+            for i, (_, dec_p) in enumerate(df_esca.iterrows()):
+                with esca_cols[i]:
+                    logo_img = f"<img src='{get_team_logo_url(dec_p['Squadra'])}' width='22' style='vertical-align: middle; margin-right: 6px;'>"
+                    
+                    # Card con effetto glow rosso per le esche
+                    card_html = (
+                        f"<div class='glass-card' style='border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05);'>"
+                        f"<div style='margin-bottom: 8px;'>{logo_img}<b>{dec_p['R']} | {dec_p['Nome']}</b></div>"
+                        f"<span style='font-size:12px; color:#F43F5E; font-weight:bold;'>🔥 Esca ad alto costo</span><br><br>"
+                        f"FVM Stimato: <b>{int(dec_p['FVM'])} cr</b><br>"
+                        f"Quotazione: <b>{int(dec_p['Qt.A'])}</b>"
+                        "</div>"
+                    )
+                    st.markdown(card_html, unsafe_allow_html=True)
+                    
+                    st.write("")
+                    # Bottone rapido per caricare l'esca in cima per l'asta
+                    if st.button(f"Chiama Esca", key=f"btn_esca_call_{dec_p['Nome']}_{i}", use_container_width=True):
+                        st.session_state.target_call_player = dec_p['Nome']
+                        st.rerun()
+        else:
+            st.caption("Nessuna esca disponibile ad alto costo al momento.")
+        # ==========================================
 
     with t_road:
         col_rm1, col_rm2 = st.columns([3, 1])
