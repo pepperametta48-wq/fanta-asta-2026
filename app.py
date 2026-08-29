@@ -2405,22 +2405,48 @@ with macro_tabs[2]:
 
     with t_track:
         st.subheader("Quadro Generale Avversari & Potere d'Acquisto")
-        opp_summary = []
-        for k, v in st.session_state.opponents.items():
-            p_max = v['budget'] - (v['slots_left'] - 1) if v['slots_left'] > 0 else 0
-            opp_summary.append({
-                "Squadra Rivale": v['name'],
-                "Budget Residuo": f"{v['budget']} cr",
-                "Slot Mancanti": f"{v['slots_left']} / {TOTAL_SLOTS}",
-                "Max Bid Possibile (Pmax)": p_max,
-                "P": f"{len(v['roster']['P'])}/3",
-                "D": f"{len(v['roster']['D'])}/8",
-                "C": f"{len(v['roster']['C'])}/8",
-                "A": f"{len(v['roster']['A'])}/6",
-                "Livello Minaccia": "🔴 ALTISSIMA" if p_max > 120 else ("🟡 MEDIA" if p_max > 45 else "🟢 INNOCUO")
-            })
-        st.dataframe(pd.DataFrame(opp_summary).sort_values(by="Max Bid Possibile (Pmax)", ascending=False), use_container_width=True)
-
+        # ==========================================
+        # ✏️ SEZIONE: RINOMINA AVVERSARI
+        # ==========================================
+        with st.expander("✏️ Personalizza Nomi Avversari", expanded=False):
+            with st.form("rename_opponents_form"):
+                st.caption("Inserisci i veri nomi dei tuoi amici. Il sistema aggiornerà automaticamente i registri, lo storico acquisti e i calcoli dell'IA.")
+                new_names = {}
+                cols = st.columns(3)
+                
+                # Genera i campi di testo per ogni avversario
+                for i, old_name in enumerate(list(st.session_state.opponents.keys())):
+                    with cols[i % 3]:
+                        new_names[old_name] = st.text_input(f"Slot {i+1}", value=old_name)
+                
+                if st.form_submit_button("💾 Salva Nuovi Nomi", type="primary"):
+                    changed = False
+                    for old_name, new_name in new_names.items():
+                        new_name = new_name.strip()
+                        
+                        # Controlla che il nome sia valido, cambiato e non esista già
+                        if new_name and new_name != old_name and new_name != "La Mia Squadra":
+                            if new_name not in st.session_state.opponents:
+                                # 1. Aggiorna il dizionario avversari conservando i dati e i profili IA
+                                st.session_state.opponents[new_name] = st.session_state.opponents.pop(old_name)
+                                st.session_state.opponents[new_name]['name'] = new_name
+                                
+                                # 2. Aggiorna il registro acquisti (per non perdere i giocatori già assegnati)
+                                for p, (b, pr) in st.session_state.purchased_registry.items():
+                                    if b == old_name: 
+                                        st.session_state.purchased_registry[p] = (new_name, pr)
+                                        
+                                # 3. Aggiorna lo storico e i log
+                                for a in st.session_state.history:
+                                    if a.get('buyer') == old_name: 
+                                        a['buyer'] = new_name
+                                        
+                                changed = True
+                                
+                    if changed:
+                        save_state_to_disk()
+                        st.rerun()
+        # ==========================================
     with t_baro:
         st.subheader("Barometro Inflazione & Liquidità Lega")
         
