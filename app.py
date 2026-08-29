@@ -1230,6 +1230,9 @@ def safe_load_listone():
             {'Nome': 'Hojlund', 'Squadra': 'Napoli', 'R': 'A', 'Qt.A': 47, 'FVM': 300},
             {'Nome': 'Douvikas', 'Squadra': 'Como', 'R': 'A', 'Qt.A': 40, 'FVM': 240}
         ])
+    if 'FVM' in df.columns:
+        df['FVM'] = df['FVM'].apply(lambda x: max(1, int(round(float(x) / 2))) if pd.notnull(x) else 1)
+        
     return df
 
 listone_df = safe_load_listone()
