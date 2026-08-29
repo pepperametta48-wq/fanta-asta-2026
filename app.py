@@ -7,6 +7,8 @@ import os
 import requests
 import feedparser
 from datetime import datetime
+import random
+import time
 
 # ==============================================================================
 # 1. SETUP GENERALE & THEME STYLING
@@ -169,6 +171,7 @@ SAVE_FILE = "fanta_auction_save.json"
 TOTAL_BUDGET = 500
 SLOTS = {'P': 3, 'D': 8, 'C': 8, 'A': 6}
 TOTAL_SLOTS = sum(SLOTS.values())
+BOT_PROFILES = ["Conservatore", "Smanioso", "Scommettitore", "Ostruzionista", "Equilibrato"]
 
 STRATEGIES = {
     "Equilibrata (Mediana di Mercato)": {'P': 35, 'D': 95, 'C': 160, 'A': 210},
@@ -780,6 +783,62 @@ def get_dept_spent(role):
 def get_dept_count(role):
     return len([p for p in st.session_state.get('my_roster', []) if p['role'] == role])
 
+# LOGICA BOT INTELLIGENZA ARTIFICIALE 
+def calcola_limite_massimo_bot(bot, player_info, active_fomo=False):
+    role = player_info['R']
+    base_t, _ = get_player_base_target(player_info)
+    fvm = player_info.get('FVM', 10)
+    
+    # Tier Giocatore
+    if fvm >= 150: tier = "Top"
+    elif fvm >= 70: tier = "Semitop"
+    elif fvm >= 25: tier = "Titolare"
+    else: tier = "Scommessa"
+    
+    prof = bot.get('profile', "Equilibrato")
+    
+    # 1. Moltiplicatore Carattere
+    c_mult = 1.0
+    if prof == "Conservatore": c_mult = 0.9 if tier in ["Top", "Semitop"] else 1.05
+    elif prof == "Smanioso": c_mult = 1.35 if tier == "Top" else 0.8
+    elif prof == "Scommettitore": c_mult = 0.7 if tier == "Top" else (1.5 if tier == "Scommessa" else 1.1)
+    elif prof == "Ostruzionista": c_mult = 1.2
+        
+    # 2. Urgenza Reparto
+    slots_filled = len(bot['roster'][role])
+    slots_total = SLOTS[role]
+    slots_left = slots_total - slots_filled
+    if slots_left <= 0: return 0
+    
+    urgency = 1.0
+    if slots_left == slots_total: urgency = 1.1
+    elif slots_left == 1 and role == 'A': urgency = 1.4
+    elif slots_left == 1: urgency = 1.2
+    
+    # 3. Gestione Coppie Portieri (Cerca il Vice)
+    if role == 'P' and slots_filled > 0:
+        if any(p['team'] == player_info['Squadra'] for p in bot['roster']['P']):
+            urgency = 3.0 # Spende tutto per il proprio vice-portiere
+            
+    # 4. Moltiplicatore Fisico (Liquidità residua)
+    liq_ratio = bot['budget'] / TOTAL_BUDGET
+    f_mult = 1.1 if liq_ratio > 0.8 else (0.8 if liq_ratio < 0.3 else 1.0)
+    
+    # 5. FOMO (Fear of missing out)
+    fomo_mult = 1.3 if (active_fomo and role == 'A' and tier == "Top") else 1.0
+    
+    raw_max = base_t * c_mult * f_mult * urgency * fomo_mult
+    max_possibile = bot['budget'] - (bot['slots_left'] - 1)
+    
+    limite = min(int(raw_max), max_possibile)
+    
+    # 6. Il Bluff dell'Ostruzionista
+    if prof == "Ostruzionista" and tier == "Top":
+        # Rilancia solo per far spendere gli altri, si ferma all'85% del valore
+        limite = min(limite, int(base_t * 0.85))
+        
+    return max(0, limite)
+
 def get_player_base_target(player_row):
     name = str(player_row['Nome']).strip()
     role = str(player_row['R']).strip()
@@ -1219,6 +1278,29 @@ def get_live_player_stats(player_name, team_name):
 # ==============================================================================
 # 5. INIZIALIZZAZIONE SESSION STATE & PERSISTENZA
 # ==============================================================================
+def init_state():
+    if 'my_roster' not in st.session_state: st.session_state.my_roster = []
+    if 'opponents' not in st.session_state:
+        st.session_state.opponents = {}
+        for i in range(9):
+            st.session_state.opponents[f"Avversario {i+1}"] = {
+                'name': f"Avversario {i+1}", 'budget': TOTAL_BUDGET, 'slots_left': TOTAL_SLOTS,
+                'roster': {'P': [], 'D': [], 'C': [], 'A': []},
+                'profile': BOT_PROFILES[i % len(BOT_PROFILES)]
+            }
+    else:
+        # Retrocompatibilità se avevi già dei bot salvati senza profilo
+        for i, (k, v) in enumerate(st.session_state.opponents.items()):
+            if 'profile' not in v: v['profile'] = BOT_PROFILES[i % len(BOT_PROFILES)]
+                
+    if 'history' not in st.session_state: st.session_state.history = []
+    if 'purchased_registry' not in st.session_state: st.session_state.purchased_registry = {}
+    if 'budget_adjustments' not in st.session_state: st.session_state.budget_adjustments = 0
+    if 'selected_strategy' not in st.session_state: st.session_state.selected_strategy = list(STRATEGIES.keys())[0]
+    if 'base_dept_budget' not in st.session_state: st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
+    if 'rejected_players' not in st.session_state: st.session_state.rejected_players = []
+    if 'custom_user_targets' not in st.session_state: st.session_state.custom_user_targets = {'P': [], 'D': [], 'C': [], 'A': []}
+
 def load_state_from_disk():
     if os.path.exists(SAVE_FILE):
         try:
@@ -1858,77 +1940,118 @@ with macro_tabs[0]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
     with t_simul:
-        st.subheader("Simulatore Asta (Training Mode)")
-        st.write("Allenati contro l'Intelligenza Artificiale. Imposta la tua offerta massima cieca e scopri se ti saresti aggiudicato il giocatore e se avresti fatto un affare o pagato troppo!")
+        st.subheader("🤖 Simulatore Asta (Training Mode Avanzato)")
+        st.markdown("Affronta i Bot governati dall'IA. Ogni avversario ragiona in base alla sua psicologia, al suo budget residuo e alla *FOMO*.")
         
-        if 'mock_current_player' not in st.session_state:
-            st.session_state.mock_current_player = None
-        if 'mock_result' not in st.session_state:
-            st.session_state.mock_result = None
-            
-        col_s1, col_s2 = st.columns([1, 2])
-        with col_s1:
+        c_sim1, c_sim2 = st.columns([1, 2])
+        
+        with c_sim1:
             st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-            sim_role = st.selectbox("Filtra per Ruolo da estrarre:", ["Tutti", "P", "D", "C", "A"])
+            sim_role = st.selectbox("Estrai per Ruolo:", ["Tutti", "P", "D", "C", "A"])
             st.write("")
-            if st.button("Estrai Giocatore", use_container_width=True, type="primary"):
-                df_sim = listone_df if sim_role == "Tutti" else listone_df[listone_df['R'] == sim_role]
-                weights = df_sim['FVM'].fillna(1) + 1
-                picked = df_sim.sample(n=1, weights=weights).iloc[0]
-                st.session_state.mock_current_player = picked.to_dict()
-                st.session_state.mock_result = None
-                st.rerun()
+            if st.button("🎲 Estrai Giocatore", type="primary", use_container_width=True):
+                avail_df = listone_df[~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())]
+                if sim_role != "Tutti": avail_df = avail_df[avail_df['R'] == sim_role]
+                if not avail_df.empty:
+                    weights = avail_df['FVM'].fillna(1) + 1
+                    picked = avail_df.sample(n=1, weights=weights).iloc[0]
+                    st.session_state.sim_player = picked.to_dict()
+                    st.session_state.auction_running = False
+            
+            if st.session_state.get('sim_player'):
+                p = st.session_state.sim_player
+                st.markdown(f"### <img src='{get_team_logo_url(p.get('Squadra',''))}' width='30' style='vertical-align: middle;'> {p['Nome']}", unsafe_allow_html=True)
+                st.write(f"**Ruolo:** {p['R']} | **FVM:** {p.get('FVM', 1)}")
+                
+                user_max = st.number_input("Tua Offerta MAX (Stop-Loss) invisibile ai bot:", min_value=0, max_value=p_max_safe, value=int(p.get('Qt.A', 1)), step=1)
+                
+                if st.button("🔨 Avvia Bidding War", use_container_width=True):
+                    st.session_state.auction_running = True
+                    st.session_state.sim_logs = []
+                    st.session_state.final_winner = None
             st.markdown("</div>", unsafe_allow_html=True)
+            
+        with c_sim2:
+            log_placeholder = st.empty()
+            
+            if st.session_state.get('auction_running'):
+                p = st.session_state.sim_player
+                base_t, _ = get_player_base_target(p)
+                logs = [f"🎙️ **Il battitore apre l'asta per {p['Nome']}!**"]
                 
-        with col_s2:
-            if st.session_state.mock_current_player:
-                p = st.session_state.mock_current_player
-                p_team = p.get('Squadra', '')
-                p_name = p.get('Nome', '')
-                p_role = p.get('R', '')
-                base_t, base_m = get_player_base_target(p)
+                bidders = {}
+                for k, v in st.session_state.opponents.items():
+                    max_b = calcola_limite_massimo_bot(v, p, active_fomo=True) # Simuliamo FOMO attiva
+                    if max_b > 0: bidders[k] = max_b
+                if user_max > 0: bidders["Tu"] = user_max
                 
-                st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-                st.markdown(f"### <img src='{get_team_logo_url(p_team)}' width='30' style='vertical-align: middle;'> {p_name} ({p_role})", unsafe_allow_html=True)
-                st.caption(f"Quotazione Base: {p.get('Qt.A', 1)} | FVM: {p.get('FVM', 1)} | Target Ideale IA: {base_t} cr")
-                
-                user_max_bid = st.number_input("Imposta la tua Offerta MASSIMA (Stop-Loss):", min_value=0, max_value=500, value=base_t, step=1)
-                
-                if st.button("Batti l'Asta!", type="primary", use_container_width=True):
-                    variance = np.random.uniform(0.80, 1.25)
-                    if base_t > 80:
-                        variance = np.random.uniform(0.95, 1.35)
-                    
-                    ai_max_bid = int(round(base_t * variance))
-                    ai_max_bid = max(1, ai_max_bid)
-                    
-                    if user_max_bid > ai_max_bid:
-                        win_price = ai_max_bid + 1 if ai_max_bid > 0 else 1
-                        st.session_state.mock_result = {"winner": "Tu", "price": win_price, "ai_max": ai_max_bid, "base_t": base_t}
-                    else:
-                        win_price = user_max_bid + 1 if user_max_bid > 0 else max(1, int(ai_max_bid * 0.8))
-                        st.session_state.mock_result = {"winner": "Avversario IA", "price": win_price, "ai_max": ai_max_bid, "base_t": base_t}
-                st.markdown("</div>", unsafe_allow_html=True)
-            else:
-                st.info("Clicca su 'Estrai Giocatore' per generare un'asta simulata.")
-                
-            if st.session_state.mock_result:
-                st.write("")
-                res = st.session_state.mock_result
-                if res["winner"] == "Tu":
-                    st.success(f"🎉 **AGGIUDICATO A TE!** Hai vinto l'asta battendo il giocatore a **{res['price']} cr** (Gli avversari si sono fermati a {res['ai_max']} cr).")
-                    
-                    if res["price"] > res["base_t"] * 1.15:
-                        st.warning(f"⚠️ **ATTENZIONE:** Hai vinto l'asta, ma hai pagato il giocatore molto più del suo reale valore di mercato ({res['base_t']} cr). A lungo termine questa strategia brucia il tuo budget!")
-                    elif res["price"] <= res["base_t"] * 0.85:
-                        st.balloons()
-                        st.info(f"🔥 **AFFARE CLAMOROSO!** Ti sei assicurato il giocatore a prezzo di saldo. Hai guadagnato enorme valore rispetto alla sua valutazione reale ({res['base_t']} cr).")
-                    else:
-                        st.info("✅ Acquisto solido ed equilibrato, perfettamente in linea con i prezzi medi di mercato.")
+                if not bidders:
+                    logs.append("Nessuno alza la mano. Il giocatore è svincolato.")
+                    st.session_state.final_winner = {"name": "Nessuno", "price": 0}
                 else:
-                    rand_opp = np.random.randint(1, 10)
-                    st.error(f"❌ **ASTA PERSA!** L'Avversario {rand_opp} si è aggiudicato il giocatore a **{res['price']} cr** superando la tua offerta massima. L'IA era disposta a rilanciare fino a {res['ai_max']} cr.")
-
+                    current_bid = 1
+                    current_winner = list(bidders.keys())[0]
+                    
+                    html_log = f"<div class='log-box'>{''.join([f'<div class=\"log-entry\">{l}</div>' for l in logs])}</div>"
+                    log_placeholder.markdown(html_log, unsafe_allow_html=True)
+                    time.sleep(0.8)
+                    
+                    for _ in range(60): # Max 60 rilanci
+                        active = {k: v for k, v in bidders.items() if v > current_bid and k != current_winner}
+                        if not active: break
+                        
+                        next_bidder = random.choice(list(active.keys()))
+                        gap = active[next_bidder] - current_bid
+                        
+                        # Logica incremento basata sul profilo
+                        prof = st.session_state.opponents[next_bidder]['profile'] if next_bidder != "Tu" else "Umano"
+                        if prof == "Smanioso" and gap > 15: inc = random.choice([5, 10])
+                        elif gap > 20: inc = random.choice([2, 5])
+                        else: inc = 1
+                        
+                        current_bid += inc
+                        current_winner = next_bidder
+                        
+                        # Ritardo casuale per realismo simulazione umana
+                        time.sleep(random.uniform(0.3, 0.9))
+                        
+                        prof_str = "Tu" if current_winner == "Tu" else f"{current_winner} ({prof})"
+                        css_c = "user" if current_winner == "Tu" else "bot"
+                        logs.append(f"<div class='log-entry {css_c}'>👉 <b>{prof_str}</b> rilancia a <b>{current_bid} cr</b></div>")
+                        
+                        # Tieni solo gli ultimi 15 messaggi
+                        vis_logs = logs[-15:]
+                        html_log = f"<div class='log-box'>{''.join(vis_logs)}</div>"
+                        log_placeholder.markdown(html_log, unsafe_allow_html=True)
+                    
+                    logs.append(f"<div class='log-entry win'>🔨 AGGIUDICATO! <b>{current_winner}</b> vince per <b>{current_bid} cr</b>.</div>")
+                    vis_logs = logs[-15:]
+                    html_log = f"<div class='log-box'>{''.join(vis_logs)}</div>"
+                    log_placeholder.markdown(html_log, unsafe_allow_html=True)
+                    
+                    st.session_state.final_winner = {"name": current_winner, "price": current_bid, "base": base_t}
+                
+                st.session_state.auction_running = False
+                st.session_state.sim_logs = logs
+                st.rerun()
+                
+            elif st.session_state.get('sim_logs'):
+                vis_logs = st.session_state.sim_logs[-15:]
+                html_log = f"<div class='log-box'>{''.join(vis_logs)}</div>"
+                log_placeholder.markdown(html_log, unsafe_allow_html=True)
+                
+                w = st.session_state.final_winner
+                if w and w['name'] != "Nessuno":
+                    if w['name'] == "Tu":
+                        st.success("🎉 HAI VINTO L'ASTA!")
+                        if w['price'] > w['base'] * 1.15: st.warning(f"⚠️ Hype Premium: Hai pagato molto di più del VAM stimato ({w['base']} cr). L'Ostruzionista ti ha fatto il bluff?")
+                        elif w['price'] < w['base'] * 0.85: st.info(f"🔥 Furto con scasso: Ti sei assicurato il giocatore a prezzo di saldo (VAM: {w['base']} cr).")
+                    else:
+                        st.error(f"❌ Asta persa. Il giocatore è andato a {w['name']}.")
+                        if w['price'] > w['base'] * 1.20: st.caption("Hai fatto bene a fermarti: il bot ha over-pagato a causa della FOMO.")
+            else:
+                st.markdown("<div class='log-box'><div class='log-entry drop'>Il log della Bidding War apparirà qui...</div></div>", unsafe_allow_html=True)
+                
     with t_duel:
         st.subheader("Confronto Testa a Testa")
         
