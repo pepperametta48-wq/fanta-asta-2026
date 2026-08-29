@@ -2059,14 +2059,19 @@ with macro_tabs[0]:
                     else:
                         st.error("Nessun giocatore disponibile.")
                         
-            if st.session_state.sim_player:
+           if st.session_state.sim_player:
                 p = st.session_state.sim_player
                 bt, mb = get_player_base_target(p)
+                
+                # Calcolo dinamico: non farti superare lo Stop-Loss teorico, ma limitati al tuo budget reale
+                dynamic_stop_loss = min(mb, p_max_safe)
+                
                 st.markdown(f"### <img src='{get_team_logo_url(p.get('Squadra',''))}' width='30' style='vertical-align: middle;'> {p['Nome']}", unsafe_allow_html=True)
                 st.write(f"**Ruolo:** {p['R']} | **Squadra:** {p['Squadra']}")
                 st.markdown("---")
                 st.markdown(f"📊 FVM: `{p.get('FVM', 1)}`")
                 st.markdown(f"🎯 Target Ideale: `{bt} cr`")
+                st.markdown(f"🛑 **Stop-Loss Dinamico:** `{dynamic_stop_loss} cr`")
                 st.markdown("---")
                 
                 if st.session_state.sim_state == "READY":
