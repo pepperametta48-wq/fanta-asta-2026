@@ -2042,7 +2042,7 @@ with macro_tabs[0]:
         if selected_cat in ["Panoramica Completa", "Attaccanti (A)"]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
-   with t_simul:
+        with t_simul:
         st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
         
         # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
