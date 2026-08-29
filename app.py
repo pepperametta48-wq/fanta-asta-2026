@@ -1986,166 +1986,214 @@ with macro_tabs[0]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
     with t_simul:
-        st.subheader("🤖 Simulatore Asta (Draft Automatizzato contro IA)")
-        st.markdown("I bot ragionano in base a psicologia, budget e FOMO. **Attenzione: chi vince l'asta si aggiudica REALMENTE il giocatore nella propria rosa!**")
+        st.subheader("🤖 Simulatore Asta Interattivo (Training Mode)")
+        st.markdown("Rilancia manualmente contro l'IA. Il timer di 5 secondi assegnerà REALMENTE il giocatore aggiornando il budget e la rosa del vincitore!")
         
-        if 'sim_player' not in st.session_state: st.session_state.sim_player = None
-        if 'sim_log' not in st.session_state: st.session_state.sim_log = []
-        if 'auction_running' not in st.session_state: st.session_state.auction_running = False
-        if 'final_winner' not in st.session_state: st.session_state.final_winner = None
-        
+        # Inizializzazione Stati Macchina a Stati (FSM)
+        if 'sim_state' not in st.session_state: 
+            st.session_state.sim_state = "IDLE"
+            st.session_state.sim_player = None
+            st.session_state.sim_logs = []
+            st.session_state.sim_bidders = {}
+            st.session_state.sim_current_bid = 0
+            st.session_state.sim_current_winner = "Nessuno"
+            st.session_state.sim_user_folded = False
+            st.session_state.sim_base_t = 0
+            st.session_state.sim_max_b = 0
+            
         c_sim1, c_sim2 = st.columns([1, 2])
         
         with c_sim1:
             st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-            sim_role = st.selectbox("Estrai per Ruolo:", ["Tutti", "P", "D", "C", "A"])
-            st.write("")
-            if st.button("🎲 Estrai Giocatore", type="primary", use_container_width=True):
-                # Filtra solo i giocatori non ancora acquistati!
-                avail_df = listone_df[~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())]
-                if sim_role != "Tutti": avail_df = avail_df[avail_df['R'] == sim_role]
-                
-                if not avail_df.empty:
-                    weights = avail_df['FVM'].fillna(1) + 1
-                    picked = avail_df.sample(n=1, weights=weights).iloc[0]
-                    st.session_state.sim_player = picked.to_dict()
-                    st.session_state.auction_running = False
-                    st.session_state.sim_logs = []
-                    st.session_state.final_winner = None
-                else:
-                    st.error("Nessun giocatore disponibile in questo ruolo.")
             
-            if st.session_state.get('sim_player'):
+            if st.session_state.sim_state == "IDLE":
+                sim_role = st.selectbox("Estrai per Ruolo:", ["Tutti", "P", "D", "C", "A"])
+                st.write("")
+                if st.button("🎲 Estrai Giocatore", type="primary", use_container_width=True):
+                    # Filtra solo i non acquistati
+                    avail_df = listone_df[~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())]
+                    if sim_role != "Tutti": avail_df = avail_df[avail_df['R'] == sim_role]
+                    
+                    if not avail_df.empty:
+                        weights = avail_df['FVM'].fillna(1) + 1
+                        picked = avail_df.sample(n=1, weights=weights).iloc[0]
+                        st.session_state.sim_player = picked.to_dict()
+                        
+                        bt, mb = get_player_base_target(picked.to_dict())
+                        st.session_state.sim_base_t = bt
+                        st.session_state.sim_max_b = mb
+                        
+                        # Pre-calcola il budget segreto massimo per ogni Bot per QUESTO giocatore
+                        st.session_state.sim_bidders = {}
+                        for k, v in st.session_state.opponents.items():
+                            m = calcola_limite_massimo_bot(v, st.session_state.sim_player, active_fomo=True)
+                            if m > 0: st.session_state.sim_bidders[k] = m
+                            
+                        st.session_state.sim_state = "READY"
+                        st.session_state.sim_logs = []
+                        st.session_state.sim_current_bid = 1
+                        st.session_state.sim_current_winner = "Nessuno"
+                        st.session_state.sim_user_folded = False
+                        st.rerun()
+                    else:
+                        st.error("Nessun giocatore disponibile.")
+            
+            if st.session_state.sim_state != "IDLE" and st.session_state.sim_player:
                 p = st.session_state.sim_player
                 st.markdown(f"### <img src='{get_team_logo_url(p.get('Squadra',''))}' width='30' style='vertical-align: middle;'> {p['Nome']}", unsafe_allow_html=True)
-                st.write(f"**Ruolo:** {p['R']} | **FVM:** {p.get('FVM', 1)}")
+                st.write(f"**Ruolo:** {p['R']} | **Squadra:** {p['Squadra']}")
                 
-                user_max = st.number_input("Tua Offerta MAX (invisibile ai bot):", min_value=0, max_value=p_max_safe, value=int(p.get('Qt.A', 1)), step=1)
+                st.markdown("---")
+                st.markdown(f"📊 **FVM:** `{p.get('FVM', 1)}`")
+                st.markdown(f"🎯 **Target Ideale:** `{st.session_state.sim_base_t} cr`")
+                st.markdown(f"🛑 **Stop-Loss Consigliata:** `{st.session_state.sim_max_b} cr`")
+                st.markdown("---")
                 
-                if st.button("🔨 Avvia Bidding War", use_container_width=True):
-                    st.session_state.auction_running = True
-                    st.session_state.sim_logs = []
-                    st.session_state.final_winner = None
+                if st.session_state.sim_state == "READY":
+                    if st.button("🔨 Apri le Danze!", type="primary", use_container_width=True):
+                        st.session_state.sim_logs.append(f"🎙️ **Il battitore apre l'asta per {p['Nome']} da 1 credito!**")
+                        if not st.session_state.sim_bidders:
+                            st.session_state.sim_state = "COUNTDOWN"
+                        else:
+                            st.session_state.sim_state = "BOTS_TURN"
+                        st.rerun()
+                        
+                elif st.session_state.sim_state in ["FINISHED", "ASSIGN_WINNER"]:
+                    if st.button("🔄 Estrai Nuovo Giocatore", use_container_width=True):
+                        st.session_state.sim_state = "IDLE"
+                        st.rerun()
+                        
             st.markdown("</div>", unsafe_allow_html=True)
             
         with c_sim2:
             log_placeholder = st.empty()
             timer_placeholder = st.empty()
+            controls_placeholder = st.empty()
             
-            if st.session_state.get('auction_running'):
-                p = st.session_state.sim_player
-                base_t, _ = get_player_base_target(p)
-                logs = [f"🎙️ **Il battitore apre l'asta per {p['Nome']}!**"]
+            # 1. RENDERIZZA SEMPRE LO STORICO LOGS
+            if st.session_state.sim_logs:
+                html_log = f"<div class='log-box'>{''.join(st.session_state.sim_logs[-15:])}</div>"
+                log_placeholder.markdown(html_log, unsafe_allow_html=True)
+            else:
+                log_placeholder.markdown("<div class='log-box'><div class='log-entry drop'>Il log dell'asta apparirà qui...</div></div>", unsafe_allow_html=True)
                 
-                # 1. PRE-CALCOLO DELL'INTERA ASTA (Invisibile all'utente)
-                bidders = {}
-                for k, v in st.session_state.opponents.items():
-                    max_b = calcola_limite_massimo_bot(v, p, active_fomo=True)
-                    if max_b > 0: bidders[k] = max_b
-                if user_max > 0: bidders["Tu"] = user_max
+            # 2. LOGICA MACCHINA A STATI
+            if st.session_state.sim_state == "BOTS_TURN":
+                # Filtra i bot che possono/vogliono superare l'offerta attuale
+                active_bots = {k: v for k, v in st.session_state.sim_bidders.items() if v > st.session_state.sim_current_bid and k != st.session_state.sim_current_winner}
                 
-                if not bidders:
-                    logs.append("<div class='log-entry drop'>Nessuno alza la mano. Il giocatore è svincolato.</div>")
-                    st.session_state.final_winner = {"name": "Nessuno", "price": 0}
-                    html_log = f"<div class='log-box'>{''.join(logs)}</div>"
-                    log_placeholder.markdown(html_log, unsafe_allow_html=True)
-                    st.session_state.sim_logs = logs
-                    st.session_state.auction_running = False
-                    time.sleep(1)
+                if not active_bots:
+                    # Nessun bot vuole rilanciare
+                    if st.session_state.sim_current_winner == "Tu" or st.session_state.sim_user_folded:
+                        st.session_state.sim_state = "COUNTDOWN"
+                    elif st.session_state.sim_current_winner == "Nessuno":
+                        st.session_state.sim_logs.append("<div class='log-entry drop'>Nessuno alza la mano. Il giocatore è svincolato.</div>")
+                        st.session_state.sim_state = "FINISHED"
+                    else:
+                        # L'ultimo a offrire è un Bot, passo la palla all'utente
+                        st.session_state.sim_state = "WAITING_USER"
                     st.rerun()
                 else:
-                    current_bid = 1
-                    current_winner = list(bidders.keys())[0]
-                    bidding_sequence = [(current_winner, current_bid)]
+                    # Un Bot decide di rilanciare (Ritardo casuale per realismo)
+                    time.sleep(random.uniform(0.6, 1.5))
                     
-                    for _ in range(60): # Sicurezza anti-loop
-                        active = {k: v for k, v in bidders.items() if v > current_bid and k != current_winner}
-                        if not active: break
-                        
-                        next_bidder = random.choice(list(active.keys()))
-                        gap = active[next_bidder] - current_bid
-                        
-                        prof = st.session_state.opponents[next_bidder].get('profile', '') if next_bidder != "Tu" else "Umano"
-                        if prof == "Smanioso" and gap > 15: inc = random.choice([5, 10])
-                        elif gap > 20: inc = random.choice([2, 5])
-                        else: inc = 1
-                        
-                        current_bid += inc
-                        current_winner = next_bidder
-                        bidding_sequence.append((current_winner, current_bid))
+                    next_bot = random.choice(list(active_bots.keys()))
+                    gap = active_bots[next_bot] - st.session_state.sim_current_bid
+                    prof = st.session_state.opponents[next_bot].get('profile', 'Equilibrato')
                     
-                    # 2. PLAYBACK VISUALE CON IL COUNTDOWN IN TEMPO REALE
-                    for i, step in enumerate(bidding_sequence):
-                        bidder, amount = step
-                        
-                        if i > 0:
-                            # Countdown che sta per scadere ma viene interrotto dal rilancio!
-                            ticks_to_wait = random.randint(1, 3) # Si ferma a 5, 4 o 3 secondi
-                            for tick in range(ticks_to_wait):
-                                timer_placeholder.markdown(f"<h2 style='text-align:center; color:#F59E0B;'>⏱️ {5 - tick}...</h2>", unsafe_allow_html=True)
-                                time.sleep(0.6)
-                        
-                        # Il timer scompare e spunta il rilancio
-                        timer_placeholder.empty()
-                        
-                        prof = st.session_state.opponents[bidder].get('profile', '') if bidder != "Tu" else "Tu"
-                        prof_str = "Tu" if bidder == "Tu" else f"{bidder} ({prof})"
-                        css_c = "user" if bidder == "Tu" else "bot"
-                        
-                        logs.append(f"<div class='log-entry {css_c}'>👉 <b>{prof_str}</b> rilancia a <b>{amount} cr</b></div>")
-                        
-                        vis_logs = logs[-15:]
-                        html_log = f"<div class='log-box'>{''.join(vis_logs)}</div>"
-                        log_placeholder.markdown(html_log, unsafe_allow_html=True)
-                        time.sleep(0.5)
+                    if prof == "Smanioso" and gap > 15: inc = random.choice([5, 10])
+                    elif gap > 20: inc = random.choice([2, 5])
+                    else: inc = 1
                     
-                    # 3. COUNTDOWN FINALE (Nessun altro rilancia)
-                    for tick in range(5):
-                        color = "#10B981" if tick > 2 else "#F59E0B"
-                        timer_placeholder.markdown(f"<h2 style='text-align:center; color:{color};'>⏳ {5 - tick}...</h2>", unsafe_allow_html=True)
-                        time.sleep(0.8)
-                        
-                    # 4. MARTELLO E ASSEGNAZIONE
-                    timer_placeholder.markdown(f"<h1 style='text-align:center; color:#10B981;'>🔨 AGGIUDICATO a {current_winner}!</h1>", unsafe_allow_html=True)
-                    logs.append(f"<div class='log-entry win'>🔨 AGGIUDICATO! <b>{current_winner}</b> acquista {p['Nome']} per <b>{current_bid} cr</b>.</div>")
-                    log_placeholder.markdown(f"<div class='log-box'>{''.join(logs[-15:])}</div>", unsafe_allow_html=True)
+                    st.session_state.sim_current_bid += inc
+                    st.session_state.sim_current_winner = next_bot
+                    st.session_state.sim_logs.append(f"<div class='log-entry bot'>👉 <b>{next_bot} ({prof})</b> offre <b>{st.session_state.sim_current_bid} cr</b></div>")
                     
-                    # AGGIORNAMENTO REALE DEL DATABASE DELLA LEGA E DELLE ROSE
-                    if current_winner == "Tu":
-                        st.session_state.my_roster.append({'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': current_bid})
-                    else:
-                        opp = st.session_state.opponents[current_winner]
-                        opp['budget'] -= current_bid
-                        opp['slots_left'] -= 1
-                        opp['roster'][p['R']].append({'name': p['Nome'], 'team': p['Squadra'], 'price': current_bid})
-                    
-                    st.session_state.purchased_registry[p['Nome']] = (current_winner, current_bid)
-                    st.session_state.history.append({'buyer': current_winner, 'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': current_bid})
-                    save_state_to_disk()
-                    
-                    st.session_state.final_winner = {"name": current_winner, "price": current_bid, "base": base_t}
-                    st.session_state.auction_running = False
-                    st.session_state.sim_logs = logs
-                    
-                    time.sleep(2) # Pausa drammatica finale
+                    # Ritorna la parola all'utente se è ancora in gioco
+                    if not st.session_state.sim_user_folded:
+                        st.session_state.sim_state = "WAITING_USER"
                     st.rerun()
+                    
+            elif st.session_state.sim_state == "WAITING_USER":
+                with controls_placeholder.container():
+                    st.markdown(f"<h3 style='text-align:center;'>Offerta Attuale: <span style='color:#10B981;'>{st.session_state.sim_current_bid} cr</span> ({st.session_state.sim_current_winner})</h3>", unsafe_allow_html=True)
+                    
+                    cb1, cb2, cb3, cb4 = st.columns(4)
+                    
+                    def user_bid(amount):
+                        new_bid = st.session_state.sim_current_bid + amount
+                        if new_bid > p_max_safe:
+                            st.toast("⚠️ Pmax superato! Non hai abbastanza crediti.")
+                        else:
+                            st.session_state.sim_current_bid = new_bid
+                            st.session_state.sim_current_winner = "Tu"
+                            st.session_state.sim_logs.append(f"<div class='log-entry user'>👉 <b>Tu</b> rilanci a <b>{st.session_state.sim_current_bid} cr</b></div>")
+                            st.session_state.sim_state = "BOTS_TURN"
+                        
+                    if cb1.button("+ 1 cr", use_container_width=True, type="primary"): 
+                        user_bid(1)
+                        st.rerun()
+                    if cb2.button("+ 5 cr", use_container_width=True, type="primary"): 
+                        user_bid(5)
+                        st.rerun()
+                    if cb3.button("+ 10 cr", use_container_width=True, type="primary"): 
+                        user_bid(10)
+                        st.rerun()
+                    if cb4.button("Lascia (Passo)", use_container_width=True):
+                        st.session_state.sim_user_folded = True
+                        st.session_state.sim_logs.append("<div class='log-entry drop'>👉 <b>Tu</b> ti sei ritirato. I bot continuano se interessati...</div>")
+                        st.session_state.sim_state = "BOTS_TURN"
+                        st.rerun()
+                        
+            elif st.session_state.sim_state == "COUNTDOWN":
+                controls_placeholder.empty()
+                # Il fatidico countdown di 5 secondi
+                for tick in range(5):
+                    color = "#10B981" if tick > 2 else "#F59E0B"
+                    timer_placeholder.markdown(f"<h2 style='text-align:center; color:{color};'>⏱️ {5 - tick}...</h2>", unsafe_allow_html=True)
+                    time.sleep(0.8)
                 
-            # Schermata a bocce ferme (Asta conclusa)
-            elif st.session_state.get('sim_logs'):
-                vis_logs = st.session_state.sim_logs[-15:]
-                html_log = f"<div class='log-box'>{''.join(vis_logs)}</div>"
-                log_placeholder.markdown(html_log, unsafe_allow_html=True)
+                timer_placeholder.empty()
+                st.session_state.sim_state = "ASSIGN_WINNER"
+                st.rerun()
                 
-                w = st.session_state.final_winner
-                if w and w.get('name') and w['name'] != "Nessuno":
-                    if w['name'] == "Tu":
-                        st.success(f"🎉 HAI VINTO L'ASTA! **{st.session_state.sim_player['Nome']} è stato aggiunto ufficialmente alla tua rosa.** Il tuo budget è stato aggiornato.")
-                        if w['price'] > w['base'] * 1.15: st.warning(f"⚠️ Hype Premium: Hai pagato molto di più del VAM stimato ({w['base']} cr).")
-                        elif w['price'] < w['base'] * 0.85: st.info(f"🔥 Furto con scasso: Ti sei assicurato il giocatore a prezzo di saldo (VAM: {w['base']} cr).")
-                    else:
-                        st.error(f"❌ Asta persa. **{st.session_state.sim_player['Nome']} è stato aggiunto alla rosa di {w['name']}.** Il suo budget è sceso di {w['price']} cr.")
-            else:
-                st.markdown("<div class='log-box'><div class='log-entry drop'>Il log della Bidding War apparirà qui...</div></div>", unsafe_allow_html=True)
+            elif st.session_state.sim_state == "ASSIGN_WINNER":
+                p = st.session_state.sim_player
+                winner = st.session_state.sim_current_winner
+                bid = st.session_state.sim_current_bid
+                
+                st.session_state.sim_logs.append(f"<div class='log-entry win'>🔨 AGGIUDICATO! <b>{winner}</b> acquista {p['Nome']} per <b>{bid} cr</b>.</div>")
+                
+                # REALE ASSEGNAZIONE NEL DATABASE DELL'APP
+                if winner == "Tu":
+                    st.session_state.my_roster.append({'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': bid})
+                elif winner != "Nessuno":
+                    opp = st.session_state.opponents[winner]
+                    opp['budget'] -= bid
+                    opp['slots_left'] -= 1
+                    opp['roster'][p['R']].append({'name': p['Nome'], 'team': p['Squadra'], 'price': bid})
+                
+                if winner != "Nessuno":
+                    st.session_state.purchased_registry[p['Nome']] = (winner, bid)
+                    st.session_state.history.append({'buyer': winner, 'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': bid})
+                    save_state_to_disk()
+                
+                st.session_state.sim_state = "FINISHED"
+                st.rerun()
+                
+            elif st.session_state.sim_state == "FINISHED":
+                w = st.session_state.sim_current_winner
+                bid = st.session_state.sim_current_bid
+                base = st.session_state.sim_base_t
+                
+                if w == "Nessuno":
+                    st.info("Il giocatore è rimasto svincolato.")
+                elif w == "Tu":
+                    st.success(f"🎉 HAI VINTO L'ASTA! **{st.session_state.sim_player['Nome']} è stato aggiunto ufficialmente alla tua rosa.**")
+                    if bid > base * 1.15: st.warning(f"⚠️ Hype Premium: Hai pagato molto di più del Target stimato ({base} cr).")
+                    elif bid < base * 0.85: st.info(f"🔥 Ottimo Affare: Acquistato a sconto rispetto al Target di {base} cr.")
+                else:
+                    st.error(f"❌ Asta persa. **{st.session_state.sim_player['Nome']} è stato assegnato alla rosa di {w}.** Il suo budget è sceso di {bid} cr.")
                 
     with t_duel:
         st.subheader("Confronto Testa a Testa")
