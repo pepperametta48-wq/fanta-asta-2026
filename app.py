@@ -789,10 +789,10 @@ def calcola_limite_massimo_bot(bot, player_info, active_fomo=False):
     base_t, _ = get_player_base_target(player_info)
     fvm = player_info.get('FVM', 10)
     
-    # Tier Giocatore
-    if fvm >= 150: tier = "Top"
-    elif fvm >= 70: tier = "Semitop"
-    elif fvm >= 25: tier = "Titolare"
+    # Soglie dimezzate per la base a 500 crediti
+    if fvm >= 75: tier = "Top"
+    elif fvm >= 35: tier = "Semitop"
+    elif fvm >= 12: tier = "Titolare"
     else: tier = "Scommessa"
     
     prof = bot.get('profile', "Equilibrato")
