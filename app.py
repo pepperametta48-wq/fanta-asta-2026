@@ -2408,6 +2408,7 @@ with macro_tabs[2]:
 
     with t_track:
         st.subheader("Quadro Generale Avversari & Potere d'Acquisto")
+        
         # ==========================================
         # ✏️ SEZIONE: RINOMINA AVVERSARI
         # ==========================================
@@ -2450,6 +2451,27 @@ with macro_tabs[2]:
                         save_state_to_disk()
                         st.rerun()
         # ==========================================
+
+        # TABELLA TRACKER AVVERSARI
+        opp_summary = []
+        for k, v in st.session_state.opponents.items():
+            p_max = v['budget'] - (v['slots_left'] - 1) if v['slots_left'] > 0 else 0
+            opp_summary.append({
+                "Squadra Rivale": v['name'],
+                "Profilo IA": v.get('profile', 'Equilibrato'),
+                "Budget Residuo": f"{v['budget']} cr",
+                "Slot Mancanti": f"{v['slots_left']} / {TOTAL_SLOTS}",
+                "Max Bid Possibile (Pmax)": p_max,
+                "P": f"{len(v['roster']['P'])}/3",
+                "D": f"{len(v['roster']['D'])}/8",
+                "C": f"{len(v['roster']['C'])}/8",
+                "A": f"{len(v['roster']['A'])}/6",
+                "Livello Minaccia": "🔴 ALTISSIMA" if p_max > 120 else ("🟡 MEDIA" if p_max > 45 else "🟢 INNOCUO")
+            })
+            
+        if opp_summary:
+            st.dataframe(pd.DataFrame(opp_summary).sort_values(by="Max Bid Possibile (Pmax)", ascending=False), use_container_width=True)
+            
     with t_baro:
         st.subheader("Barometro Inflazione & Liquidità Lega")
         
