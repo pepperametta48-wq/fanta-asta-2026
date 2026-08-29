@@ -2099,10 +2099,10 @@ with macro_tabs[0]:
                 
                 if not st.session_state.sim_user_folded:
                     cb1, cb2, cb3, cb4 = st.columns(4)
-                    cb1.button("+ 1 cr", use_container_width=True, on_click=handle_user_bid, args=(1,))
-                    cb2.button("+ 5 cr", use_container_width=True, on_click=handle_user_bid, args=(5,))
-                    cb3.button("+ 10 cr", use_container_width=True, on_click=handle_user_bid, args=(10,))
-                    cb4.button("Lascia", use_container_width=True, on_click=handle_user_fold)
+                    cb1.button("+ 1 cr", use_container_width=True, key="sim_btn_1", on_click=handle_user_bid, args=(1,))
+                    cb2.button("+ 5 cr", use_container_width=True, key="sim_btn_5", on_click=handle_user_bid, args=(5,))
+                    cb3.button("+ 10 cr", use_container_width=True, key="sim_btn_10", on_click=handle_user_bid, args=(10,))
+                    cb4.button("Lascia", use_container_width=True, key="sim_btn_fold", on_click=handle_user_fold)
                 else:
                     st.caption("Hai passato la mano. Il timer continua a scorrere...")
 
