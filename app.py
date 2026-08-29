@@ -783,61 +783,110 @@ def get_dept_spent(role):
 def get_dept_count(role):
     return len([p for p in st.session_state.get('my_roster', []) if p['role'] == role])
 
-# LOGICA BOT INTELLIGENZA ARTIFICIALE 
+# ==========================================
+# LOGICA BOT INTELLIGENZA ARTIFICIALE E DINAMICHE AVANZATE
+# ==========================================
+BOT_TRASH_TALK = [
+    "Ma lo hai visto come ha giocato l'anno scorso?", 
+    "Questo è mio, non ci provate.", 
+    "State spendendo troppo, siete pazzi!", 
+    "A 1 credito va bene, oltre è un furto.",
+    "Se lo volete, dovete sanguinare.",
+    "Ottimo per la mia panchina.",
+    "Rilancio, ma solo per darvi fastidio.",
+    "Hype esagerato, vi lascio scannare."
+]
+
+def analizza_giocatore_avanzato(player_info):
+    base_t, _ = get_player_base_target(player_info)
+    fvm = player_info.get('FVM', 1)
+    ruolo = player_info['R']
+    
+    # Tier Dinamico (su base 500)
+    if fvm >= 75: tier = "Top"
+    elif fvm >= 35: tier = "Semitop"
+    elif fvm >= 12: tier = "Ottimo Titolare"
+    elif fvm >= 5: tier = "Scommessa"
+    else: tier = "Basso Costo"
+    
+    # Indice Hype (0-100) basato su scostamento tra target e FVM
+    hype = min(100, max(0, int((base_t / max(1, fvm)) * 50)))
+    if tier == "Top": hype += 20
+    
+    # Propensione Bonus (Base semplice: se FVM alto e difensore/centrocampista, probabile bonus/modificatore)
+    prop_bonus = "Alta" if (ruolo in ['D', 'C'] and fvm > 20) else ("Media" if fvm > 8 else "Bassa")
+    
+    return tier, hype, prop_bonus
+
 def calcola_limite_massimo_bot(bot, player_info, active_fomo=False):
     role = player_info['R']
     base_t, _ = get_player_base_target(player_info)
-    fvm = player_info.get('FVM', 10)
-    
-    # Soglie dimezzate per la base a 500 crediti
-    if fvm >= 75: tier = "Top"
-    elif fvm >= 35: tier = "Semitop"
-    elif fvm >= 12: tier = "Titolare"
-    else: tier = "Scommessa"
-    
+    tier, hype, prop_bonus = analizza_giocatore_avanzato(player_info)
     prof = bot.get('profile', "Equilibrato")
     
-    # 1. Moltiplicatore Carattere
+    # 1. MACROECONOMIA (Inflazione/Deflazione)
+    tot_creds_lega = sum(v['budget'] for v in st.session_state.opponents.values()) + (TOTAL_BUDGET - sum(p['price'] for p in st.session_state.my_roster) + st.session_state.budget_adjustments)
+    max_creds_iniziali = TOTAL_BUDGET * 10
+    inflazione_mult = 1.0 + ((tot_creds_lega / max_creds_iniziali) - 0.5) * 0.3 
+    
+    # 2. MOLTIPLICATORE CARATTERE & HYPE
     c_mult = 1.0
-    if prof == "Conservatore": c_mult = 0.9 if tier in ["Top", "Semitop"] else 1.05
-    elif prof == "Smanioso": c_mult = 1.35 if tier == "Top" else 0.8
-    elif prof == "Scommettitore": c_mult = 0.7 if tier == "Top" else (1.5 if tier == "Scommessa" else 1.1)
-    elif prof == "Ostruzionista": c_mult = 1.2
+    if prof == "Conservatore": c_mult = 0.85 if hype > 70 else 1.05
+    elif prof == "Smanioso": c_mult = 1.4 if (tier == "Top" or hype > 80) else 0.8
+    elif prof == "Scommettitore": c_mult = 0.6 if tier == "Top" else (1.5 if tier == "Scommessa" else 1.1)
+    elif prof == "Ostruzionista": c_mult = 1.25 
         
-    # 2. Urgenza Reparto
+    # 3. URGENZA & MODIFICATORE
     slots_filled = len(bot['roster'][role])
     slots_total = SLOTS[role]
     slots_left = slots_total - slots_filled
     if slots_left <= 0: return 0
     
     urgency = 1.0
-    if slots_left == slots_total: urgency = 1.1
-    elif slots_left == 1 and role == 'A': urgency = 1.4
-    elif slots_left == 1: urgency = 1.2
+    if slots_left == slots_total: urgency = 1.15
+    elif slots_left == 1 and role == 'A': urgency = 1.5
     
-    # 3. Gestione Coppie Portieri (Cerca il Vice)
-    if role == 'P' and slots_filled > 0:
-        if any(p['team'] == player_info['Squadra'] for p in bot['roster']['P']):
-            urgency = 3.0 # Spende tutto per il proprio vice-portiere
-            
-    # 4. Moltiplicatore Fisico (Liquidità residua)
-    liq_ratio = bot['budget'] / TOTAL_BUDGET
-    f_mult = 1.1 if liq_ratio > 0.8 else (0.8 if liq_ratio < 0.3 else 1.0)
+    if role == 'D' and prop_bonus == "Alta" and prof in ["Conservatore", "Equilibrato"]:
+        urgency *= 1.2
+        
+    # 4. PANICO ULTIMI SLOT (FOMO VERA)
+    top_rimasti = len(listone_df[(listone_df['R'] == role) & (listone_df['FVM'] >= 75) & (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys()))])
+    if active_fomo and top_rimasti <= 2 and tier == "Top" and len([p for p in bot['roster'][role] if get_player_base_target(p)[0] >= 35]) == 0:
+        urgency *= 1.25 
     
-    # 5. FOMO (Fear of missing out)
-    fomo_mult = 1.3 if (active_fomo and role == 'A' and tier == "Top") else 1.0
-    
-    raw_max = base_t * c_mult * f_mult * urgency * fomo_mult
+    raw_max = base_t * c_mult * inflazione_mult * urgency
     max_possibile = bot['budget'] - (bot['slots_left'] - 1)
-    
     limite = min(int(raw_max), max_possibile)
     
-    # 6. Il Bluff dell'Ostruzionista
-    if prof == "Ostruzionista" and tier == "Top":
-        # Rilancia solo per far spendere gli altri, si ferma all'85% del valore
-        limite = min(limite, int(base_t * 0.85))
+    if prof == "Ostruzionista" and tier == "Top": limite = min(limite, int(base_t * 0.90))
         
     return max(0, limite)
+
+def bot_effettua_chiamata(bot_key, role):
+    bot = st.session_state.opponents[bot_key]
+    prof = bot.get('profile', 'Equilibrato')
+    
+    avail_df = listone_df[(listone_df['R'] == role) & (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys()))]
+    if avail_df.empty: return None
+    
+    avail_df['Tier_Hype'] = avail_df.apply(lambda x: analizza_giocatore_avanzato(x), axis=1)
+    
+    if prof == "Ostruzionista" or bot['budget'] < 100:
+        top_esche = avail_df[avail_df['FVM'] >= 50].sort_values(by='FVM', ascending=False)
+        if not top_esche.empty: return top_esche.iloc[0].to_dict()
+        
+    if prof == "Scommettitore" or bot['slots_left'] < 5:
+        low_cost = avail_df[(avail_df['FVM'] <= 5) & (avail_df['FVM'] > 1)].sample(frac=1)
+        if not low_cost.empty: return low_cost.iloc[0].to_dict()
+        
+    if prof == "Smanioso":
+        hypes = avail_df.sort_values(by='FVM', ascending=False).head(15).sample(frac=1)
+        if not hypes.empty: return hypes.iloc[0].to_dict()
+        
+    solidi = avail_df[(avail_df['FVM'] >= 15) & (avail_df['FVM'] <= 60)]
+    if not solidi.empty: return solidi.sample(n=1).iloc[0].to_dict()
+    
+    return avail_df.sample(n=1).iloc[0].to_dict()
 
 def get_player_base_target(player_row):
     name = str(player_row['Nome']).strip()
@@ -1293,7 +1342,6 @@ def init_state():
                 'profile': BOT_PROFILES[i % len(BOT_PROFILES)]
             }
             
-    # FORZATURA: Rimescola e inietta i profili psicologici se erano rimasti bloccati su "Equilibrato"
     profiles = [v.get('profile', 'Equilibrato') for v in st.session_state.opponents.values()]
     if all(p == 'Equilibrato' for p in profiles):
         for i, k in enumerate(st.session_state.opponents.keys()):
@@ -1306,6 +1354,12 @@ def init_state():
     if 'base_dept_budget' not in st.session_state: st.session_state.base_dept_budget = STRATEGIES[st.session_state.selected_strategy]
     if 'rejected_players' not in st.session_state: st.session_state.rejected_players = []
     if 'custom_user_targets' not in st.session_state: st.session_state.custom_user_targets = {'P': [], 'D': [], 'C': [], 'A': []}
+    
+    # GESTIONE TURNI E FLUSSO ASTA LIVE
+    if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
+    if 'turn_idx' not in st.session_state: st.session_state.turn_idx = 0
+    if 'role_sequence' not in st.session_state: st.session_state.role_sequence = ['P', 'D', 'C', 'A']
+    if 'current_role_idx' not in st.session_state: st.session_state.current_role_idx = 0
 
 def load_state_from_disk():
     if os.path.exists(SAVE_FILE):
@@ -1989,24 +2043,55 @@ with macro_tabs[0]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
     with t_simul:
-        st.subheader("🤖 Simulatore Asta Real-Time")
-        st.markdown("I bot rilanciano *durante* il timer. Fai la tua mossa in tempo reale! Il vincitore riceverà REALMENTE il giocatore in rosa.")
+        st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
         
-        # Inizializzazione macchina a stati per il tempo reale
+        # Flusso Logico Ruoli
+        current_draft_role = st.session_state.role_sequence[st.session_state.current_role_idx]
+        
+        # Verifica se tutti hanno completato il ruolo corrente
+        all_completed = True
+        if len([p for p in st.session_state.my_roster if p['role'] == current_draft_role]) < SLOTS[current_draft_role]: all_completed = False
+        for opp in st.session_state.opponents.values():
+            if len(opp['roster'][current_draft_role]) < SLOTS[current_draft_role]: all_completed = False
+            
+        if all_completed and st.session_state.current_role_idx < 3:
+            st.session_state.current_role_idx += 1
+            current_draft_role = st.session_state.role_sequence[st.session_state.current_role_idx]
+            st.success(f"✅ Ruolo completato da tutti! Si passa a: **{current_draft_role}**")
+            st.rerun()
+
+        # Il chiamante attuale
+        caller_key = st.session_state.auction_sequence[st.session_state.turn_idx]
+        caller_prof = st.session_state.opponents[caller_key].get('profile', '') if caller_key != "Tu" else "Umano"
+        
         if 'sim_state' not in st.session_state: st.session_state.sim_state = "IDLE"
         if 'sim_player' not in st.session_state: st.session_state.sim_player = None
         if 'sim_logs' not in st.session_state: st.session_state.sim_logs = []
         
-        # FUNZIONI DEL MOTORE REAL-TIME
+        # --- TABELLONE LIVE CREDITI (Visibile a tutti in testa) ---
+        st.markdown(f"#### 🏟️ Turno di Chiamata: <span style='color:#8B5CF6;'>{caller_key}</span> | Ruolo Obbligatorio: <span style='color:#10B981;'>{current_draft_role}</span>", unsafe_allow_html=True)
+        with st.expander("📊 Tabellone Live Crediti & Pmax (Clicca per espandere)", expanded=False):
+            live_data = [{"Squadra": "Tu", "Crediti": tot_budget_left, "PMax": p_max_safe}]
+            for k, v in st.session_state.opponents.items():
+                pm = v['budget'] - (v['slots_left'] - 1) if v['slots_left'] > 0 else 0
+                live_data.append({"Squadra": v['name'], "Crediti": v['budget'], "PMax": pm})
+            st.dataframe(pd.DataFrame(live_data).sort_values(by="PMax", ascending=False).transpose())
+        st.markdown("---")
+
+        def advance_turn():
+            st.session_state.turn_idx = (st.session_state.turn_idx + 1) % len(st.session_state.auction_sequence)
+
         def plan_next_bot_bid():
             bidders = st.session_state.sim_bidders_limits
             curr_bid = st.session_state.sim_current_bid
             curr_winner = st.session_state.sim_current_winner
-            
-            # Filtra bot attivi che possono superare l'offerta attuale
             active_bots = {k: v for k, v in bidders.items() if v > curr_bid and k != curr_winner}
             
             if active_bots:
+                # Se mancano < 3 secondi e il bot esita...
+                now = time.time()
+                time_left = max(0.0, st.session_state.sim_deadline - now)
+                
                 next_bot = random.choice(list(active_bots.keys()))
                 gap = active_bots[next_bot] - curr_bid
                 prof = st.session_state.opponents[next_bot].get('profile', 'Equilibrato')
@@ -2016,12 +2101,10 @@ with macro_tabs[0]:
                 elif gap > 20: inc = random.choice([2, 5])
                 else: inc = 1
                 
-                # Il bot decide di rilanciare tra 0.6 e 3.5 secondi da ora!
-                reaction_time = random.uniform(0.6, 3.5)
+                # Se è l'ultimo secondo, ritardo cortissimo (Rilancio in corner!)
+                reaction_time = random.uniform(0.5, 3.0) if time_left > 4.0 else random.uniform(0.1, 1.5)
                 st.session_state.sim_bot_next_bid = {
-                    'name': next_bot,
-                    'amount': curr_bid + inc,
-                    'time': time.time() + reaction_time
+                    'name': next_bot, 'amount': curr_bid + inc, 'time': time.time() + reaction_time
                 }
             else:
                 st.session_state.sim_bot_next_bid = None
@@ -2031,59 +2114,65 @@ with macro_tabs[0]:
             if new_bid <= p_max_safe:
                 st.session_state.sim_current_bid = new_bid
                 st.session_state.sim_current_winner = "Tu"
-                # Resetta il timer a 5 secondi spaccati!
-                st.session_state.sim_deadline = time.time() + 5.0
+                st.session_state.sim_deadline = time.time() + 10.0 # Resetta Timer a 10s
                 st.session_state.sim_logs.append(f"<div class='log-entry user'>👉 <b>Tu</b> rilanci a <b>{new_bid} cr</b></div>")
                 plan_next_bot_bid()
                 
         def handle_user_fold():
             st.session_state.sim_user_folded = True
-            st.session_state.sim_logs.append("<div class='log-entry drop'>👉 <b>Tu</b> passi la mano. I bot continuano tra loro...</div>")
+            st.session_state.sim_logs.append("<div class='log-entry drop'>👉 <b>Tu</b> passi la mano.</div>")
             
         c_sim1, c_sim2 = st.columns([1, 2])
         
         with c_sim1:
             st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
             if st.session_state.sim_state in ["IDLE", "SOLD"]:
-                sim_role = st.selectbox("Estrai per Ruolo:", ["Tutti", "P", "D", "C", "A"])
-                st.write("")
-                if st.button("🎲 Estrai Giocatore", type="primary", use_container_width=True):
-                    avail_df = listone_df[~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())]
-                    if sim_role != "Tutti": avail_df = avail_df[avail_df['R'] == sim_role]
-                    if not avail_df.empty:
-                        weights = avail_df['FVM'].fillna(1) + 1
-                        picked = avail_df.sample(n=1, weights=weights).iloc[0]
-                        st.session_state.sim_player = picked.to_dict()
+                
+                if caller_key == "Tu":
+                    avail_df = listone_df[(listone_df['R'] == current_draft_role) & (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys()))]
+                    sel_p = st.selectbox(f"Tocca a Te! Scegli un {current_draft_role}:", options=avail_df['Nome'].tolist() if not avail_df.empty else ["Nessuno"])
+                    if st.button("📢 Chiama Giocatore", type="primary", use_container_width=True) and sel_p != "Nessuno":
+                        st.session_state.sim_player = listone_df[listone_df['Nome'] == sel_p].iloc[0].to_dict()
                         st.session_state.sim_state = "READY"
                         st.rerun()
-                    else:
-                        st.error("Nessun giocatore disponibile.")
+                else:
+                    st.info(f"Tocca a **{caller_key} ({caller_prof})** chiamare.")
+                    if st.button("Fai chiamare il Bot", use_container_width=True):
+                        # Il Bot sceglie il giocatore in base al suo profilo
+                        picked = bot_effettua_chiamata(caller_key, current_draft_role)
+                        if picked:
+                            st.session_state.sim_player = picked
+                            st.session_state.sim_state = "READY"
+                            st.rerun()
+                        else:
+                            st.warning(f"Nessun {current_draft_role} rimasto.")
+                            advance_turn()
+                            st.rerun()
                         
             if st.session_state.sim_player:
                 p = st.session_state.sim_player
                 bt, mb = get_player_base_target(p)
-                
-                # Calcolo dinamico dello Stop-Loss basato sul PMax residuo
-                dynamic_stop_loss = min(mb, p_max_safe)
+                tier, hype, prop = analizza_giocatore_avanzato(p)
+                dyn_stop = min(mb, p_max_safe)
                 
                 st.markdown(f"### <img src='{get_team_logo_url(p.get('Squadra',''))}' width='30' style='vertical-align: middle;'> {p['Nome']}", unsafe_allow_html=True)
-                st.write(f"**Ruolo:** {p['R']} | **Squadra:** {p['Squadra']}")
+                st.write(f"**Ruolo:** {p['R']} | **Fascia:** {tier}")
                 st.markdown("---")
-                st.markdown(f"📊 FVM: `{p.get('FVM', 1)}`")
-                st.markdown(f"🎯 Target Ideale: `{bt} cr`")
-                st.markdown(f"🛑 **Stop-Loss Dinamico:** `{dynamic_stop_loss} cr`")
+                st.markdown(f"🔥 **Hype Estivo:** `{hype}/100`")
+                st.markdown(f"📈 **Propensione Bonus:** `{prop}`")
+                st.markdown(f"🎯 **Target:** `{bt} cr` | 🛑 **Stop-Loss:** `{dyn_stop} cr`")
                 st.markdown("---")
                 
                 if st.session_state.sim_state == "READY":
-                    if st.button("🔨 Inizia Asta", type="primary", use_container_width=True):
+                    if st.button("🔨 Inizia Asta!", type="primary", use_container_width=True):
                         st.session_state.sim_state = "RUNNING"
                         st.session_state.sim_current_bid = 1
-                        st.session_state.sim_current_winner = "Nessuno"
+                        st.session_state.sim_current_winner = caller_key # Chi chiama apre a 1 credito
                         st.session_state.sim_user_folded = False
-                        st.session_state.sim_deadline = time.time() + 5.0
-                        st.session_state.sim_logs = [f"<div class='log-entry'>🎙️ <b>Il battitore apre l'asta per {p['Nome']} da 1 credito!</b></div>"]
+                        st.session_state.sim_deadline = time.time() + 10.0 # Countdown 10 secondi
+                        st.session_state.sim_logs = [f"<div class='log-entry'>🎙️ <b>{caller_key}</b> chiama {p['Nome']} a 1 credito!</div>"]
                         
-                        # Calcolo dei limiti massimi dei bot in segreto
+                        # Setta limiti segreti
                         st.session_state.sim_bidders_limits = {}
                         for k, v in st.session_state.opponents.items():
                             m = calcola_limite_massimo_bot(v, p, active_fomo=True)
@@ -2092,26 +2181,23 @@ with macro_tabs[0]:
                         plan_next_bot_bid()
                         st.rerun()
             st.markdown("</div>", unsafe_allow_html=True)
-            
+
         with c_sim2:
             if st.session_state.sim_state == "RUNNING":
-                # Stampa storico (ultimi 8 messaggi per non sfasare l'interfaccia)
-                html_log = f"<div class='log-box'>{''.join(st.session_state.sim_logs[-8:])}</div>"
+                html_log = f"<div class='log-box'>{''.join(st.session_state.sim_logs[-10:])}</div>"
                 st.markdown(html_log, unsafe_allow_html=True)
                 
-                # Area comandi
                 st.markdown(f"<h3 style='text-align:center;'>Offerta Attuale: <span style='color:#10B981;'>{st.session_state.sim_current_bid} cr</span> ({st.session_state.sim_current_winner})</h3>", unsafe_allow_html=True)
                 
                 if not st.session_state.sim_user_folded:
                     cb1, cb2, cb3, cb4 = st.columns(4)
-                    cb1.button("+ 1 cr", use_container_width=True, key="sim_btn_1", on_click=handle_user_bid, args=(1,))
-                    cb2.button("+ 5 cr", use_container_width=True, key="sim_btn_5", on_click=handle_user_bid, args=(5,))
-                    cb3.button("+ 10 cr", use_container_width=True, key="sim_btn_10", on_click=handle_user_bid, args=(10,))
-                    cb4.button("Lascia", use_container_width=True, key="sim_btn_fold", on_click=handle_user_fold)
-                else:
-                    st.caption("Hai passato la mano. Il timer continua a scorrere...")
+                    cb1.button("+ 1 cr", use_container_width=True, key="sim1", on_click=handle_user_bid, args=(1,))
+                    cb2.button("+ 5 cr", use_container_width=True, key="sim5", on_click=handle_user_bid, args=(5,))
+                    cb3.button("+ 10 cr", use_container_width=True, key="sim10", on_click=handle_user_bid, args=(10,))
+                    cb4.button("Lascia", use_container_width=True, key="sim_f", on_click=handle_user_fold)
 
                 now = time.time()
+                time_left = max(0.0, st.session_state.sim_deadline - now)
                 
                 # 1. È arrivato il momento per un bot di rilanciare?
                 if st.session_state.sim_bot_next_bid and now >= st.session_state.sim_bot_next_bid['time']:
@@ -2120,15 +2206,22 @@ with macro_tabs[0]:
                     st.session_state.sim_current_winner = b_info['name']
                     prof = st.session_state.opponents[b_info['name']].get('profile', '')
                     
-                    st.session_state.sim_logs.append(f"<div class='log-entry bot'>👉 <b>{b_info['name']} ({prof})</b> rilancia a <b>{b_info['amount']} cr</b></div>")
-                    # Il bot resetta il timer a 5 secondi!
-                    st.session_state.sim_deadline = time.time() + 5.0
+                    # Aggiunta Trash Talk casuale (15% di probabilità)
+                    trash_msg = ""
+                    if random.random() < 0.15:
+                        trash_msg = f"<br><span style='font-size:12px; color:#A78BFA; font-style:italic;'>💬 \"{random.choice(BOT_TRASH_TALK)}\"</span>"
+                        
+                    st.session_state.sim_logs.append(f"<div class='log-entry bot'>👉 <b>{b_info['name']} ({prof})</b> rilancia a <b>{b_info['amount']} cr</b>{trash_msg}</div>")
+                    st.session_state.sim_deadline = time.time() + 10.0 # Resetta timer a 10s
                     plan_next_bot_bid()
                     st.rerun()
 
-                # 2. Il tempo è scaduto?
-                time_left = max(0.0, st.session_state.sim_deadline - now)
-                
+                # 2. Esitazione fine timer (bot indeciso all'ultimo secondo)
+                if time_left < 3.0 and st.session_state.sim_bot_next_bid is None:
+                    # Ricalcola: magari un bot si convince in extremis
+                    if random.random() < 0.2: plan_next_bot_bid()
+
+                # 3. Chiusura Asta
                 if time_left == 0.0:
                     st.session_state.sim_state = "SOLD"
                     w = st.session_state.sim_current_winner
@@ -2137,9 +2230,8 @@ with macro_tabs[0]:
                     
                     st.session_state.sim_logs.append(f"<div class='log-entry win'>🔨 AGGIUDICATO! <b>{w}</b> si porta a casa {p['Nome']} per <b>{b} cr</b>.</div>")
                     
-                    # ASSEGNAZIONE UFFICIALE: Scrive nel Database e scala i crediti
-                    if w == "Tu":
-                        st.session_state.my_roster.append({'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': b})
+                    # ASSEGNAZIONE E SCALO CREDITI
+                    if w == "Tu": st.session_state.my_roster.append({'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': b})
                     elif w != "Nessuno":
                         st.session_state.opponents[w]['budget'] -= b
                         st.session_state.opponents[w]['slots_left'] -= 1
@@ -2149,18 +2241,18 @@ with macro_tabs[0]:
                         st.session_state.purchased_registry[p['Nome']] = (w, b)
                         st.session_state.history.append({'buyer': w, 'name': p['Nome'], 'team': p['Squadra'], 'role': p['R'], 'price': b})
                         save_state_to_disk()
+                        
+                    advance_turn() # Passa il turno di chiamata
                     st.rerun()
                 else:
-                    # 3. Aggiorna il Countdown visivo e crea il loop real-time
-                    color = "#10B981" if time_left > 2.0 else "#F43F5E"
+                    # Timer Visivo (Da verde a rosso)
+                    color = "#10B981" if time_left > 5.0 else ("#F59E0B" if time_left > 2.0 else "#F43F5E")
                     st.markdown(f"<h1 style='text-align:center; color:{color}; font-size:4rem;'>⏱️ {time_left:.1f}</h1>", unsafe_allow_html=True)
-                    
-                    # Pausa brevissima (0.3 secondi) prima di forzare l'aggiornamento dell'interfaccia
                     time.sleep(0.3)
                     st.rerun()
 
             elif st.session_state.sim_state == "SOLD":
-                html_log = f"<div class='log-box'>{''.join(st.session_state.sim_logs[-8:])}</div>"
+                html_log = f"<div class='log-box'>{''.join(st.session_state.sim_logs[-10:])}</div>"
                 st.markdown(html_log, unsafe_allow_html=True)
                 
                 w = st.session_state.sim_current_winner
@@ -2168,16 +2260,15 @@ with macro_tabs[0]:
                 p = st.session_state.sim_player
                 bt, _ = get_player_base_target(p)
                 
-                if w == "Nessuno":
-                    st.info("Nessuno ha fatto offerte. Giocatore rimasto Svincolato.")
-                elif w == "Tu":
-                    st.success(f"🎉 **HAI VINTO L'ASTA!** {p['Nome']} è stato aggiunto ufficialmente alla tua rosa e i crediti scalati dal pannello.")
-                    if b > bt * 1.15: st.warning("⚠️ Hai overpagato per colpa dell'adrenalina.")
-                    elif b < bt * 0.85: st.info("🔥 Furto clamoroso! Acquistato a sconto.")
-                else:
-                    st.error(f"❌ **ASTA PERSA.** {p['Nome']} è stato assegnato alla rosa di {w} per {b} cr.")
+                if w == "Nessuno": st.info("Giocatore Svincolato. Si passa al prossimo turno.")
+                elif w == "Tu": st.success(f"🎉 **HAI VINTO!** {p['Nome']} aggiunto alla rosa.")
+                else: st.error(f"❌ **ASTA PERSA.** Assegnato a {w} per {b} cr.")
+                
+                if st.button("Avanti al Prossimo Turno 👉", type="primary", use_container_width=True):
+                    st.session_state.sim_state = "IDLE"
+                    st.rerun()
             else:
-                st.markdown("<div class='log-box'><div class='log-entry drop'>Premi 'Inizia Asta' per far partire il timer real-time.</div></div>", unsafe_allow_html=True)
+                st.markdown("<div class='log-box'><div class='log-entry drop'>Inizia l'asta per far partire il timer real-time a 10 secondi.</div></div>", unsafe_allow_html=True)
                 
     with t_duel:
         st.subheader("Confronto Testa a Testa")
