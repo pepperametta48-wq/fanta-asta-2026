@@ -2043,7 +2043,7 @@ with macro_tabs[0]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
         with t_simul:
-        st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
+            st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
         
         # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
         if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
