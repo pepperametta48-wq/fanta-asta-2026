@@ -1879,15 +1879,19 @@ with macro_tabs[0]:
         st.subheader("🎣 Giocatori Esca (Fai svenare i rivali)")
         st.caption("Chiama questi top player per prosciugare i crediti degli avversari. Sono giocatori costosi che l'algoritmo sa che NON rientrano nei tuoi obiettivi bloccati.")
         
+        # Pulsantiera rapida per scegliere il ruolo dell'esca
+        esca_role = st.radio("Seleziona il ruolo dell'Esca:", ['P', 'D', 'C', 'A'], horizontal=True, key="esca_role_selector")
+        
         # Raccogliamo i giocatori che vogliamo assolutamente
         wanted_players = []
         for r_code in ['P', 'D', 'C', 'A']:
             wanted_players.extend(st.session_state.custom_user_targets.get(r_code, []))
             
-        # Filtriamo il listone: prendiamo chi NON è stato comprato e NON è tra i nostri target, ordinato per FVM (i più costosi)
+        # Filtriamo il listone: NON comprati, NON nei nostri target, ED ESATTAMENTE del ruolo selezionato
         df_esca = listone_df[
             (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys())) & 
-            (~listone_df['Nome'].isin(wanted_players))
+            (~listone_df['Nome'].isin(wanted_players)) &
+            (listone_df['R'] == esca_role)
         ].sort_values(by='FVM', ascending=False).head(4)
         
         if not df_esca.empty:
