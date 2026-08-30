@@ -2042,18 +2042,17 @@ with macro_tabs[0]:
         if selected_cat in ["Panoramica Completa", "Attaccanti (A)"]:
             render_role_card_grid('A', f"Attaccanti (Finalizzatori - Budget Base: {st.session_state.base_dept_budget['A']} cr)", num_cols=3)
 
-        with t_simul:
-            st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
-            # --- FIX MEMORIA: Inizializza le variabili se mancano dal vecchio salvataggio ---
+    with t_simul:
+        st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
+        
+        # --- FIX MEMORIA ---
         if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
         if 'turn_idx' not in st.session_state: st.session_state.turn_idx = 0
         if 'role_sequence' not in st.session_state: st.session_state.role_sequence = ['P', 'D', 'C', 'A']
         if 'current_role_idx' not in st.session_state: st.session_state.current_role_idx = 0
         
-        # Flusso Logico Ruoli
         current_draft_role = st.session_state.role_sequence[st.session_state.current_role_idx]
         
-        # Verifica se tutti hanno completato il ruolo corrente
         all_completed = True
         if len([p for p in st.session_state.my_roster if p['role'] == current_draft_role]) < SLOTS[current_draft_role]: all_completed = False
         for opp in st.session_state.opponents.values():
@@ -2065,7 +2064,6 @@ with macro_tabs[0]:
             st.success(f"✅ Ruolo completato da tutti! Si passa a: **{current_draft_role}**")
             st.rerun()
 
-        # Il chiamante attuale
         caller_key = st.session_state.auction_sequence[st.session_state.turn_idx]
         caller_prof = st.session_state.opponents[caller_key].get('profile', '') if caller_key != "Tu" else "Umano"
         
@@ -2073,7 +2071,6 @@ with macro_tabs[0]:
         if 'sim_player' not in st.session_state: st.session_state.sim_player = None
         if 'sim_logs' not in st.session_state: st.session_state.sim_logs = []
         
-        # --- TABELLONE LIVE CREDITI (Visibile a tutti in testa) ---
         st.markdown(f"#### 🏟️ Turno di Chiamata: <span style='color:#8B5CF6;'>{caller_key}</span> | Ruolo Obbligatorio: <span style='color:#10B981;'>{current_draft_role}</span>", unsafe_allow_html=True)
         with st.expander("📊 Tabellone Live Crediti & Pmax (Clicca per espandere)", expanded=False):
             live_data = [{"Squadra": "Tu", "Crediti": tot_budget_left, "PMax": p_max_safe}]
@@ -2130,7 +2127,6 @@ with macro_tabs[0]:
         with c_sim1:
             st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
             if st.session_state.sim_state in ["IDLE", "SOLD"]:
-                
                 if caller_key == "Tu":
                     avail_df = listone_df[(listone_df['R'] == current_draft_role) & (~listone_df['Nome'].isin(st.session_state.purchased_registry.keys()))]
                     sel_p = st.selectbox(f"Tocca a Te! Scegli un {current_draft_role}:", options=avail_df['Nome'].tolist() if not avail_df.empty else ["Nessuno"])
@@ -2263,7 +2259,7 @@ with macro_tabs[0]:
                     st.rerun()
             else:
                 st.markdown("<div class='log-box'><div class='log-entry drop'>Inizia l'asta per far partire il timer real-time a 10 secondi.</div></div>", unsafe_allow_html=True)
-                
+   
     with t_duel:
         st.subheader("Confronto Testa a Testa")
         
