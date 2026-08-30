@@ -2046,7 +2046,11 @@ with macro_tabs[0]:
         st.subheader("🤖 Asta Simulatore RPG (Turni, Hype, Countdown)")
         
         # --- FIX MEMORIA ---
-        if 'auction_sequence' not in st.session_state: st.session_state.auction_sequence = ["Tu"] + list(st.session_state.opponents.keys())
+        # --- FIX MEMORIA E SINCRONIZZAZIONE NOMI ---
+        expected_bidders = ["Tu"] + list(st.session_state.opponents.keys())
+        if 'auction_sequence' not in st.session_state or set(st.session_state.auction_sequence) != set(expected_bidders):
+            st.session_state.auction_sequence = expected_bidders
+            st.session_state.turn_idx = 0
         if 'turn_idx' not in st.session_state: st.session_state.turn_idx = 0
         if 'role_sequence' not in st.session_state: st.session_state.role_sequence = ['P', 'D', 'C', 'A']
         if 'current_role_idx' not in st.session_state: st.session_state.current_role_idx = 0
