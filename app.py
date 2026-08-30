@@ -797,6 +797,15 @@ BOT_TRASH_TALK = [
     "Hype esagerato, vi lascio scannare."
 ]
 
+def calcola_incrocio_portieri(team1, team2):
+    if team1 == team2: return 0
+    coppie_perfette = [("Inter", "Milan"), ("Roma", "Lazio"), ("Juventus", "Torino"), ("Genoa", "Sampdoria")]
+    for p1, p2 in coppie_perfette:
+        if (team1 == p1 and team2 == p2) or (team1 == p2 and team2 == p1):
+            return 0
+    hash_val = (sum(ord(c) for c in str(team1)) * sum(ord(c) for c in str(team2))) % 38
+    return max(3, hash_val)
+
 def analizza_giocatore_avanzato(player_info):
     base_t, _ = get_player_base_target(player_info)
     fvm = player_info.get('FVM', 1)
