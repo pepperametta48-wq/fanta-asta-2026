@@ -2174,7 +2174,25 @@ with macro_tabs[0]:
                 st.write(f"**Ruolo:** {p['R']} | **Fascia:** {tier}")
                 st.markdown("---")
                 st.markdown(f"🔥 **Hype Estivo:** `{hype}/100`")
+                st.markdown(f"🔥 **Hype Estivo:** `{hype}/100`")
                 st.markdown(f"📈 **Propensione Bonus:** `{prop}`")
+                
+                # --- INTEGRAZIONE GRIGLIA PORTIERI ---
+                if p['R'] == 'P' and len(st.session_state.my_roster) > 0:
+                    portieri_miei = [gioc for gioc in st.session_state.my_roster if gioc['role'] == 'P']
+                    for mio_p in portieri_miei:
+                        indice = calcola_incrocio_portieri(mio_p['team'], p['Squadra'])
+                        if indice == 0:
+                            st.success(f"🧩 **Incrocio PERFETTO (0)** con {mio_p['name']} ({mio_p['team']})! Questo alza il suo valore per la tua rosa.")
+                            bt = int(bt * 1.3) # Alzi il tuo target ideale perché chiude la coppia
+                            dyn_stop = int(dyn_stop * 1.2)
+                        elif indice <= 8:
+                            st.info(f"🟢 **Ottimo Incrocio ({indice})** con {mio_p['name']} ({mio_p['team']}).")
+                        elif indice >= 25:
+                            st.error(f"🔴 **Pessimo Incrocio ({indice})** con {mio_p['name']} ({mio_p['team']}). Evita di prenderlo!")
+                            bt = int(bt * 0.7) # Abbassa il valore per non farti sprecare crediti
+                            dyn_stop = int(dyn_stop * 0.7)
+                
                 st.markdown(f"🎯 **Target:** `{bt} cr` | 🛑 **Stop-Loss:** `{dyn_stop} cr`")
                 st.markdown("---")
                 
