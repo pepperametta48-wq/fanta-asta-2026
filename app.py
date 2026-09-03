@@ -806,6 +806,19 @@ def calcola_incrocio_portieri(team1, team2):
     hash_val = (sum(ord(c) for c in str(team1)) * sum(ord(c) for c in str(team2))) % 38
     return max(3, hash_val)
 
+def calcola_incrocio_attaccanti(team1, team2):
+    # Sinergie simmetriche e terzetti offensivi d'élite
+    coppie = {
+        ('Atalanta', 'Sassuolo'): 95, ('Bologna', 'Inter'): 95,
+        ('Como', 'Udinese'): 93, ('Fiorentina', 'Milan'): 93, ('Cagliari', 'Juventus'): 92,
+        ('Frosinone', 'Genoa'): 99, ('Frosinone', 'Lecce'): 99, ('Genoa', 'Lecce'): 99,
+        ('Cagliari', 'Lazio'): 99, ('Cagliari', 'Lecce'): 99, ('Lazio', 'Lecce'): 99,
+        ('Genoa', 'Monza'): 99, ('Genoa', 'Parma'): 99, ('Monza', 'Parma'): 99,
+        ('Roma', 'Torino'): 95, ('Roma', 'Venezia'): 95, ('Torino', 'Venezia'): 95
+    }
+    key = tuple(sorted([team1, team2]))
+    return coppie.get(key, 50)
+
 def analizza_giocatore_avanzato(player_info):
     base_t, _ = get_player_base_target(player_info)
     fvm = player_info.get('FVM', 1)
