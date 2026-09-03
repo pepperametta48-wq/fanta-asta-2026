@@ -1236,7 +1236,7 @@ def render_role_card_grid(role_code, dept_title, num_cols=4):
 # ==============================================================================
 @st.cache_data
 def safe_load_listone():
-    excel_file = 'Quotazioni_Fantacalcio_Stagione_2026_27.xlsx'
+    excel_file = 'Quotazioni_Fantacalcio_Stagione_2026_27_2.xlsx'
     df = None
     if os.path.exists(excel_file):
         for skip in [1, 0, 2]:
