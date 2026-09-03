@@ -1630,6 +1630,35 @@ with macro_tabs[0]:
             sel_player = st.selectbox("Cerca Calciatore Chiamato", options=available_names if available_names else ["Nessun dato"], index=default_idx)
             st.session_state.target_call_player = sel_player
             
+        # ==========================================
+        # 🚨 RADAR SINERGIE LIVE
+        # ==========================================
+        if sel_player and sel_player != "Nessun dato":
+            try:
+                p_info_live = listone_df[listone_df['Nome'] == sel_player].iloc[0]
+                live_r = p_info_live['R']
+                live_team = p_info_live['Squadra']
+                
+                if live_r == 'P' and len(st.session_state.my_roster) > 0:
+                    portieri_miei = [g for g in st.session_state.my_roster if g['role'] == 'P']
+                    for mio_p in portieri_miei:
+                        indice = calcola_incrocio_portieri(mio_p['team'], live_team)
+                        if indice >= 94:
+                            st.success(f"🧩 **Incrocio ELITE ({indice})** con il tuo {mio_p['name']} ({mio_p['team']})! Alza il budget, blinda la porta.")
+                        elif indice >= 90:
+                            st.info(f"🟢 **Ottimo Incrocio ({indice})** con il tuo {mio_p['name']} ({mio_p['team']}).")
+                        elif indice <= 80:
+                            st.error(f"🔴 **Pessimo Incrocio ({indice})** con il tuo {mio_p['name']} ({mio_p['team']}). Lascialo agli avversari!")
+                            
+                if live_r == 'A' and len(st.session_state.my_roster) > 0:
+                    att_miei = [g for g in st.session_state.my_roster if g['role'] == 'A']
+                    for mio_a in att_miei:
+                        indice_a = calcola_incrocio_attaccanti(mio_a['team'], live_team)
+                        if indice_a >= 92:
+                            st.success(f"⚔️ **Sinergia Offensiva ({indice_a})** con il tuo {mio_a['name']} ({mio_a['team']})! Ottima coppia da ruotare.")
+            except IndexError:
+                pass
+            
         player_info = listone_df[listone_df['Nome'] == sel_player].iloc[0] if sel_player != "Nessun dato" else None
         player_role = str(player_info['R']).strip() if player_info is not None else "C"
         player_team = str(player_info['Squadra']).strip() if player_info is not None else ""
