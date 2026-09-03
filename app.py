@@ -1688,7 +1688,6 @@ with macro_tabs[0]:
                 squadre_serie_a = sorted(listone_df['Squadra'].dropna().unique().tolist())
                 
                 if live_r == 'P':
-                    # Trova le 2 migliori squadre per incrocio
                     migliori_incroci = []
                     for t in squadre_serie_a:
                         if t != live_team:
@@ -1697,17 +1696,25 @@ with macro_tabs[0]:
                     
                     migliori_incroci.sort(key=lambda x: x[1], reverse=True)
                     
-                    # Pesca dal listone i 2 portieri titolari (più costosi) di queste due squadre
                     altri_due_portieri = []
-                    for t, _ in migliori_incroci[:2]:
-                        p_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'P')].sort_values(by='FVM', ascending=False)
-                        if not p_squadra.empty:
-                            altri_due_portieri.append(f"**{p_squadra.iloc[0]['Nome']}** ({t})")
+                    used_teams_p = set()
+                    
+                    for t, idx in migliori_incroci:
+                        if t not in used_teams_p:
+                            p_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'P')].sort_values(by='FVM', ascending=False)
+                            if not p_squadra.empty:
+                                nome = p_squadra.iloc[0]['Nome']
+                                fvm = p_squadra.iloc[0]['FVM']
+                                tier = "Top/Semi" if fvm >= 30 else ("Titolare" if fvm >= 10 else "Low Cost")
+                                altri_due_portieri.append(f"**{nome}** ({t} - {tier})")
+                                used_teams_p.add(t)
+                        if len(altri_due_portieri) >= 2:
+                            break
                             
                     if altri_due_portieri:
                         st.info(f"🧤 **COMPLETA IL TERZETTO CON:** {', '.join(altri_due_portieri)}")
                     
-                    # Alert dinamico verde/rosso se hai già comprato qualcuno compatibile
+                    # Alert dinamico verde se hai già comprato qualcuno compatibile
                     if len(st.session_state.my_roster) > 0:
                         portieri_miei = [g for g in st.session_state.my_roster if g['role'] == 'P']
                         for mio_p in portieri_miei:
@@ -1718,31 +1725,56 @@ with macro_tabs[0]:
                                 st.error(f"❌ **Pessimo incrocio ({indice_mio})** col tuo {mio_p['name']}!")
 
                 elif live_r == 'A':
-                    # Trova le migliori squadre per sinergia offensiva
                     migliori_incroci_a = []
                     for t in squadre_serie_a:
                         if t != live_team:
                             idx_a = calcola_incrocio_attaccanti(live_team, t)
-                            migliori_incroci_a.append((t, idx_a))
+                            if idx_a >= 80: # Allarghiamo la rete per trovare abbastanza squadre diverse
+                                migliori_incroci_a.append((t, idx_a))
                             
                     migliori_incroci_a.sort(key=lambda x: x[1], reverse=True)
+                    top_teams = [x[0] for x in migliori_incroci_a]
                     
-                    # Pesca dal listone esattamente 5 attaccanti dalle squadre più compatibili
                     i_cinque_attaccanti = []
-                    for t, _ in migliori_incroci_a:
-                        a_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'A')].sort_values(by='FVM', ascending=False)
-                        for _, row in a_squadra.iterrows():
-                            if len(i_cinque_attaccanti) < 5:
-                                i_cinque_attaccanti.append(f"**{row['Nome']}** ({t})")
-                            else:
+                    used_teams_a = set()
+                    
+                    # Definiamo le 5 fasce che vogliamo riempire
+                    buckets = {
+                        "Top/Semi": lambda fvm: fvm >= 140,
+                        "Ottimo Titolare": lambda fvm: 70 <= fvm < 140,
+                        "Scommessa": lambda fvm: 20 <= fvm < 70,
+                        "Scommessa ": lambda fvm: 20 <= fvm < 70, # Spazio vuoto per renderlo univoco
+                        "Basso Costo": lambda fvm: fvm < 20
+                    }
+                    
+                    pool_att = listone_df[(listone_df['Squadra'].isin(top_teams)) & (listone_df['R'] == 'A')].sort_values(by='FVM', ascending=False)
+                    
+                    # Fase 1: Riempiamo le categorie con squadre DIVERSE
+                    for b_name, b_cond in buckets.items():
+                        for _, row in pool_att.iterrows():
+                            if row['Squadra'] not in used_teams_a and b_cond(row['FVM']):
+                                tier_label = b_name.strip()
+                                i_cinque_attaccanti.append(f"**{row['Nome']}** ({row['Squadra']} - {tier_label})")
+                                used_teams_a.add(row['Squadra'])
                                 break
-                        if len(i_cinque_attaccanti) >= 5:
-                            break
+                    
+                    # Fase 2: Se mancano giocatori (es. non c'era un Top nelle squadre compatibili), riempiamo i buchi
+                    if len(i_cinque_attaccanti) < 5:
+                        for _, row in pool_att.iterrows():
+                            if row['Squadra'] not in used_teams_a:
+                                fvm = row['FVM']
+                                if fvm >= 140: tl = "Top/Semi"
+                                elif fvm >= 70: tl = "Ottimo Titolare"
+                                elif fvm >= 20: tl = "Scommessa"
+                                else: tl = "Basso Costo"
+                                i_cinque_attaccanti.append(f"**{row['Nome']}** ({row['Squadra']} - {tl})")
+                                used_teams_a.add(row['Squadra'])
+                                if len(i_cinque_attaccanti) >= 5:
+                                    break
                             
                     if i_cinque_attaccanti:
-                        st.info(f"⚔️ **COMPLETA IL REPARTO CON QUESTI 5:** {', '.join(i_cinque_attaccanti)}")
+                        st.info(f"⚔️ **COMPLETA IL REPARTO (MAX 1 per Team):** {', '.join(i_cinque_attaccanti)}")
                         
-                    # Alert dinamico verde se hai già comprato qualcuno compatibile
                     if len(st.session_state.my_roster) > 0:
                         att_miei = [g for g in st.session_state.my_roster if g['role'] == 'A']
                         for mio_a in att_miei:
