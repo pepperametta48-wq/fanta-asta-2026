@@ -1626,78 +1626,10 @@ with macro_tabs[0]:
             default_idx = 0
 
         col_p1, col_p2, col_p3, col_p4 = st.columns([3, 1, 2, 2])
+        
         with col_p1:
             sel_player = st.selectbox("Cerca Calciatore Chiamato", options=available_names if available_names else ["Nessun dato"], index=default_idx)
             st.session_state.target_call_player = sel_player
-            
-        # ==========================================
-        # 🚨 RADAR SINERGIE LIVE (I MIGLIORI ABBINAMENTI)
-        # ==========================================
-        # ==========================================
-        # 🚨 RADAR SINERGIE LIVE (SCOUTING ISTANTANEO)
-        # ==========================================
-        if sel_player and sel_player != "Nessun dato":
-            try:
-                p_info_live = listone_df[listone_df['Nome'] == sel_player].iloc[0]
-                live_r = p_info_live['R']
-                live_team = p_info_live['Squadra']
-                
-                squadre_serie_a = sorted(listone_df['Squadra'].dropna().unique().tolist())
-                
-                if live_r == 'P':
-                    # 1. Mostra i migliori portieri da abbinare in tutta la Serie A
-                    migliori_incroci = []
-                    for t in squadre_serie_a:
-                        if t != live_team:
-                            idx = calcola_incrocio_portieri(live_team, t)
-                            if idx >= 90:
-                                # Trova il nome del portiere titolare dal listone
-                                p_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'P')].sort_values(by='FVM', ascending=False)
-                                nome_p = p_squadra.iloc[0]['Nome'] if not p_squadra.empty else "Portiere"
-                                migliori_incroci.append((nome_p, t, idx))
-                    
-                    if migliori_incroci:
-                        migliori_incroci.sort(key=lambda x: x[2], reverse=True)
-                        abb_str = " | ".join([f"**{nome}** ({t}, {idx})" for nome, t, idx in migliori_incroci[:4]])
-                        st.info(f"🧤 **ABBINAMENTI IDEALI IN SERIE A:** {abb_str}")
-                    
-                    # 2. Controlla se fa già coppia con uno che hai in rosa
-                    if len(st.session_state.my_roster) > 0:
-                        portieri_miei = [g for g in st.session_state.my_roster if g['role'] == 'P']
-                        for mio_p in portieri_miei:
-                            indice_mio = calcola_incrocio_portieri(mio_p['team'], live_team)
-                            if indice_mio >= 94:
-                                st.success(f"✅ **COPPIA ELITE ({indice_mio})** col tuo {mio_p['name']}! Fortemente consigliato.")
-                            elif indice_mio <= 80:
-                                st.error(f"❌ **Pessimo incrocio ({indice_mio})** col tuo {mio_p['name']}! Evita l'acquisto se possibile.")
-
-                elif live_r == 'A':
-                    # 1. Mostra i migliori attaccanti da abbinare in tutta la Serie A
-                    migliori_incroci_a = []
-                    for t in squadre_serie_a:
-                        if t != live_team:
-                            idx_a = calcola_incrocio_attaccanti(live_team, t)
-                            if idx_a >= 92:
-                                # Trova i nomi dei migliori attaccanti dal listone
-                                a_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'A')].sort_values(by='FVM', ascending=False)
-                                nomi_a = "/".join(a_squadra['Nome'].head(2).tolist()) if not a_squadra.empty else "Attaccanti"
-                                migliori_incroci_a.append((nomi_a, t, idx_a))
-                    
-                    if migliori_incroci_a:
-                        migliori_incroci_a.sort(key=lambda x: x[2], reverse=True)
-                        abb_str_a = " | ".join([f"**{nomi}** ({t}, {idx})" for nomi, t, idx in migliori_incroci_a[:4]])
-                        st.info(f"⚔️ **SINERGIE OFFENSIVE IDEALI:** {abb_str_a}")
-                        
-                    # 2. Controlla se fa già coppia con uno che hai in rosa
-                    if len(st.session_state.my_roster) > 0:
-                        att_miei = [g for g in st.session_state.my_roster if g['role'] == 'A']
-                        for mio_a in att_miei:
-                            indice_mio_a = calcola_incrocio_attaccanti(mio_a['team'], live_team)
-                            if indice_mio_a >= 92:
-                                st.success(f"✅ **Sinergia perfetta ({indice_mio_a})** col tuo {mio_a['name']}! Fortemente consigliato.")
-                                
-            except IndexError:
-                pass
             
         player_info = listone_df[listone_df['Nome'] == sel_player].iloc[0] if sel_player != "Nessun dato" else None
         player_role = str(player_info['R']).strip() if player_info is not None else "C"
@@ -1729,6 +1661,66 @@ with macro_tabs[0]:
             st.write("")
             st.write("")
             btn_confirm = st.button("Conferma Assegnazione", use_container_width=True, type="primary")
+
+        # ==========================================
+        # 🚨 RADAR SINERGIE LIVE (SCOUTING ISTANTANEO)
+        # ==========================================
+        if sel_player and sel_player != "Nessun dato":
+            try:
+                p_info_live = listone_df[listone_df['Nome'] == sel_player].iloc[0]
+                live_r = p_info_live['R']
+                live_team = p_info_live['Squadra']
+                
+                squadre_serie_a = sorted(listone_df['Squadra'].dropna().unique().tolist())
+                
+                if live_r == 'P':
+                    migliori_incroci = []
+                    for t in squadre_serie_a:
+                        if t != live_team:
+                            idx = calcola_incrocio_portieri(live_team, t)
+                            if idx >= 90:
+                                p_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'P')].sort_values(by='FVM', ascending=False)
+                                nome_p = p_squadra.iloc[0]['Nome'] if not p_squadra.empty else "Portiere"
+                                migliori_incroci.append((nome_p, t, idx))
+                    
+                    if migliori_incroci:
+                        migliori_incroci.sort(key=lambda x: x[2], reverse=True)
+                        abb_str = " | ".join([f"**{nome}** ({t}, {idx})" for nome, t, idx in migliori_incroci[:4]])
+                        st.info(f"🧤 **ABBINAMENTI IDEALI:** {abb_str}")
+                    
+                    if len(st.session_state.my_roster) > 0:
+                        portieri_miei = [g for g in st.session_state.my_roster if g['role'] == 'P']
+                        for mio_p in portieri_miei:
+                            indice_mio = calcola_incrocio_portieri(mio_p['team'], live_team)
+                            if indice_mio >= 94:
+                                st.success(f"✅ **COPPIA ELITE ({indice_mio})** col tuo {mio_p['name']}!")
+                            elif indice_mio <= 80:
+                                st.error(f"❌ **Pessimo incrocio ({indice_mio})** col tuo {mio_p['name']}!")
+
+                elif live_r == 'A':
+                    migliori_incroci_a = []
+                    for t in squadre_serie_a:
+                        if t != live_team:
+                            idx_a = calcola_incrocio_attaccanti(live_team, t)
+                            if idx_a >= 92:
+                                a_squadra = listone_df[(listone_df['Squadra'] == t) & (listone_df['R'] == 'A')].sort_values(by='FVM', ascending=False)
+                                nomi_a = "/".join(a_squadra['Nome'].head(2).tolist()) if not a_squadra.empty else "Attaccanti"
+                                migliori_incroci_a.append((nomi_a, t, idx_a))
+                    
+                    if migliori_incroci_a:
+                        migliori_incroci_a.sort(key=lambda x: x[2], reverse=True)
+                        abb_str_a = " | ".join([f"**{nomi}** ({t}, {idx})" for nomi, t, idx in migliori_incroci_a[:4]])
+                        st.info(f"⚔️ **SINERGIE OFFENSIVE IDEALI:** {abb_str_a}")
+                        
+                    if len(st.session_state.my_roster) > 0:
+                        att_miei = [g for g in st.session_state.my_roster if g['role'] == 'A']
+                        for mio_a in att_miei:
+                            indice_mio_a = calcola_incrocio_attaccanti(mio_a['team'], live_team)
+                            if indice_mio_a >= 92:
+                                st.success(f"✅ **Sinergia perfetta ({indice_mio_a})** col tuo {mio_a['name']}!")
+                                
+            except IndexError:
+                pass
 
         st.markdown("<span style='color:#94A3B8; font-size:14px; font-weight:500;'>Rilancio Rapido Keypad:</span>", unsafe_allow_html=True)
         kp1, kp2, kp3, kp4 = st.columns(4)
